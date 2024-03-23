@@ -1,7 +1,8 @@
 import axios from 'axios';
-import type {LoginRequestDTO} from "@/models/LoginRequestDTO";
-import type {LoginResponseDTO} from "@/models/LoginResponseDTO";
+
 import type { AxiosResponse } from 'axios';
+import type {LoginRequestDTO} from "@/models/user/LoginRequestDTO";
+import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
 export class LoginService {
     private readonly api_url = "http://localhost:8080/api/v1"
 

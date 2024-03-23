@@ -1,27 +1,23 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import {useUserStore} from '@/stores/UserStore';
+
+import {ref} from "vue";
 
 const username = ref('')
 const password = ref('')
-const store = useUserStore();
+const confirmPassword = ref('')
 
-async function login() {
-  try {
-    await store.login(username.value, password.value);
-  } catch (error) {
-    console.error('Axios error:', error)
-  }
+
+function register(){
+  console.log("registering user")
 }
+
 </script>
 
-
 <template>
-
   <div id="rectangle-container">
     <div id="welcome-message">
       <h1>
-        Welcome to Quiz App
+        Please tell us about yourself
       </h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab amet blanditiis deserunt dolores eos esse et
@@ -29,10 +25,10 @@ async function login() {
       </p>
 
     </div>
-    <div id="login-form">
+    <div id="create-form">
 
-      <h2>User Login</h2>
-      <form @submit.prevent="login">
+      <h2>Create account</h2>
+      <form @submit.prevent="register">
         <div>
           <span class="material-icons" title="Enter a valid username">person</span>
           <input type="text" v-model="username" placeholder="Enter your username" required/>
@@ -42,21 +38,24 @@ async function login() {
           <span class="material-icons" title="Enter a valid username">lock</span>
 
           <input type="password" v-model="password" placeholder="Enter your password" required/>
+        </div>
+        <div>
+          <span class="material-icons" title="Enter a valid username">lock</span>
 
+          <input type="password" v-model="confirmPassword" placeholder="Confirm password" required/>
         </div>
         <button type="submit">Log in</button>
         <p>
-          Don't have an account? <router-link to="/register-user">Register</router-link>
+          Already have an account?
+          <router-link to="/login">Login</router-link>
         </p>
       </form>
     </div>
   </div>
-
-
 </template>
 
-<style scoped>
 
+<style scoped >
 #rectangle-container {
   display: flex;
   margin-left: 10%;
@@ -68,31 +67,34 @@ async function login() {
 
 }
 
-@media (max-width: 600px){
+@media (max-width: 600px) {
   #rectangle-container {
     flex-direction: column;
     height: auto;
     margin: 0;
     border-radius: 0;
   }
-  #welcome-message, #login-form{
+
+  #welcome-message, #create-form {
     width: 100%;
   }
-  #welcome-message{
+
+  #welcome-message {
     background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
   }
 }
 
-@media (min-width: 600px){
-  #welcome-message, #login-form{
+@media (min-width: 600px) {
+  #welcome-message, #create-form {
     width: 50%;
   }
-  #welcome-message{
+
+  #welcome-message {
     background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
   }
 }
 
-p, h1, h2{
+p, h1, h2 {
   color: white;
   text-align: center;
   text-shadow: black 0 0 15px;
@@ -114,12 +116,10 @@ p {
   border-bottom-left-radius: inherit;
 
 
-
-
 }
 
 
-#login-form {
+#create-form {
   padding-top: 50px;
   border-top-right-radius: inherit;
   border-bottom-right-radius: inherit;
@@ -127,7 +127,8 @@ p {
   flex-direction: column;
   text-align: center;
   background-color: var(--secondary-light);
-  h2{
+
+  h2 {
     color: white;
     font-size: 2em;
   }
@@ -155,6 +156,7 @@ p {
       display: flex;
       background-color: white;
       align-items: center;
+
       :hover {
         cursor: pointer;
       }
@@ -168,10 +170,12 @@ p {
         border: none;
         height: 90%;
       }
-      span{
+
+      span {
         display: flex;
       }
     }
+
     button:hover {
       cursor: pointer;
       scale: 1.05;
@@ -179,5 +183,4 @@ p {
   }
 
 }
-
 </style>

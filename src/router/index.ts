@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import UserLogin from "@/components/user/UserLogin.vue";
 import {useUserStore} from "@/stores/UserStore";
-import NotFound from "@/components/navigation/NotFound.vue";
 import HomeView from "@/components/home/HomeView.vue";
+import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
+import QuizRunner from "@/components/quiz/QuizRunner.vue";
+import CreateUser from "@/components/user/CreateUser.vue";
+import NotFound from "@/components/navigation/NotFound.vue";
 
 const whitelist = ['login'];
 
@@ -22,8 +25,26 @@ const router = createRouter({
       meta: {authRequired: false}
     },
     {
+      path: '/register-user',
+      name: 'register',
+      component: CreateUser,
+      meta: {authRequired: false}
+    },
+    {
+      path: '/quiz-browser',
+      name: 'quiz-browser',
+      component: QuizBrowser,
+      meta: {authRequired: false}
+    },
+    {
+      path: '/quiz-runner/:quizId',
+      name: 'quiz-runner',
+      component: QuizRunner,
+      meta: {authRequired: false}
+    },
+    {
       path: '/:pathName(.*)',
-      name: 'NotFound',
+      name: 'not-found',
       component: NotFound,
       meta: {authRequired : false}
     }

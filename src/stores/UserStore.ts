@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import {LoginService} from "@/services/LoginService";
 import {CreateUserService} from "@/services/CreateUserService";
-import type {CreateUserRequestDTO} from "@/models/CreateUserRequestDTO";
-import type {CreateUserResponseDTO} from "@/models/CreateUserResponseDTO";
+import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
+import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 
 
 export const useUserStore = defineStore('users', {
