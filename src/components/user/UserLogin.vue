@@ -45,6 +45,9 @@ async function login() {
 
         </div>
         <button type="submit">Log in</button>
+        <p>
+          Don't have an account? <router-link to="/register-user">Register</router-link>
+        </p>
       </form>
     </div>
   </div>
@@ -61,6 +64,7 @@ async function login() {
   margin-top: 5%;
   height: 700px;
   border-radius: 20px;
+  box-shadow: grey 0 0 20px 10px;
 
 }
 
@@ -74,37 +78,44 @@ async function login() {
   #welcome-message, #login-form{
     width: 100%;
   }
+  #welcome-message{
+    background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
+  }
 }
 
 @media (min-width: 600px){
   #welcome-message, #login-form{
     width: 50%;
   }
+  #welcome-message{
+    background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
+  }
 }
 
+p, h1, h2{
+  color: white;
+  text-align: center;
+  text-shadow: black 0 0 15px;
 
+}
+
+h1 {
+  font-size: 3em;
+}
+
+p {
+  padding: 0 10%;
+}
 
 
 #welcome-message {
   padding-top: 50px;
   border-top-left-radius: inherit;
   border-bottom-left-radius: inherit;
-  background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
 
 
 
-  p, h1 {
-    color: white;
-    text-align: center;
-  }
 
-  h1 {
-    font-size: 3em;
-  }
-
-  p {
-    padding: 0 10%;
-  }
 }
 
 
@@ -137,13 +148,16 @@ async function login() {
       margin: auto auto 20px;
       border-radius: 10px;
       height: 40px;
-
+      box-shadow: grey 5px 5px 5px;
     }
 
     div {
       display: flex;
       background-color: white;
       align-items: center;
+      :hover {
+        cursor: pointer;
+      }
 
       input {
         outline: none;
@@ -157,6 +171,10 @@ async function login() {
       span{
         display: flex;
       }
+    }
+    button:hover {
+      cursor: pointer;
+      scale: 1.05;
     }
   }
 
