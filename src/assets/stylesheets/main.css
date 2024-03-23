@@ -1,0 +1,17 @@
+:root{
+    --primary: #084887ff;
+    --primary-light: #A3ADCC;
+    --secondary: #f58a07ff;
+    --secondary-light: #f9ab55ff;
+    --neutral: #f7f5fbff;
+    --default-font: 'Candal', sans-serif;
+}
+
+body {
+    background-color: var(--neutral);
+    margin: 0;
+}
+
+*{
+    font-family: var(--default-font), sans-serif;
+}
