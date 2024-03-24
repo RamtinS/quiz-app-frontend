@@ -4,12 +4,12 @@ import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
 
 export class CreateUserService {
-    private readonly api_url = "http://localhost:8080/api/v1"
+    private readonly api_url = "http://localhost:8080/api/v1/auth"
 
     async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<CreateUserResponseDTO> {
         try {
             const response = await axios.post(this.api_url + "/register", createUserRequestDTO);
-            return response.data;
+            return response.data.token;
         } catch (err) {
             console.log('error: ' + err);
             throw err;
