@@ -32,14 +32,15 @@ function startQuiz() {
 
 #quiz-post {
   border-radius: 10px;
-  text-align: center;
+  background-color: yellow;
+  display: flex;
+  flex-direction: column;
 
   :hover {
     cursor: pointer;
   }
 
   box-shadow: grey 5px 5px 5px;
-
 }
 
 #quiz-post:hover {
@@ -48,26 +49,27 @@ function startQuiz() {
 }
 
 #quiz-image {
-  background-color: yellow;
-  aspect-ratio: 1/1.25;
+  aspect-ratio: 1/1;
+
   background-image: url("src/assets/images/test-images/football_example.jpeg");
   background-repeat: no-repeat;
   background-size: cover;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
   border: black solid 1px;
+  flex: 1;
+
 
 }
 
 #quiz-info {
+  flex: 1;
   border-bottom-right-radius: inherit;
   border-bottom-left-radius: inherit;
-  aspect-ratio: 1/0.5;
-  position: relative;
   display: flex;
   border: black solid 1px;
   flex-direction: column;
   text-align: center;
-
+  background-color: var(--primary-light);
 }
 </style>
