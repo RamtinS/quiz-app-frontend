@@ -8,6 +8,13 @@ import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
 const previews = ref<QuizPreviewDTO[]>([])
 
+const props = defineProps(
+  {
+    previews: {type: Object as () => QuizPreviewDTO[], required: false},
+    title: {type: String, required: false, default: "Browse quizzes"},
+  }
+
+)
 
 for (let i = 0; i < 4; i++) {
   previews.value.push({
@@ -23,7 +30,7 @@ for (let i = 0; i < 4; i++) {
 
 <template>
   <div id="quiz-browser">
-    <h1>Browse quizzes</h1>
+    <h1>{{props.title}}</h1>
   </div>
   <div id="quiz-grid">
     <QuizPost v-for="quiz in previews"
@@ -46,19 +53,19 @@ h1{
 }
 
 
-@media (min-width: 600px) {
+@media (min-width: 1000px) {
   #quiz-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (min-width: 400px) and (max-width: 800px) {
+@media (min-width: 700px) and (max-width: 1000px) {
   #quiz-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 700px) {
   #quiz-grid {
     grid-template-columns: repeat(1, 1fr);
   }

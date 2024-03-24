@@ -1,14 +1,32 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
+import {CreateUserService} from "@/services/CreateUserService";
+import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
+import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const email = ref('')
+const name = ref('')
+const surname = ref('')
 
-
-function register(){
-  console.log("registering user")
+const service = new CreateUserService();
+async function register() {
+  let user: CreateUserRequestDTO = {
+    username: username.value,
+    password: password.value,
+    email: password.value,
+    name: name.value,
+    surname: surname.value,
+  };
+  try {
+    const response: CreateUserResponseDTO = await service.createUser(user)
+    console.log("response: " + response)
+  } catch (err) {
+    console.log("Error while creating user:" + err)
+  }
 }
 
 </script>
@@ -30,21 +48,31 @@ function register(){
       <h2>Create account</h2>
       <form @submit.prevent="register">
         <div>
-          <span class="material-icons" title="Enter a valid username">person</span>
+          <span class="material-icons" title="Username">person</span>
           <input type="text" v-model="username" placeholder="Enter your username" required/>
         </div>
 
         <div>
-          <span class="material-icons" title="Enter a valid username">lock</span>
-
+          <span class="material-icons" title="Email address">email</span>
+          <input type="text" v-model="email" placeholder="Email" required/>
+        </div>
+        <div>
+          <span class="material-icons" title="First name">badge</span>
+          <input type="text" v-model="name" placeholder="First name" required/>
+        </div>
+        <div>
+          <span class="material-icons" title="Surname">badge</span>
+          <input type="text" v-model="surname" placeholder="Surname" required/>
+        </div>
+        <div>
+          <span class="material-icons" title="Password">lock</span>
           <input type="password" v-model="password" placeholder="Enter your password" required/>
         </div>
         <div>
-          <span class="material-icons" title="Enter a valid username">lock</span>
-
+          <span class="material-icons" title="Password confirmation">lock</span>
           <input type="password" v-model="confirmPassword" placeholder="Confirm password" required/>
         </div>
-        <button type="submit">Log in</button>
+        <button type="submit">Register</button>
         <p>
           Already have an account?
           <router-link to="/login">Login</router-link>

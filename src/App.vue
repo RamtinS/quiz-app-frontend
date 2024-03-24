@@ -13,8 +13,9 @@ const links = ref({
   '/': { label: 'Home', authNeeded: false },
   '/login': { label: 'Login', authNeeded: false },
   '/quiz-browser' : {label: 'Quiz Browser', authNeeded: false},
-  '/user' : {label: user.username, authNeeded: false},
+  '/user-profile' : {label: "Profile", authNeeded: false},
   '/register-user' : {label: "register", authNeeded: false},
+
 });
 
 

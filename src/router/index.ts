@@ -6,6 +6,7 @@ import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
 import QuizRunner from "@/components/quiz/QuizRunner.vue";
 import CreateUser from "@/components/user/CreateUser.vue";
 import NotFound from "@/components/navigation/NotFound.vue";
+import UserProfile from "@/components/user/UserProfile.vue";
 
 const whitelist = ['login'];
 
@@ -28,6 +29,12 @@ const router = createRouter({
       path: '/register-user',
       name: 'register',
       component: CreateUser,
+      meta: {authRequired: false}
+    },
+    {
+      path: '/user-profile',
+      name: 'user-profile',
+      component: UserProfile,
       meta: {authRequired: false}
     },
     {
