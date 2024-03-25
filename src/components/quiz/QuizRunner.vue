@@ -12,45 +12,50 @@ const id = ref(-1);
 const quiz = ref<QuizDTO>()
 const questions = ref<QuizQuestionDTO[]>([])
 const service = new QuizService();
-try {
-  if (typeof route.params.quizId === 'string') {
-    id.value = parseInt(route.params.quizId);
-  } else if (Array.isArray(route.params.quizId)) {
-    id.value = parseInt(route.params.quizId[0]);
+
+
+loadQuizFromServer()
+
+/**
+ * Loads the quiz from the server.
+ */
+async function loadQuizFromServer(){
+  try {
+    if (typeof route.params.quizId === 'string') {
+      id.value = parseInt(route.params.quizId);
+    } else if (Array.isArray(route.params.quizId)) {
+      id.value = parseInt(route.params.quizId[0]);
+    }
+    console.log("loaded quiz id: " + id.value);
+
+    quiz.value = await service.getQuizById(id.value)
+    questions.value = quiz.value.questions;
+
+  } catch (err) {
+
+    alert("could not load quiz id: " + err)
   }
-
-  console.log("loaded quiz id: " + id.value);
-
-  quiz.value = await service.getQuizById(id.value)
-  questions.value = quiz.value.questions;
-
-
-} catch (err) {
-
-  console.log("could not load quiz id: " + err)
 }
 
 
 const currentQuestionIndex = ref(0)
-
 const currentQuestion = computed<QuizQuestionDTO>(() => questions.value[currentQuestionIndex.value]);
-const correctIndexes = computed(() => questions.value[currentQuestionIndex.value].correctAnswers)
-
-const possibleAnswers = computed(() => questions.value[currentQuestionIndex.value]?.answers)
-
+const possibleAnswers = computed(() => questions.value[currentQuestionIndex.value].answers)
+const correctAnswers = computed(() => questions.value[currentQuestionIndex.value].correctAnswers)
 const answerSubmitted = ref(false)
 const answerIsCorrect = ref(false)
-
 const correctAnswerCounter = ref(0)
-
 const restartMessage = ref("")
-
-
 const quizCompleted = ref(false)
 
+
+/**
+ * Checks if the answer is correct and updates the state accordingly.
+ * @param answerIndex The index of the answer that was clicked.
+ */
 function checkIfCorrect(answerIndex: number) {
   answerSubmitted.value = true;
-  if (correctIndexes.value.includes(answerIndex)) {
+  if (correctAnswers.value[answerIndex]) {
     answerIsCorrect.value = true
     correctAnswerCounter.value++;
     console.log("correct")
@@ -58,10 +63,11 @@ function checkIfCorrect(answerIndex: number) {
     answerIsCorrect.value = false
     console.log("wrong")
   }
-
-
 }
 
+/**
+ * Moves to the next question.
+ */
 function nextQuestion() {
   answerSubmitted.value = false
   answerIsCorrect.value = false
@@ -80,6 +86,9 @@ function nextQuestion() {
   }
 }
 
+/**
+ * Resets the quiz to question 0.
+ */
 function resetQuiz() {
   currentQuestionIndex.value = 0
   correctAnswerCounter.value = 0
@@ -112,7 +121,7 @@ function resetQuiz() {
     <div @click="checkIfCorrect(index)"
          v-for="(answer, index) in possibleAnswers"
          :key="answer"
-         :class="answerSubmitted ? (correctIndexes.includes(index) ? 'correctAnswer' : 'wrongAnswer') : ''"
+         :class="answerSubmitted ? (correctAnswers[index] ? 'correctAnswer' : 'wrongAnswer') : ''"
          v-if="!quizCompleted"
     >
       ({{ index + 1 }}) {{ answer }}

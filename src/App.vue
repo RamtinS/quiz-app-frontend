@@ -14,8 +14,8 @@ const links = ref({
   '/login': { label: 'Login', authNeeded: false },
   '/quiz-browser' : {label: 'Quiz Browser', authNeeded: false},
   '/user-profile' : {label: "Profile", authNeeded: false},
-  '/register-user' : {label: "register", authNeeded: false},
-
+  '/register-user' : {label: "Register", authNeeded: false},
+  '/quiz-creator' : {label: "Create quiz", authNeeded: false},
 });
 
 
