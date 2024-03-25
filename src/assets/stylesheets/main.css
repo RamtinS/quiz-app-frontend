@@ -16,3 +16,7 @@ body {
 *{
     font-family: var(--default-font), sans-serif;
 }
+
+button:hover {
+    cursor: pointer;
+}
