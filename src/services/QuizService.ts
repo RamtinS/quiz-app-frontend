@@ -29,25 +29,25 @@ export class QuizService {
                     {
                         question: "(1)What is 1+0?",
                         answers: ["1", "2", "3", "4"],
-                        correctAnswers: [0],
+                        correctAnswers: [true, false, true, false],
                         explanation: "it is"
                     },
                     {
                         question: "(2) What is 1+1?",
                         answers: ["a", "b", "c", "4"],
-                        correctAnswers: [1],
+                        correctAnswers: [true, false, true, false],
                         explanation: "it is  "
                     },
                     {
                         question: "(3) What is 1+2?",
                         answers: ["1", "2", "3", "4"],
-                        correctAnswers: [2],
+                        correctAnswers: [true, false, false, false],
                         explanation: "it is  "
                     },
                     {
                         question: "(4) What is 1+3?",
                         answers: ["1", "2", "3", "4"],
-                        correctAnswers: [3],
+                        correctAnswers: [true, false, false, false],
                         explanation: "it is  "
                     }
                 ];
