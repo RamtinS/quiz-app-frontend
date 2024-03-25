@@ -10,4 +10,5 @@ yarn-error.log*
 
 # Editor settings
 .vscode
+.idea
 workspace.xml
