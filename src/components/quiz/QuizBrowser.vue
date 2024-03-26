@@ -16,15 +16,13 @@ const props = defineProps(
 
 )
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 12; i++) {
   previews.value.push({
     id: -i,
     title: "quiz " + i,
     description: "This is a quiz about " + i,
   })
 }
-
-
 
 </script>
 
