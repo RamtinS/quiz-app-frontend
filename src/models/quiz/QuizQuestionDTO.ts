@@ -1,6 +1,7 @@
+import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
+
 export type QuizQuestionDTO = {
     question: string;
-    answers: string[];
-    correctAnswers: boolean[];
+    answers: AnswerDTO[];
     explanation: string | null;
 }

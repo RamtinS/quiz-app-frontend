@@ -8,6 +8,7 @@ import CreateUser from "@/components/user/CreateUser.vue";
 import NotFound from "@/components/navigation/NotFound.vue";
 import UserProfile from "@/components/user/UserProfile.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
+import QuizCreator from "@/components/quiz/QuizCreator.vue";
 
 const whitelist = ['login'];
 
@@ -54,6 +55,12 @@ const router = createRouter({
       path: '/contact',
       name: 'contact',
       component: FeedbackPage,
+      meta: {authRequired: false}
+    },
+    {
+      path: '/quiz-creator',
+      name: 'quiz-creator',
+      component: QuizCreator,
       meta: {authRequired: false}
     },
     {

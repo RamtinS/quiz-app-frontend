@@ -1,12 +1,14 @@
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import type {AxiosResponse} from 'axios';
 import axios from 'axios';
+import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import type {QuizCreationResponseDTO} from "@/models/quiz/QuizCreationResponseDTO";
 
 
 export class QuizService {
     private readonly api_url = "http://localhost:8080/api/v1/quizzes"
 
-    async getQuizzes(): Promise<QuizDTO[]> {
+    async getQuizzesPublic(): Promise<QuizDTO[]> {
         try {
             const result: AxiosResponse<QuizDTO[]> = await axios.get(this.api_url + "/browse");
             return result.data;
@@ -25,32 +27,47 @@ export class QuizService {
             console.log("inserting test data")
             if (quizId < 0) {
                 //test data
-                const questions =  [
+                const questions: QuizQuestionDTO[] =  [
                     {
                         question: "(1)What is 1+0?",
-                        answers: ["1", "2", "3", "4"],
-                        correctAnswers: [true, false, true, false],
+                        answers: [
+                            {answerText: "1", isCorrect: true},
+                            {answerText: "2", isCorrect: false},
+                        ],
                         explanation: "it is"
                     },
                     {
                         question: "(2) What is 1+1?",
-                        answers: ["a", "b", "c", "4"],
-                        correctAnswers: [true, false, true, false],
-                        explanation: "it is  "
+                        answers: [
+                            {answerText: "a", isCorrect: false},
+                            {answerText: "b", isCorrect: false},
+                            {answerText: "c", isCorrect: false},
+                            {answerText: "2", isCorrect: true},
+                        ],
+                        explanation: "it is 2"
                     },
                     {
                         question: "(3) What is 1+2?",
-                        answers: ["1", "2", "3", "4"],
-                        correctAnswers: [true, false, false, false],
-                        explanation: "it is  "
+                        answers: [
+                            {answerText: "1", isCorrect: false},
+                            {answerText: "2", isCorrect: false},
+                            {answerText: "3", isCorrect: true},
+                            {answerText: "4", isCorrect: false},
+                        ],
+                        explanation: "it is 3"
                     },
                     {
                         question: "(4) What is 1+3?",
-                        answers: ["1", "2", "3", "4"],
-                        correctAnswers: [true, false, false, false],
-                        explanation: "it is  "
+                        answers: [
+                            {answerText: "1", isCorrect: false},
+                            {answerText: "2", isCorrect: false},
+                            {answerText: "3", isCorrect: false},
+                            {answerText: "4", isCorrect: true},
+                        ],
+                        explanation: "it is 4"
                     }
                 ];
+
                 return {
                     quizId: -1,
                     title: "Test Quiz",
@@ -68,21 +85,23 @@ export class QuizService {
 
 
         } catch (err) {
-            console.log('error: ' + err);
+            console.log('error in quiz service: ' + err);
             throw err;
         }
     }
 
-    async getQuizzesByUser(userId: number): Promise<QuizDTO[]> {
+    async getQuizzesForLoggedInnUser(): Promise<QuizDTO[]> {
         try {
-            const result: AxiosResponse<QuizDTO[]> = await axios.get(this.api_url + "/" + userId + "/quizzes");
+            const result: AxiosResponse<QuizDTO[]> = await axios.get(this.api_url + "/user-quizzes-all");
             return result.data;
 
         } catch (err) {
-            console.log('error: ' + err);
+            console.log('error in quiz service: ' + err);
             throw err;
         }
     }
+
+
 
 
 }
