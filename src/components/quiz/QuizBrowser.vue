@@ -13,16 +13,8 @@ const props = defineProps(
     previews: {type: Object as () => QuizPreviewDTO[], required: false},
     title: {type: String, required: false, default: "Browse quizzes"},
   }
-
 )
 
-for (let i = 0; i < 12; i++) {
-  previews.value.push({
-    id: -i,
-    title: "quiz " + i,
-    description: "This is a quiz about " + i,
-  })
-}
 
 </script>
 
