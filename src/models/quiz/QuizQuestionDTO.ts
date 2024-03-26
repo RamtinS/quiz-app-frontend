@@ -1,7 +1,6 @@
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 
 export type QuizQuestionDTO = {
-    question: string;
+    questionText: string;
     answers: AnswerDTO[];
-    explanation: string | null;
 }

@@ -1,51 +1,59 @@
 <script setup lang="ts">
 
+import {ref} from "vue";
+import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
+import SearchBar from "@/components/navigation/SearchBar.vue";
+import MyAccountPreview from "@/components/navigation/UserPersonalAccountPreview.vue";
 
-import { useUserStore } from '@/stores/UserStore'
+const links = ref({
+  '/': {label: 'Home', authNeeded: false, icon: 'home'},
+  '/login': {label: 'Login', authNeeded: false, icon: 'login'},
+  '/quiz-browser': {label: 'Quiz Browser', authNeeded: false, icon: 'travel_explore'},
+  '/user-profile': {label: "Profile", authNeeded: false, icon: 'person'},
+  '/register-user': {label: "register", authNeeded: false, icon: 'app_registration'},
+  '/contact': {label: 'Contact', authNeeded: false, icon: 'contact_support'},
+  '/quiz-creator': {label: 'Quiz Creator', authNeeded: true, icon: 'edit_square'},
+});
 
-defineProps({
-  links: { type: Object, required: true }
-})
-
-const userStore = useUserStore();
-function isAuthorized(){
-  return userStore.isAuthenticated;
+const compressed = ref(true);
+function toggleCompressed() {
+  compressed.value = !compressed.value;
 }
 </script>
 
 <template>
-  <div id="menu">
-    <router-link v-for="(value, key) in links" :key="value.label" :to="key">
-      <template v-if="!value.authNeeded || isAuthorized()">
-        {{ value.label }}
-      </template>
-    </router-link>
+  <div id="navigation-bar" @mouseover="compressed = false" @mouseleave="compressed=true" >
+    <MyAccountPreview :compressed="compressed">
+    </MyAccountPreview>
+    <SearchBar :compressed="compressed">
+    </SearchBar>
+    <RouterLinkBar :links="links" :compressed="compressed">
+    </RouterLinkBar>
+
   </div>
 </template>
 
 <style scoped>
 
-.router-link-active {
-  text-decoration: underline !important;
-}
 
-#menu {
+#navigation-bar {
   display: flex;
-  padding: 0;
-  overflow: auto;
-  width: 100%;
-  background-color: grey;
-  justify-content: center;
-}
-
-#menu a {
-  padding: 10px 20px 10px 20px;
+  flex-direction: column;
+  background-color: var(--navigation-bar-background);
   color: white;
-  text-decoration: none;
+  height: 100vh;
 }
 
-#menu a:hover {
-  text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
 
+
+#logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 }
+
+
+
+
 </style>

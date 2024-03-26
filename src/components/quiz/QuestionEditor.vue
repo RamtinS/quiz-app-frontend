@@ -2,13 +2,16 @@
 
 import {ref, watch} from "vue";
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 
-const questionTitle = ref<String>('')
-const answers = ref<String[]>([])
-const correctAnswers = ref<boolean[]>([])
+const questionText = ref<String>('')
+const answers = ref<AnswerDTO []>([])
 const emit = defineEmits(['create-clicked']);
 const answerAmount = ref<number>(4)
 
+for (let i = 0; i < answerAmount.value; i++) {
+  answers.value[i] = { answerText: 'b', isCorrect: false };
+}
 /**
  * questionIndex: the index of the question in the quiz.
  * preExistingQuestion: the already existing question to edit, if supplied. This should be null if creating a new question.
@@ -23,9 +26,9 @@ const props = defineProps({
  */
 watch(() => props.preExistingQuestion, (newQuestion) => {
   if (newQuestion) {
-    questionTitle.value = newQuestion.question
+    questionText.value = newQuestion.questionText
     answers.value = newQuestion.answers
-    correctAnswers.value = newQuestion.correctAnswers
+    //TODO: set answerAmount to the length of the answers array
   }
 });
 
@@ -34,21 +37,24 @@ watch(() => props.preExistingQuestion, (newQuestion) => {
  * questions, the user will be notified.
  */
 function submitClicked() {
-  if (correctAnswers.value.filter((value) => value).length === 0) {
-    alert("You need to have at least one correct answer")
-    return
-  }
-
-  if (questionTitle.value === '') {
-    alert("You need to have a question")
-    return
-  }
+  // if (answers.value.filter((answer) => answer.isCorrect).length === 0) {
+  //   alert("You need to have at least one correct answer")
+  //   return
+  // }
+  //
+  // if (questionText.value === '') {
+  //   alert("You need to have a question")
+  //   return
+  // }
 
   const questionDTO: QuizQuestionDTO = {
-    question: questionTitle.value as string,
-    answers: answers.value as string[],
-    correctAnswers: correctAnswers.value as boolean[],
-    explanation: null,
+    questionText: "dette er et spørsmål",
+    answers: [
+      {
+        answerText: "dette er et svar",
+        isCorrect: true
+      }
+    ],
   };
 
   submitQuestion(questionDTO)
@@ -67,29 +73,28 @@ function submitQuestion(question: QuizQuestionDTO) {
  * Clears the fields of the question editor, to enable creating a new question.
  */
 function clearFields() {
-  questionTitle.value = ''
+  questionText.value = ''
   answers.value = []
-  correctAnswers.value = []
 }
 
 </script>
 
 <template>
-  <div id="question-editor">
-    <div id="dev">
-      <input id="question" type="text" placeholder="enter question" v-model="questionTitle">
-    </div>
-    <div id="answers">
-      <div v-for="index in answerAmount" :key="index">
-        <input type="text" v-model="answers[index-1]" placeholder="enter answer">
-        <input type="checkbox" v-model="correctAnswers[index-1]">
-        {{ correctAnswers[index - 1] }}
-      </div>
-    </div>
-    <div>
+<!--  <div id="question-editor">-->
+<!--    <div id="dev">-->
+<!--      <input id="question" type="text" placeholder="enter question" v-model="questionText">-->
+<!--    </div>-->
+<!--    <div id="answers">-->
+<!--      <div v-for="index in answerAmount" :key="index">-->
+<!--        <input type="text" v-model="answers[index].answerText" placeholder="enter answer">-->
+<!--        <input type="checkbox" v-model="answers[index-1].isCorrect">-->
+<!--                {{answers[index].answerText }}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div>-->
       <button @click="submitClicked">Submit question</button>
-    </div>
-  </div>
+<!--    </div>-->
+<!--  </div>-->
 </template>
 
 <style scoped>
