@@ -68,7 +68,7 @@ function postQuiz() {
         <label for="title">Title:</label>
         <input type="text" required v-model="title"/>
         <label for="description">Description:</label>
-        <input type="text" required/>
+        <input type="text" required v-model="description"/>
       </div>
       <div>
         <QuestionEditor :quiz-index="currentQuestionIndex"
@@ -84,7 +84,7 @@ function postQuiz() {
     </div>
     <div id="previews">
       <p v-for="(question, index) in createdQuestions" :key="index">
-        <QuestionPreview :question-name="question.question"
+        <QuestionPreview :question-name="question.questionText"
                          :question-index="index"
                          @preview-clicked="handlePreviewClicked"></QuestionPreview>
       </p>
