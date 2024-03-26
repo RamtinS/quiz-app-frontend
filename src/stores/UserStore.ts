@@ -25,7 +25,8 @@ export const useUserStore = defineStore('user', {
 
           sessionStorage.setItem("token", response.token);
 
-          axios.defaults.headers.common = {'Authorization': `Bearer ${this.token}`}
+          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+
           this.isAuthenticated = true;
         } else {
           throw new Error("Invalid response.");
@@ -46,7 +47,7 @@ export const useUserStore = defineStore('user', {
 
           sessionStorage.setItem("token", response.token);
 
-          axios.defaults.headers['Authorization'] = `Bearer ${this.token}`;
+          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
 
           this.isAuthenticated = true;
         } else {
@@ -60,7 +61,7 @@ export const useUserStore = defineStore('user', {
     logout(): void {
       sessionStorage.removeItem("token");
       this.token = '';
-      axios.defaults.headers['Authorization'] = '';
+      axios.defaults.headers.common['Authorization'] = '';
       this.isAuthenticated = false;
     },
   },
