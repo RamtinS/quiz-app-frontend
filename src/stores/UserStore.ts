@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import {LoginService} from "@/services/LoginService";
 import {CreateUserService} from "@/services/CreateUserService";
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
@@ -9,13 +9,13 @@ import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
 export const useUserStore = defineStore('user', {
 
   state: () => ({
-    user: { username: ""},
+    user: {username: ""},
     token: '',
     isAuthenticated: false,
   }),
 
   actions: {
-    async loginUser(username: string, password: string) :Promise<void> {
+    async loginUser(username: string, password: string): Promise<void> {
       try {
         const loginService: LoginService = new LoginService();
         const response: LoginResponseDTO = await loginService.login({username, password});
@@ -25,18 +25,17 @@ export const useUserStore = defineStore('user', {
 
           sessionStorage.setItem("token", response.token);
 
-          axios.defaults.headers['Authorization'] = `Bearer ${this.token}`;
-
+          axios.defaults.headers.common = {'Authorization': `Bearer ${this.token}`}
           this.isAuthenticated = true;
         } else {
           throw new Error("Invalid response.");
         }
-      } catch (err){
+      } catch (err) {
         throw err;
       }
     },
 
-    async registerUser(createUserRequestDTO: CreateUserRequestDTO) :Promise<void> {
+    async registerUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
 
       const createUserService: CreateUserService = new CreateUserService();
 
@@ -53,7 +52,7 @@ export const useUserStore = defineStore('user', {
         } else {
           throw new Error("Invalid response.");
         }
-      } catch (err){
+      } catch (err) {
         throw err;
       }
     },
