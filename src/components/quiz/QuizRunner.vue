@@ -38,15 +38,14 @@ async function loadQuizFromServer(){
 }
 
 
-const currentQuestionIndex = ref(0)
+const currentQuestionIndex = ref<number>(0)
 const currentQuestion = computed<QuizQuestionDTO>(() => questions.value[currentQuestionIndex.value]);
-const possibleAnswers = computed(() => questions.value[currentQuestionIndex.value].answers)
-const correctAnswers = computed(() => questions.value[currentQuestionIndex.value].correctAnswers)
-const answerSubmitted = ref(false)
-const answerIsCorrect = ref(false)
-const correctAnswerCounter = ref(0)
-const restartMessage = ref("")
-const quizCompleted = ref(false)
+const possibleAnswers = computed(() => currentQuestion.value?.answers)
+const answerSubmitted = ref<boolean>(false)
+const answerIsCorrect = ref<boolean>(false)
+const correctAnswerCounter = ref<number>(0)
+const restartMessage = ref<String>("")
+const quizCompleted = ref<boolean>(false)
 
 
 /**
@@ -55,7 +54,7 @@ const quizCompleted = ref(false)
  */
 function checkIfCorrect(answerIndex: number) {
   answerSubmitted.value = true;
-  if (correctAnswers.value[answerIndex]) {
+  if (possibleAnswers.value[answerIndex].isCorrect) {
     answerIsCorrect.value = true
     correctAnswerCounter.value++;
     console.log("correct")
@@ -102,7 +101,6 @@ function resetQuiz() {
   <div id="finishedPrompt" v-show="quizCompleted">
     <h1>
       {{ restartMessage }}
-
     </h1>
     <button>
       <router-link to="/">Go back</router-link>
@@ -120,11 +118,11 @@ function resetQuiz() {
 
     <div @click="checkIfCorrect(index)"
          v-for="(answer, index) in possibleAnswers"
-         :key="answer"
-         :class="answerSubmitted ? (correctAnswers[index] ? 'correctAnswer' : 'wrongAnswer') : ''"
+         :key="answer.answerText"
+         :class="answerSubmitted ? (answer.isCorrect ? 'correctAnswer' : 'wrongAnswer') : ''"
          v-if="!quizCompleted"
     >
-      ({{ index + 1 }}) {{ answer }}
+      ({{ index + 1 }}) {{ answer.answerText }}
     </div>
   </div>
   <div id="button-container">
@@ -187,7 +185,6 @@ function resetQuiz() {
 
 #finishedPrompt {
   width: 50%;
-  height: 50%;
   background-color: var(--secondary-light);
   position: absolute;
   top: 50%;
