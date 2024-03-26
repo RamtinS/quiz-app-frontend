@@ -1,16 +1,36 @@
 <script setup lang="ts">
 import {ref} from 'vue'
+import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
+import router from "@/router";
 
 const username = ref('')
 const password = ref('')
 const store = useUserStore();
+const errorMessage = ref('');
 
 async function login() {
   try {
-    await store.login(username.value, password.value);
-  } catch (error) {
-    console.error('Axios error:', error)
+    await store.loginUser(username.value, password.value);
+    await router.push('/');
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      switch (err.response.status) {
+        case 401:
+          errorMessage.value = "Your username or password was incorrect."
+          console.error("Login failed.", err.message);
+          break;
+        default:
+          errorMessage.value = "Unexpected error."
+          console.error("Unexpected status: " + err.response.status);
+      }
+    } else {
+      errorMessage.value = "Unexpected error."
+      console.error("Unexpected error: ", err);
+    }
+    setTimeout(() => {
+      errorMessage.value = '';
+    }, 5000);
   }
 }
 </script>
@@ -32,7 +52,9 @@ async function login() {
     <div id="login-form">
 
       <h2>User Login</h2>
+
       <form @submit.prevent="login">
+
         <div>
           <span class="material-icons" title="Enter a valid username">person</span>
           <input type="text" v-model="username" placeholder="Enter your username" required/>
@@ -40,15 +62,19 @@ async function login() {
 
         <div>
           <span class="material-icons" title="Enter a valid username">lock</span>
-
           <input type="password" v-model="password" placeholder="Enter your password" required/>
-
         </div>
+
         <button type="submit">Log in</button>
+
         <p>
           Don't have an account? <router-link to="/register-user">Register</router-link>
         </p>
+
       </form>
+
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
     </div>
   </div>
 
@@ -65,7 +91,6 @@ async function login() {
   height: 700px;
   border-radius: 20px;
   box-shadow: grey 0 0 20px 10px;
-
 }
 
 @media (max-width: 600px){
@@ -96,7 +121,6 @@ p, h1, h2{
   color: white;
   text-align: center;
   text-shadow: black 0 0 15px;
-
 }
 
 h1 {
@@ -107,17 +131,11 @@ p {
   padding: 0 10%;
 }
 
-
 #welcome-message {
   padding-top: 50px;
   border-top-left-radius: inherit;
   border-bottom-left-radius: inherit;
-
-
-
-
 }
-
 
 #login-form {
   padding-top: 50px;
@@ -177,7 +195,11 @@ p {
       scale: 1.05;
     }
   }
+}
 
+.error-message {
+  margin-top: 25px;
+  color: red;
 }
 
 </style>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
+import axios from 'axios';
+import {useUserStore} from '@/stores/UserStore';
 import {CreateUserService} from "@/services/CreateUserService";
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
-import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
+import router from "@/router";
+
 
 const username = ref('')
 const password = ref('')
@@ -11,10 +14,13 @@ const confirmPassword = ref('')
 const email = ref('')
 const name = ref('')
 const surname = ref('')
+const store = useUserStore();
+const errorMessage = ref('');
+
 
 const service = new CreateUserService();
 async function register() {
-  let user: CreateUserRequestDTO = {
+  const user: CreateUserRequestDTO = {
     username: username.value,
     password: password.value,
     email: password.value,
@@ -22,10 +28,30 @@ async function register() {
     surname: surname.value,
   };
   try {
-    const response: CreateUserResponseDTO = await service.createUser(user)
-    console.log("response: " + response)
+    await store.registerUser(user);
+    await router.push('/');
   } catch (err) {
-    console.log("Error while creating user:" + err)
+    if (axios.isAxiosError(err) && err.response) {
+      switch (err.response.status) {
+        case 409:
+          errorMessage.value = "User already exists.";
+          console.error("Registration failed because user already exists.", err.message);
+          break;
+        case 500:
+          errorMessage.value = "Registration failed due to an internal server error.";
+          console.error("Registration failed due to an internal server error.", err);
+          break;
+        default:
+          errorMessage.value = "Unexpected error."
+          console.error("Unexpected status: " + err.response.status);
+      }
+    } else {
+      errorMessage.value = "Unexpected error."
+      console.error("Unexpected error: ", err);
+    }
+    setTimeout(() => {
+      errorMessage.value = '';
+    }, 5000);
   }
 }
 
@@ -46,12 +72,14 @@ async function register() {
     <div id="create-form">
 
       <h2>Create account</h2>
+
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
       <form @submit.prevent="register">
         <div>
           <span class="material-icons" title="Username">person</span>
           <input type="text" v-model="username" placeholder="Enter your username" required/>
         </div>
-
         <div>
           <span class="material-icons" title="Email address">email</span>
           <input type="text" v-model="email" placeholder="Email" required/>
@@ -137,15 +165,11 @@ p {
   padding: 0 10%;
 }
 
-
 #welcome-message {
   padding-top: 50px;
   border-top-left-radius: inherit;
   border-bottom-left-radius: inherit;
-
-
 }
-
 
 #create-form {
   padding-top: 50px;
@@ -162,7 +186,7 @@ p {
   }
 
   form {
-    padding-top: 50px;
+    padding-top: 20px;
 
     border-radius: inherit;
 
@@ -209,6 +233,10 @@ p {
       scale: 1.05;
     }
   }
-
 }
+
+.error-message {
+  color: red;
+}
+
 </style>
