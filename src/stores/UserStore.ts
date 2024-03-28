@@ -22,11 +22,11 @@ export const useUserStore = defineStore('user', {
 
         if (response) {
           this.token = response.token;
+          this.user = {username: username};
 
           sessionStorage.setItem("token", response.token);
 
           axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-
           this.isAuthenticated = true;
         } else {
           throw new Error("Invalid response.");

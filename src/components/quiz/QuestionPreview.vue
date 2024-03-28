@@ -1,8 +1,11 @@
+
 <script setup lang="ts">
+import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 
 /**
  * This component is a preview of a question in a quiz. It is used to display the question in a list of questions.
  */
+
 
 
 /**
@@ -10,9 +13,10 @@
  * questionIndex: the index of the question in the current quiz of the parent component.
  */
 const props = defineProps({
-  questionName: {type: String, required: true},
+  question: {type: Object as () => QuizQuestionDTO, required: true},
   questionIndex: {type: Number, required: true},
 });
+
 
 /**
  * Defines an event that is emitted when the preview is clicked.
@@ -30,7 +34,7 @@ function previewClicked() {
 <template>
   <div id="question-preview" @click="previewClicked">
     <div id="question">
-      <p>({{ questionIndex }}) {{ questionName }} </p>
+      <p>({{ questionIndex }}) {{ question.questionText }} </p>
     </div>
   </div>
 </template>

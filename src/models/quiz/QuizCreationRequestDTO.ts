@@ -4,4 +4,5 @@ export type QuizCreationRequestDTO = {
     title: string;
     description: string;
     questions: QuizQuestionDTO[];
+    open: boolean;
 }

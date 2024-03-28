@@ -1,19 +1,37 @@
 <script setup lang="ts">
 
-import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import {ref} from "vue";
 import QuizPost from "@/components/quiz/QuizPost.vue";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
+import {QuizService} from "@/services/QuizService";
 
 
 const previews = ref<QuizPreviewDTO[]>([])
-
 const props = defineProps(
   {
-    previews: {type: Object as () => QuizPreviewDTO[], required: false},
     title: {type: String, required: false, default: "Browse quizzes"},
+    username: {type: String, required: false} //use field when browsing other user profiles
   }
 )
+
+
+if (!props.username){
+  try {
+    console.log("browsing public")
+
+    previews.value = await QuizService.getQuizPreviewsPublic(0, 100)
+  } catch (err) {
+    console.error("Could not public quizzes: " + err)
+  }
+} else {
+  console.log("browsing user");
+  try {
+    previews.value = await QuizService.getQuizPreviewsSpecifiedUser(props.username, 0, 100)
+
+  } catch (err){
+    console.error("Could not user quizzes: " + err)
+  }
+}
 
 
 </script>

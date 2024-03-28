@@ -3,16 +3,20 @@
 
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 import type {QuizCreationRequestDTO} from "@/models/quiz/QuizCreationRequestDTO";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {QuizCreationService} from "@/services/QuizCreationService";
 import QuestionPreview from "@/components/quiz/QuestionPreview.vue";
 import QuestionEditor from "@/components/quiz/QuestionEditor.vue";
 
 const title = ref<string>('');
 const description = ref<string>('')
+const questionIndex = ref<number>(0)
+const isPublic = ref<boolean>(false)
+
 
 const createdQuestions = ref<QuizQuestionDTO[]>([])
-const currentQuestionIndex = ref<number>(0)
+
+const currentQuestion = computed(() => createdQuestions.value[questionIndex.value])
 
 
 /**
@@ -21,16 +25,16 @@ const currentQuestionIndex = ref<number>(0)
  */
 const handleAddQuestionEmit = (emitData: { quizIndex: number, question: QuizQuestionDTO }) => {
   createdQuestions.value[emitData.quizIndex] = emitData.question
-  //skip to the end
-  currentQuestionIndex.value = createdQuestions.value.length
+
+  questionIndex.value = createdQuestions.value.length
 }
 
 /**
  * Emits the question index to the parent component.
  * @param emitData The question index
  */
-function handlePreviewClicked(emitData: { questionIndex: number }) {
-  currentQuestionIndex.value = emitData.questionIndex
+function handlePreviewEmit(emitData: { questionIndex: number }) {
+  questionIndex.value = emitData.questionIndex
 }
 
 /**
@@ -43,6 +47,7 @@ function postQuiz() {
     title: title.value,
     description: description.value,
     questions: createdQuestions.value,
+    open: true
   };
 
   console.log("adding quiz: " + quizCreationRequestDTO.title)
@@ -65,15 +70,22 @@ function postQuiz() {
         <h1>Create a quiz</h1>
       </div>
       <div>
+        <label for="isPublic">Public:</label>
+        <input type="checkbox"
+               v-model="isPublic"/>
         <label for="title">Title:</label>
-        <input type="text" required v-model="title"/>
+        <input type="text"
+               required
+               v-model="title"/>
         <label for="description">Description:</label>
-        <input type="text" required v-model="description"/>
+        <input type="text"
+               required
+               v-model="description"/>
       </div>
       <div>
-        <QuestionEditor :quiz-index="currentQuestionIndex"
+        <QuestionEditor :quiz-index="questionIndex"
                         @create-clicked="handleAddQuestionEmit"
-                        v-bind:pre-existing-question="createdQuestions[currentQuestionIndex]"
+                        v-bind:pre-existing-question="currentQuestion">
         >
         </QuestionEditor>
 
@@ -84,9 +96,9 @@ function postQuiz() {
     </div>
     <div id="previews">
       <p v-for="(question, index) in createdQuestions" :key="index">
-        <QuestionPreview :question-name="question.questionText"
+        <QuestionPreview :question="question"
                          :question-index="index"
-                         @preview-clicked="handlePreviewClicked"></QuestionPreview>
+                         @preview-clicked="handlePreviewEmit"></QuestionPreview>
       </p>
     </div>
 

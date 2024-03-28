@@ -2,24 +2,14 @@
 
 import {ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
-import QuizPost from "@/components/quiz/QuizPost.vue";
-import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
 
 const userStore = useUserStore();
-const username = ref("Smithy0143")
 
-if (userStore.user.username) {
-  username.value = userStore.user.username
-}
 
-const firstName = ref('John')
-const surname = ref('Smith')
+const firstName = ref('First name goes here')
+const surname = ref('Surname goes here')
 const editMode = ref(false)
-const bio = ref("This is a test bio")
-
-const previews = ref<QuizPreviewDTO[]>([]);
-
 
 function toggleEdit() {
   editMode.value = !editMode.value
@@ -32,7 +22,7 @@ function toggleEdit() {
   <div id="grid">
     <header>
       <img src="https://via.placeholder.com/150" alt="profile picture" id="profile-picture"/>
-      <h1>{{ username }}</h1>
+      <h1>{{ userStore.user.username}}</h1>
     </header>
 
 
@@ -63,9 +53,7 @@ function toggleEdit() {
     </div>
 
     <div id="user-quizzes">
-      <QuizBrowser :title="'All user quizzes'"
-      >
-
+      <QuizBrowser :title="'All user quizzes'" :username="userStore.user.username">
       </QuizBrowser>
     </div>
   </div>

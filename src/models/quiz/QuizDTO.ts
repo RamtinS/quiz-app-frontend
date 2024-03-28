@@ -7,6 +7,7 @@ export type QuizDTO = {
     creator: string;
     description: string;
     questions: QuizQuestionDTO[];
+    open: boolean;
 }
 
 //TODO add image

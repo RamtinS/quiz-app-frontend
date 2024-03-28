@@ -3,16 +3,23 @@ import {ref} from 'vue'
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
+import {useRoute} from "vue-router";
 
 const username = ref('')
 const password = ref('')
 const store = useUserStore();
 const errorMessage = ref('');
+const route = useRoute();
+
 
 async function login() {
   try {
     await store.loginUser(username.value, password.value);
-    await router.push('/');
+    if (route.query.redirect) {
+      await router.push(route.query.redirect as string)
+    } else {
+      await router.push('/')
+    }
   } catch (err) {
     if (axios.isAxiosError(err) && err.response) {
       switch (err.response.status) {
