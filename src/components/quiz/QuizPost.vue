@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import {defineProps} from 'vue';
 import router from "@/router";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
@@ -8,10 +7,10 @@ const props = defineProps({
   post: {type: Object as () => QuizPreviewDTO, required: true}
 })
 
+
 function startQuiz() {
   router.push({name: "quiz-runner", params: {quizId: props.post.id}})
 }
-
 
 </script>
 
@@ -22,12 +21,12 @@ function startQuiz() {
     <div id="quiz-info">
       <h2>{{ post.title }}</h2>
       <p>{{ post.description }}</p>
+      <p>{{ post.open }} </p>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 
 
 #quiz-post {
