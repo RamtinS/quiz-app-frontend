@@ -7,8 +7,6 @@ on:
     #branches: [ "development" ]
 
 jobs:
-
- 
   build:
     runs-on: ubuntu-latest
     permissions: write-all
@@ -31,18 +29,6 @@ jobs:
     - name: Build Project
       run: |
         npm run build
-
-    # Check with prettier and commit changes to branch.
-    - name: Run and format prettier
-      env:
-        # To report GitHub Actions status checks
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        npx prettier . --write
-        git add .
-        git commit -m "Format code with Prettier"
-        git push
-
 
   test:
     runs-on: ubuntu-latest
