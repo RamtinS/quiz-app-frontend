@@ -11,7 +11,7 @@ import axios from "axios";
     <NavigationBar>
 
     </NavigationBar>
-    <div class="content">
+    <div id="content">
       <Suspense>
         <template #default>
 
@@ -31,11 +31,16 @@ import axios from "axios";
 </template>
 
 <style scoped>
+
 #app-container {
   display: flex;
   flex-direction: row;
 }
 
+#content {
+  flex: 1; /* This will make the content div take up remaining space */
+  overflow-y: auto; /* Add scroll if content overflows */
+}
 
 
 </style>
