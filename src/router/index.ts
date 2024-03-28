@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import UserLogin from "@/components/user/UserLogin.vue";
 import {useUserStore} from "@/stores/UserStore";
 import HomeView from "@/components/home/HomeView.vue";
@@ -10,7 +10,6 @@ import UserProfile from "@/components/user/UserProfile.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
 import QuizCreator from "@/components/quiz/QuizCreator.vue";
 
-const whitelist = ['login'];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +36,7 @@ const router = createRouter({
       path: '/user-profile',
       name: 'user-profile',
       component: UserProfile,
-      meta: {authRequired: false}
+      meta: {authRequired: true}
     },
     {
       path: '/quiz-browser',
@@ -67,26 +66,28 @@ const router = createRouter({
       path: '/:pathName(.*)',
       name: 'not-found',
       component: NotFound,
-      meta: {authRequired : false}
+      meta: {authRequired: false}
     }
   ]
 })
 
 function isAuthenticated() {
-  const store= useUserStore();
+  const store = useUserStore();
   return store.isAuthenticated;
 }
 
 router.beforeEach(async (to, from) => {
   console.log('Trying to go from ' + from.name?.toString() + ' to: ' + to.name?.toString())
 
-  if (to.meta.authRequired){
-    if (isAuthenticated()){
+  if (to.meta.authRequired) {
+    if (isAuthenticated()) {
       return true;
     } else {
-      return { name: 'login' }
+      return {
+        name: 'login',
+        query: {redirect: to.fullPath} // store the route the user was trying to access
+      }
     }
-
   } else {
     return true;
   }
