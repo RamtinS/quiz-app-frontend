@@ -30,8 +30,16 @@ jobs:
       run: |
         npm run build
 
+    - name: Configure Git
+      run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+
     # Check with prettier and commit changes to branch.
-    - name: Run and formater prettier
+    - name: Run and format prettier
+      env:
+        # To report GitHub Actions status checks
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         npx prettier . --write
         git add .
