@@ -1,6 +1,6 @@
 export type ContactRequestDTO = {
-  firstName: string;
-  surname: string;
   email: string;
-  message: string;
+  name: string;
+  surname: string;
+  content: string;
 }

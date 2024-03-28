@@ -2,22 +2,20 @@
 import {computed, ref} from "vue";
 import {FeedbackService} from "@/services/FeedbackService";
 import type {ContactRequestDTO} from "@/models/contact/ContactRequestDTO";
-import type {ContactResponseDTO} from "@/models/contact/ContactResponseDTO";
 
-const feedbackService = FeedbackService;
-
-const text = ref<string>('')
-const submitted = ref<boolean>(false)
-const firstName = ref<string>('')
-const surname = ref<string>('')
-const mail = ref<string>('')
+const message = ref<string>('');
+const firstName = ref<string>('');
+const surname = ref<string>('');
+const email = ref<string>('');
+const submitted = ref<boolean>(false);
+const conformationMessage = ref<string>('');
 
 const mailValid = computed(() => {
-  const stringValue = String(mail.value)
+  const stringValue = String(email.value)
   if (!stringValue.includes('@')) {
     return false
   }
-  return mail.value !== ''
+  return email.value !== ''
 })
 
 const firstNameValid = computed(() => {
@@ -29,119 +27,142 @@ const lastNameValid = computed(() => {
 })
 
 const textValid = computed(() => {
-  return text.value !== ''
+  return message.value !== ''
 })
 
 const allValid = computed(() => mailValid.value && firstNameValid.value && lastNameValid.value && textValid.value)
 
-
 async function handleSubmit() {
-  try {
-    const contactRequest: ContactRequestDTO = {
-      email: mail.value,
-      firstName: firstName.value,
-      surname: surname.value,
-      message: text.value
-    }
-
-    const result: ContactResponseDTO = await feedbackService.sendFeedback(contactRequest)
-    alert("Feedback submitted: " + result.responseMessage)
-
-  } catch (error) {
-    console.log(error)
+  const contactRequest: ContactRequestDTO = {
+    email: email.value,
+    name: firstName.value,
+    surname: surname.value,
+    content: message.value
   }
+
+  try {
+    await FeedbackService.sendFeedback(contactRequest);
+    handleSubmissionSuccess();
+  } catch (error) {
+    handleSubmissionError(error);
+  }
+}
+
+function handleSubmissionSuccess() {
+  submitted.value = true;
+  conformationMessage.value = "Form successfully submitted!";
+  resetForm();
+}
+
+function handleSubmissionError(error: any) {
+  submitted.value = true;
+  conformationMessage.value = "An error occurred during form submission.";
+  console.log(conformationMessage.value, error);
+  resetForm();
+}
+
+function resetForm() {
+  email.value = "";
+  firstName.value = "";
+  surname.value = "";
+  message.value = "";
+
+  setTimeout(() => {
+    submitted.value = false;
+    conformationMessage.value = "";
+  }, 5000);
 }
 
 </script>
 
 <template>
 
-  <div id="headline">
-    <h1 v-show="!submitted">
-      Contact us
-    </h1>
-  </div>
+  <div id="contact-form">
 
-  <form id="form"
-        ref="htmlForm"
-        @submit.prevent="handleSubmit"
-        v-show="!submitted"
-        :class="{ 'entered': firstName != null}">
-    <div>
+    <h1 id="headline"> Contact us </h1>
+
+    <form @submit.prevent="handleSubmit" v-show="!submitted" :class="{ 'entered': firstName != null}">
+
+      <div>
       <span class="material-icons"
             :class="mailValid ? 'valid-input' : 'invalid-input'"
-            title="Enter a valid email address"
-      >mail</span>
-      <input required
-             name="mail"
-             v-model="mail"
-             type="email"
-             placeholder="E-mail"
-             class="entered"
-      >
-    </div>
+            title="Enter a valid email address">mail</span>
+        <input required
+               id="email"
+               name="mail"
+               v-model="email"
+               type="email"
+               placeholder="E-mail"
+               class="entered">
+      </div>
 
-    <div>
-      <span class="material-icons"
+      <div>
+        <span class="material-icons"
             :class="firstNameValid ? 'valid-input' : 'invalid-input'"
-            title="Please enter your first name"
-      >face
-      </span>
-      <input name="first-name"
-             v-model="firstName"
-             required type="text"
-             placeholder="First name"
-             pattern=".{2,}"
-             title="Name must be at least 2 characters long"
-      >
-    </div>
-    <div>
-      <span class="material-icons"
+            title="Please enter your first name"> face
+        </span>
+
+        <input name="first-name"
+               id="first-name"
+               v-model="firstName"
+               required type="text"
+               placeholder="First name"
+               pattern=".{2,}"
+               title="Name must be at least 2 characters long">
+      </div>
+
+      <div>
+        <span class="material-icons"
             :class="lastNameValid ? 'valid-input' : 'invalid-input'"
             title="Please enter 1 name, and 1 name only">badge</span>
-      <input name="last-name"
-             v-model="surname"
-             required type="text"
-             placeholder="Last name"
-             pattern="^\b[a-zA-Z0-9_]+\b$"
-             title="Please only enter 1 name/word">
-    </div>
-    <div>
-      <span class="material-icons"
-            :class="textValid ? 'valid-input' : 'invalid-input'"
-      >assignment
-      </span>
-      <textarea name="text"
-                v-model="text"
-                required placeholder="Enter message here"
-                title="Message cannot be empty">
-      </textarea>
-    </div>
-    <div>
-      <button type="submit"
-              id="submit-button"
-              title="submit by pressing her"
-              :class="allValid ? 'valid-input' : 'invalid-input'" :disabled="!allValid">
-        Submit
-      </button>
-    </div>
+        <input name="last-name"
+               id="last-name"
+               v-model="surname"
+               required type="text"
+               placeholder="Last name"
+               pattern="^\b[a-zA-Z0-9_]+\b$"
+               title="Please only enter 1 name/word">
+      </div>
 
+      <div>
 
-  </form>
-  <div v-show="submitted"
-       id="after-submission">
-    <h2>
-      Thank you
-    </h2>
-    <h4>
-      Your feedback means the world to us
-    </h4>
+        <span class="material-icons"
+            :class="textValid ? 'valid-input' : 'invalid-input'"> assignment
+        </span>
+
+        <textarea name="message"
+                  id="message"
+                  v-model="message"
+                  required placeholder="Enter message here"
+                  title="Message cannot be empty">
+        </textarea>
+      </div>
+
+      <div>
+        <button type="submit"
+                id="submit-button"
+                title="submit by pressing her"
+                :class="allValid ? 'valid-input' : 'invalid-input'" :disabled="!allValid">
+          Submit
+        </button>
+      </div>
+
+    </form>
+
+    <div v-show="submitted" id="conformation-message"> {{conformationMessage}} </div>
+
   </div>
-
 
 </template>
 
 <style scoped>
+
+#contact-form {
+  margin: auto;
+  width: 60%;
+  padding: 5% 15%;
+  text-align: center;
+}
 
 body {
   --accent-color: #FF4500FF;
@@ -158,7 +179,7 @@ form {
   flex-direction: column;
   border-radius: 10px;
   div {
-    margin: 30px;
+    margin: 25px;
     display: flex;
     align-items: center;
     width: 50%;
@@ -166,27 +187,21 @@ form {
   }
 }
 
-
 input {
-  height: 50px;
+  height: 40px;
   flex: 1;
 }
 
 textarea {
-  height: 50px;
   flex: 1;
+  height: 70px;
+  resize: none;
 }
-
-button.invalid-input {
-  cursor: not-allowed;
-}
-
 
 .material-icons {
   margin-right: 10px;
   border: grey 2px solid;
   border-radius: 10px;
-
 }
 
 .valid-input {
@@ -197,15 +212,11 @@ button.invalid-input {
 .invalid-input {
   background-color: lightpink;
   border-color: red;
-
 }
-
-
 
 .material-icons {
   font-size: 48px;
 }
-
 
 h1 {
   font-weight: bold;
@@ -214,16 +225,18 @@ h1 {
   padding: 0;
   margin: 0;
   border-radius: 10px;
-
 }
 
-
 #submit-button {
+  border-radius: 20px;
   height: 50%;
   width: 50%;
-  margin-left: auto;
+  margin-left: 30%;
   margin-right: auto;
+}
 
+#submit-button[disabled] {
+  cursor: not-allowed;
 }
 
 #headline {
@@ -233,6 +246,11 @@ h1 {
 
 #after-submission h2, #after-submission h4 {
   text-align: center;
+}
+
+#conformation-message {
+  margin-top: 10%;
+  font-size: 30px;
 }
 
 @media screen and (max-width: 400px) {

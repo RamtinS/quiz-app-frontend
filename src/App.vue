@@ -1,8 +1,6 @@
 <script setup lang="ts">
 
 import NavigationBar from "@/components/navigation/NavigationBar.vue";
-import axios from "axios";
-
 
 </script>
 
@@ -11,7 +9,7 @@ import axios from "axios";
     <NavigationBar>
 
     </NavigationBar>
-    <div class="content">
+    <div id="content">
       <Suspense>
         <template #default>
 
@@ -27,15 +25,17 @@ import axios from "axios";
     </div>
   </div>
 
-
 </template>
 
 <style scoped>
+
 #app-container {
   display: flex;
   flex-direction: row;
 }
 
-
+#content {
+  flex: 1;
+}
 
 </style>
