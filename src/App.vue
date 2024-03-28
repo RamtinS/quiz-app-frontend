@@ -1,8 +1,6 @@
 <script setup lang="ts">
 
 import NavigationBar from "@/components/navigation/NavigationBar.vue";
-import axios from "axios";
-
 
 </script>
 
@@ -27,7 +25,6 @@ import axios from "axios";
     </div>
   </div>
 
-
 </template>
 
 <style scoped>
@@ -38,9 +35,7 @@ import axios from "axios";
 }
 
 #content {
-  flex: 1; /* This will make the content div take up remaining space */
-  overflow-y: auto; /* Add scroll if content overflows */
+  flex: 1;
 }
-
 
 </style>
