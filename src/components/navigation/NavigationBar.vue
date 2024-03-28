@@ -11,7 +11,7 @@ const links = ref({
   '/quiz-browser': {label: 'Quiz Browser', authNeeded: false, icon: 'travel_explore'},
   '/user-profile': {label: "Profile", authNeeded: false, icon: 'person'},
   '/register-user': {label: "register", authNeeded: false, icon: 'app_registration'},
-  '/contact': {label: 'Contact', authNeeded: false, icon: 'contact_support'},
+  '/contact': {label: 'Contact us', authNeeded: false, icon: 'contact_support'},
   '/quiz-creator': {label: 'Quiz Creator', authNeeded: true, icon: 'edit_square'},
 });
 
