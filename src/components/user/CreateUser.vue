@@ -58,9 +58,10 @@ async function register() {
 
 <template>
   <div class="flex">
-    <div class="grid-container">
+    <div class="grid">
 
-      <div class="form-container">
+      <div class="form-container-1">
+
           <form @submit.prevent="register">
               <label for="fusername">Username:</label><br>
               <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/><br>
@@ -112,7 +113,7 @@ async function register() {
   font-family: "Inter", sans-serif;
 }
 
-.grid-container {
+.grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-radius: 20px;
@@ -122,7 +123,7 @@ async function register() {
   background: rgba(255, 255, 255, 0.96);
 }
 
-.form-container, .info-container {
+.form-container-1, .info-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -175,7 +176,7 @@ input {
     display: none;
   }
 
-  .form-container {
+  .form-container-1 {
     grid-column: 1/3;
   }
 }

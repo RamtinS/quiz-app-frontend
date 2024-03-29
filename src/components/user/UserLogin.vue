@@ -44,44 +44,41 @@ async function login() {
 
 <template>
   <div class="flex">
-    <div class="grid-container">
-
+    <div class="grid">
       <!-- First item is the welcome container -->
-      <div class="flex-container-1">
+      <div class="container-1">
         <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
-        <div class="item-1">
-          <h1>Welcome!</h1>
-        </div>
+        <h1>
+          Welcome to Quiz App!
+        </h1>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum nihil placeat possimus quasi quisquam tempora
-          veniam. Accusantium, atque beatae blanditiis consectetur culpa ducimus labore laboriosam nulla officiis
-          ratione repellendus, voluptates!
+          veniam.
         </p>
       </div>
 
       <!-- Second Item is the login container -->
-      <div class="flex-container-2">
-
+      <div class="container-2">
         <div class="form-container-1">
           <h1>Log in!</h1>
             <form @submit.prevent="login">
+
               <label for="fusername">Username:</label><br>
-              <input class="input" type="text" id="fusername" v-model="username" required/><br>
+              <input class="input" type="text" id="fusername" v-model="username" required/>
+              <i class="fa fa-user icon"></i><br>
 
               <label for="fpassword">Password:</label><br>
-              <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/><br>
+              <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/>
+              <i class="fa fa-lock icon"></i><br>
 
               <input type="submit" value="Login"/>
             </form>
         </div>
-
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <p>
           <router-link to="/register-user">Create your account --></router-link>
         </p>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -96,12 +93,23 @@ async function login() {
   font-family: "Inter", sans-serif;
 }
 
-.flex-container-1 {
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 35px;
+  max-width: 900px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
+
+}
+
+.container-1 {
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding: 10%;
+  margin: 10%;
 }
 
 .img-center {
@@ -112,16 +120,13 @@ async function login() {
   height: 70%;
 }
 
-.flex-container-2 {
+.container-2 {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  padding: 10%;
-}
-
-.form-container-1 h1 {
   text-align: center;
+  padding: 50px;
 }
 
 input[type=submit] {
@@ -136,19 +141,12 @@ input[type=submit] {
   font-size: 16px;
 }
 
-.input {
+input[type="text"], input[type="password"]{
+  border: 2px solid rgba(0, 0, 0, 0.17);
   font-weight: bold;
   padding: 14px 20px;
   border-radius: 15px;
   margin: 10px 0 35px 0;
-}
-
-input[type="text"] {
-  border: 2px solid rgba(0, 0, 0, 0.17)
-}
-
-input[type="password"] {
-  border: 2px solid rgba(0, 0, 0, 0.17)
 }
 
 label {
@@ -156,29 +154,24 @@ label {
   margin-top: 10px;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 900px;
-  height: 600px;
-  background: rgba(255, 255, 255, 0.96);
-}
-
 .error-message {
   color: red;
 }
 
-@media (max-width: 700px) {
-
-  .flex-container-1 {
-    display: none;
-  }
-
-  .flex-container-2 {
-    grid-column: 1/ 3;
-  }
+.icon {
+  padding-left: 10px;
 }
 
+/*
+ Query for mobile screens.
+*/
+@media (max-width: 700px) {
+  .container-1 {
+    display: none;
+  }
+  .container-2 {
+    grid-column: 1/3;
+    min-width: 250px;
+  }
+}
 </style>
