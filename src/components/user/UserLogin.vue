@@ -47,6 +47,7 @@ async function login() {
   <div class="flex">
     <div class="grid-container">
 
+      <!-- First item is the welcome container -->
       <div class="flex-container-1">
         <div class="item-1">
           <h1>Welcome!</h1>
@@ -58,53 +59,31 @@ async function login() {
         </p>
       </div>
 
+      <!-- Second Item is the login container -->
       <div class="flex-container-2">
 
-        <div class="item-1">
-          <h1>Log in!</h1>
-        </div>
-
         <div class="form-container-1">
-          <form action="">
-            <label for="fusername">Username:</label><br>
-            <input class="input" type="text" id="fusername" v-model="username" required/><br>
+          <h1>Log in!</h1>
+            <form @submit.prevent="login">
+              <label for="fusername">Username:</label><br>
+              <input class="input" type="text" id="fusername" v-model="username" required/><br>
 
-            <label for="fpassword">Password:</label><br>
-            <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/><br>
+              <label for="fpassword">Password:</label><br>
+              <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/><br>
 
-            <input type="submit" value="Login"/>
-          </form>
+              <input type="submit" value="Login"/>
+            </form>
         </div>
 
+
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <p>
           <router-link to="/register-user">Create your account --></router-link>
         </p>
-
       </div>
 
-      <!--
 
-
-     <div class="form-container">
-       <form @submit.prevent="login">
-         <label for="fusername">Username:</label>
-         <input type="text" v-model="username" name="fusername" required/>
-
-         <label for="fpassword">Password:</label>
-         <input type="password" v-model="password" name="fpassword" required/>
-
-         <input type="submit" value="Login"/>
-       </form>
-     </div>
-
-       <p>
-         <router-link to="/register-user">Create your account</router-link>
-        </p>
-
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-      -->
       </div>
-
   </div>
 
 
@@ -136,7 +115,7 @@ async function login() {
   padding: 10%;
 }
 
-.item-1 {
+.form-container-1 h1 {
   text-align: center;
 }
 
@@ -146,7 +125,6 @@ input[type=submit] {
   background-color: #242062;
   color: white;
   padding: 14px 20px;
-
   border: none;
   border-radius: 15px;
   cursor: pointer;
@@ -157,8 +135,7 @@ input[type=submit] {
   font-weight: bold;
   padding: 14px 20px;
   border-radius: 15px;
-  margin-bottom: 35px;
-  margin-top: 10px;
+  margin: 10px 0 35px 0;
 }
 
 input[type="text"] {
@@ -169,9 +146,6 @@ input[type="password"] {
   border: 2px solid rgba(0, 0, 0, 0.17)
 }
 
-
-
-
 label {
   font-weight: bold;
 }
@@ -180,21 +154,29 @@ label {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-radius: 20px;
-
-  width: 1080px;
+  width: 90%;
+  max-width: 900px;
   height: 600px;
   background: rgba(255, 255, 255, 0.96);
 }
-
-
 
 label {
   margin-top: 10px;
 }
 
 .error-message {
-  margin-top: 25px;
   color: red;
+}
+
+@media (max-width: 700px) {
+
+  .flex-container-1 {
+    display: none;
+  }
+
+  .flex-container-2 {
+    grid-column: 1/ 3;
+  }
 }
 
 </style>
