@@ -42,13 +42,13 @@ async function login() {
 }
 </script>
 
-
 <template>
   <div class="flex">
     <div class="grid-container">
 
       <!-- First item is the welcome container -->
       <div class="flex-container-1">
+        <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
         <div class="item-1">
           <h1>Welcome!</h1>
         </div>
@@ -75,7 +75,6 @@ async function login() {
             </form>
         </div>
 
-
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <p>
           <router-link to="/register-user">Create your account --></router-link>
@@ -83,10 +82,8 @@ async function login() {
       </div>
 
 
-      </div>
+    </div>
   </div>
-
-
 </template>
 
 <style scoped>
@@ -105,6 +102,14 @@ async function login() {
   justify-content: center;
   text-align: center;
   padding: 10%;
+}
+
+.img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  height: 70%;
 }
 
 .flex-container-2 {
@@ -148,6 +153,7 @@ input[type="password"] {
 
 label {
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .grid-container {
@@ -158,10 +164,6 @@ label {
   max-width: 900px;
   height: 600px;
   background: rgba(255, 255, 255, 0.96);
-}
-
-label {
-  margin-top: 10px;
 }
 
 .error-message {

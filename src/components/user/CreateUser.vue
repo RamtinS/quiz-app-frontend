@@ -54,189 +54,131 @@ async function register() {
     }, 5000);
   }
 }
-
 </script>
 
 <template>
-  <div id="rectangle-container">
-    <div id="welcome-message">
-      <h1>
-        Please tell us about yourself
-      </h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab amet blanditiis deserunt dolores eos esse et
-        incidunt ipsa labore nisi odit optio porro quae quaerat, quam quibusdam repellendus sint ut?
-      </p>
+  <div class="flex">
+    <div class="grid-container">
 
-    </div>
-    <div id="create-form">
+      <div class="form-container">
+          <form @submit.prevent="register">
+              <label for="fusername">Username:</label><br>
+              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/><br>
 
-      <h2>Create account</h2>
+              <label for="femail">Email:</label><br>
+              <input type="text" id="email" v-model="email" placeholder="Email" required/><br>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+              <label for="first-name">First name:</label><br>
+              <input type="text" id="first-name" v-model="name" placeholder="First name" required/><br>
 
-      <form @submit.prevent="register">
-        <div>
-          <span class="material-icons" title="Username">person</span>
-          <input type="text" v-model="username" placeholder="Enter your username" required/>
+              <label for="sur-name">Sur name:</label><br>
+              <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/><br>
+
+              <label for="password">Password:</label><br>
+              <input type="password" id="password" v-model="password" placeholder="Enter your password" required/><br>
+
+              <label for="confirm-password">Confirm Passowrd:</label><br>
+              <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/><br>
+
+              <input type="submit" value="Register"/>
+            <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+          </form>
+
+          <p>Already have an account?</p><router-link to="/login">Login</router-link>
+
         </div>
-        <div>
-          <span class="material-icons" title="Email address">email</span>
-          <input type="text" v-model="email" placeholder="Email" required/>
+
+      <div class="info-container">
+        <div class="item-1">
+          <h1>Welcome!</h1>
         </div>
-        <div>
-          <span class="material-icons" title="First name">badge</span>
-          <input type="text" v-model="name" placeholder="First name" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Surname">badge</span>
-          <input type="text" v-model="surname" placeholder="Surname" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Password">lock</span>
-          <input type="password" v-model="password" placeholder="Enter your password" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Password confirmation">lock</span>
-          <input type="password" v-model="confirmPassword" placeholder="Confirm password" required/>
-        </div>
-        <button type="submit">Register</button>
         <p>
-          Already have an account?
-          <router-link to="/login">Login</router-link>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum nihil placeat possimus quasi quisquam tempora
+          veniam. Accusantium, atque beatae blanditiis consectetur culpa ducimus labore laboriosam nulla officiis
+          ratione repellendus, voluptates!
         </p>
-      </form>
+      </div>
     </div>
   </div>
+
 </template>
 
-
 <style scoped >
-#rectangle-container {
+.flex {
   display: flex;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 5%;
-  height: 700px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   border-radius: 20px;
-  box-shadow: grey 0 0 20px 10px;
-
+  width: 90%;
+  max-width: 900px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.96);
 }
 
-@media (max-width: 600px) {
-  #rectangle-container {
-    flex-direction: column;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-  }
-
-  #welcome-message, #create-form {
-    width: 100%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
-}
-
-@media (min-width: 600px) {
-  #welcome-message, #create-form {
-    width: 50%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
-}
-
-p, h1, h2 {
-  color: white;
-  text-align: center;
-  text-shadow: black 0 0 15px;
-
-}
-
-h1 {
-  font-size: 3em;
-}
-
-p {
-  padding: 0 10%;
-}
-
-#welcome-message {
-  padding-top: 50px;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-}
-
-#create-form {
-  padding-top: 50px;
-  border-top-right-radius: inherit;
-  border-bottom-right-radius: inherit;
+.form-container, .info-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  background-color: var(--secondary-light);
+}
 
-  h2 {
-    color: white;
-    font-size: 2em;
-  }
+.info-container {
+  margin: 10%;
+}
 
-  form {
-    padding-top: 20px;
 
-    border-radius: inherit;
+input[type=submit] {
+  width: 90%;
+  font-weight: bold;
+  margin-top: 8%;
+  background-color: #242062;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+input[type="text"], input[type="password"] {
+  border: 2px solid rgba(0, 0, 0, 0.17);
+  padding: 7px 7px;
+}
 
-    div, button {
-      width: 50%;
-      max-width: 300px;
-      text-align: center;
-      margin: auto auto 20px;
-      border-radius: 10px;
-      height: 40px;
-      box-shadow: grey 5px 5px 5px;
-    }
+label {
+  font-weight: bold;
+  float: left;
+}
 
-    div {
-      display: flex;
-      background-color: white;
-      align-items: center;
-
-      :hover {
-        cursor: pointer;
-      }
-
-      input {
-        outline: none;
-        border-radius: inherit;
-
-        width: 100%;
-        box-sizing: border-box;
-        border: none;
-        height: 90%;
-      }
-
-      span {
-        display: flex;
-      }
-    }
-
-    button:hover {
-      cursor: pointer;
-      scale: 1.05;
-    }
-  }
+input {
+  font-weight: bold;
+  border-radius: 15px;
+  padding: 5px;
+  margin: 5px;
 }
 
 .error-message {
   color: red;
 }
+
+@media (max-width: 700px) {
+
+  .info-container {
+    display: none;
+  }
+
+  .form-container {
+    grid-column: 1/3;
+  }
+}
+
 
 </style>
