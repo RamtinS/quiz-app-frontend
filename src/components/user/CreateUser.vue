@@ -27,6 +27,7 @@ async function register() {
     name: name.value,
     surname: surname.value,
   };
+
   try {
     await store.registerUser(user);
     await router.push('/');
@@ -69,11 +70,13 @@ async function register() {
               <label for="femail">Email:</label><br>
               <input type="text" id="email" v-model="email" placeholder="Email" required/><br>
 
+            <div class="name-container">
               <label for="first-name">First name:</label><br>
               <input type="text" id="first-name" v-model="name" placeholder="First name" required/><br>
 
               <label for="sur-name">Sur name:</label><br>
               <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/><br>
+            </div>
 
               <label for="password">Password:</label><br>
               <input type="password" id="password" v-model="password" placeholder="Enter your password" required/><br>
@@ -131,6 +134,10 @@ async function register() {
   text-align: center;
 }
 
+.name-container {
+  display: flex;
+  flex-direction: row;
+}
 .info-container {
   margin: 10%;
 }
