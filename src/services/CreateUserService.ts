@@ -4,9 +4,9 @@ import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 
 export class CreateUserService {
-  private readonly api_url = "http://localhost:8080/api/v1/auth"
+  private static readonly api_url = "http://localhost:8080/api/v1/auth"
 
-  async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<CreateUserResponseDTO> {
+  public static async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<CreateUserResponseDTO> {
     try {
       const response: AxiosResponse<CreateUserResponseDTO> = await axios.post(this.api_url + "/register", createUserRequestDTO);
 
