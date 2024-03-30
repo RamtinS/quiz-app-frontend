@@ -44,7 +44,7 @@ async function login() {
 
 <template>
   <div class="flex">
-    <div class="grid">
+    <div class="flexbox">
       <!-- First item is the welcome container -->
       <div class="container-1">
         <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
@@ -63,9 +63,11 @@ async function login() {
           <h1>Log in!</h1>
             <form @submit.prevent="login">
 
+
               <label for="fusername">Username:</label><br>
               <input class="input" type="text" id="fusername" v-model="username" required/>
               <i class="fa fa-user icon"></i><br>
+
 
               <label for="fpassword">Password:</label><br>
               <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/>
@@ -93,15 +95,14 @@ async function login() {
   font-family: "Inter", sans-serif;
 }
 
-.grid {
+.flexbox {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-radius: 35px;
-  max-width: 900px;
+  max-width: 800px;
   height: 600px;
   background: rgba(255, 255, 255, 0.93);
   box-shadow: 0 4px 4px -2px #000000;
-
 }
 
 .container-1 {
@@ -109,7 +110,7 @@ async function login() {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  margin: 10%;
+  padding: 2em;
 }
 
 .img-center {
@@ -126,10 +127,11 @@ async function login() {
   justify-content: space-evenly;
   align-items: center;
   text-align: center;
-  padding: 50px;
+  padding: 2em;
 }
 
 input[type=submit] {
+  display: inline;
   font-weight: bold;
   width: 100%;
   background-color: #242062;
@@ -150,6 +152,7 @@ input[type="text"], input[type="password"]{
 }
 
 label {
+  float: left;
   font-weight: bold;
   margin-top: 10px;
 }
@@ -159,7 +162,7 @@ label {
 }
 
 .icon {
-  padding-left: 10px;
+  padding-left: 5px;
 }
 
 /*

@@ -59,49 +59,58 @@ async function register() {
 
 <template>
   <div class="flex">
-    <div class="grid">
-
-      <div class="form-container-1">
-
+    <div class="flexbox">
           <form @submit.prevent="register">
-              <label for="fusername">Username:</label><br>
-              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/><br>
-
-              <label for="femail">Email:</label><br>
-              <input type="text" id="email" v-model="email" placeholder="Email" required/><br>
-
-            <div class="name-container">
-              <label for="first-name">First name:</label><br>
-              <input type="text" id="first-name" v-model="name" placeholder="First name" required/><br>
-
-              <label for="sur-name">Sur name:</label><br>
-              <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/><br>
+            <div class="item-1">
+              <h1>
+                Register!
+              </h1>
             </div>
 
-              <label for="password">Password:</label><br>
-              <input type="password" id="password" v-model="password" placeholder="Enter your password" required/><br>
+            <div class="item-2">
+              <label for="fusername">Username:</label>
+              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/>
+            </div>
 
-              <label for="confirm-password">Confirm Passowrd:</label><br>
-              <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/><br>
+            <div class="item-2">
+              <label for="femail">Email:</label>
+              <input type="text" id="femail" v-model="email" placeholder="Email" required/>
+            </div>
 
-              <input type="submit" value="Register"/>
-            <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <div class="item-3">
+              <label for="first-name">First name:</label>
+              <input type="text" id="first-name" v-model="name" placeholder="First name" required/>
+            </div>
+
+
+              <div class="item-4">
+                <label for="sur-name">Sur name:</label>
+                <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/>
+              </div>
+
+
+            <div class="item-3">
+              <label for="password">Password:</label>
+              <input class="input-field" type="password" id="password" v-model="password" placeholder="Enter your password" required/>
+            </div>
+
+            <div class="item-4">
+              <label for="confirm-password">Confirm Passowrd:</label>
+              <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/>
+            </div>
+
+            <div class="item-2 button">
+              <input type="submit" value="Register"/><br>\
+            </div>
+
+            <div v-if="errorMessage" class="error-message item-5">{{ errorMessage }}</div>
+
+            <div class="item-5">
+              <div class="login-route-container">
+                <p>Already have an account?</p><router-link to="/login">Login</router-link>
+              </div>
+            </div>
           </form>
-
-          <p>Already have an account?</p><router-link to="/login">Login</router-link>
-
-        </div>
-
-      <div class="info-container">
-        <div class="item-1">
-          <h1>Welcome!</h1>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum nihil placeat possimus quasi quisquam tempora
-          veniam. Accusantium, atque beatae blanditiis consectetur culpa ducimus labore laboriosam nulla officiis
-          ratione repellendus, voluptates!
-        </p>
-      </div>
     </div>
   </div>
 
@@ -116,37 +125,27 @@ async function register() {
   font-family: "Inter", sans-serif;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 900px;
+.flexbox {
+  display: flex;
+  border-radius: 35px;
+  max-width: 800px;
   height: 600px;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
+  padding: 2em;
 }
 
-.form-container-1, .info-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+input[type="text"], input[type="password"]{
+  border: 2px solid rgba(0, 0, 0, 0.17);
+  font-weight: bold;
+  padding: 10px 10px;
+  border-radius: 15px;
 }
-
-.name-container {
-  display: flex;
-  flex-direction: row;
-}
-.info-container {
-  margin: 10%;
-}
-
 
 input[type=submit] {
-  width: 90%;
+  display: inline;
   font-weight: bold;
-  margin-top: 8%;
+  width: 100%;
   background-color: #242062;
   color: white;
   padding: 14px 20px;
@@ -156,36 +155,84 @@ input[type=submit] {
   font-size: 16px;
 }
 
-input[type="text"], input[type="password"] {
-  border: 2px solid rgba(0, 0, 0, 0.17);
-  padding: 7px 7px;
-}
 
 label {
+  font-size: 14px;
   font-weight: bold;
-  float: left;
-}
-
-input {
-  font-weight: bold;
-  border-radius: 15px;
-  padding: 5px;
-  margin: 5px;
 }
 
 .error-message {
   color: red;
+  text-align: center;
 }
 
+form {
+  display: grid;
+  gap: 20px;
+}
+
+.item-1 {
+  text-align: center;
+  grid-column: 1/5;
+}
+
+.item-2, .item-5 {
+  display: inherit;
+  grid-column: 2/4;
+}
+
+.item-3 {
+  display: inherit;
+  grid-column: 2/3;
+}
+
+.item-4 {
+  display: inherit;
+
+  grid-column: 3/4;
+}
+
+.item-5 {
+  text-align: center;
+}
+
+/*
+ Query for mobile screens.
+*/
 @media (max-width: 700px) {
-
-  .info-container {
-    display: none;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .form-container-1 {
-    grid-column: 1/3;
+  form {
+    align-items: flex-end;
   }
+
+  .item-1 {
+    align-self: center;
+  }
+
+  .item-2.button {
+    align-self: center;
+    width: 100%;
+  }
+
+  .item-5 {
+    align-self: center;
+  }
+
+  label {
+    padding-right: 15px;
+    align-self: center;
+  }
+
+  .error-message {
+    align-self: center;
+  }
+
+
 }
 
 
