@@ -5,64 +5,94 @@ import {CreateUserService} from "@/services/CreateUserService";
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
+import {UserDetailService} from "@/services/UserDetailService";
+import type {UserDetailsDTO} from "@/models/user/UserDetailsDTO";
 
 export const useUserStore = defineStore('user', {
 
   state: () => ({
-    user: {username: ""},
-    token: '',
     isAuthenticated: false,
   }),
 
   actions: {
     async loginUser(username: string, password: string): Promise<void> {
       try {
-        const loginService: LoginService = new LoginService();
-        const response: LoginResponseDTO = await loginService.login({username, password});
+        const response: LoginResponseDTO = await LoginService.login({username, password});
 
-        if (response) {
-          this.token = response.token;
-          this.user = {username: username};
+        this.setAuthToken(response.token);
 
-          sessionStorage.setItem("token", response.token);
+        try {
+          const userDetails: UserDetailsDTO = await UserDetailService.retrieveUserDetails();
 
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-          this.isAuthenticated = true;
-        } else {
-          throw new Error("Invalid response.");
+          this.storeUserData(username, userDetails.email, userDetails.name, userDetails.surname);
+
+        } catch (err) {
+          console.error("Error retrieving user details:", err);
         }
+
       } catch (err) {
         throw err;
       }
     },
 
     async registerUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
-
-      const createUserService: CreateUserService = new CreateUserService();
-
       try {
-        const response: CreateUserResponseDTO = await createUserService.createUser(createUserRequestDTO);
-        if (response) {
-          this.token = response.token;
+        const response: CreateUserResponseDTO = await CreateUserService.createUser(createUserRequestDTO);
 
-          sessionStorage.setItem("token", response.token);
+        this.setAuthToken(response.token);
 
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+        this.storeUserData(createUserRequestDTO.username, createUserRequestDTO.email,
+          createUserRequestDTO.name, createUserRequestDTO.surname);
 
-          this.isAuthenticated = true;
-        } else {
-          throw new Error("Invalid response.");
-        }
       } catch (err) {
         throw err;
       }
     },
 
     logout(): void {
+      this.resetToken();
+      this.resetUserData();
+    },
+
+    setAuthToken(token: string): void {
+      sessionStorage.setItem("token", token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      this.isAuthenticated = true;
+    },
+
+    storeUserData(username: string, email: string, name: string, surname: string): void {
+      sessionStorage.setItem("username", username);
+      sessionStorage.setItem("email", email);
+      sessionStorage.setItem("name", name);
+      sessionStorage.setItem("surname", surname);
+    },
+
+    getUserData(key: string): string {
+      const value: string | null = sessionStorage.getItem(key);
+      return (value !== null && value !== "null") ? value : '';
+    },
+
+    updateUserNames(name: string, surname: string): void {
+      sessionStorage.setItem("name", name);
+      sessionStorage.setItem("surname", surname);
+    },
+
+    updateUserEmail(email: string): void {
+      sessionStorage.setItem("email", email);
+    },
+
+    resetToken(): void {
       sessionStorage.removeItem("token");
-      this.token = '';
       axios.defaults.headers.common['Authorization'] = '';
+    },
+
+    resetUserData(): void {
       this.isAuthenticated = false;
+
+      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("email");
+      sessionStorage.removeItem("name");
+      sessionStorage.removeItem("surname");
     },
   },
 });
