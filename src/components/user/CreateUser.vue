@@ -25,6 +25,7 @@ async function register() {
     name: name.value,
     surname: surname.value,
   };
+
   try {
     await store.registerUser(user);
     await router.push('/');
@@ -52,189 +53,185 @@ async function register() {
     }, 5000);
   }
 }
-
 </script>
 
 <template>
-  <div id="rectangle-container">
-    <div id="welcome-message">
-      <h1>
-        Please tell us about yourself
-      </h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab amet blanditiis deserunt dolores eos esse et
-        incidunt ipsa labore nisi odit optio porro quae quaerat, quam quibusdam repellendus sint ut?
-      </p>
+  <div class="flex">
+    <div class="flexbox">
+          <form @submit.prevent="register">
+            <div class="item-1">
+              <h1>
+                Register!
+              </h1>
+            </div>
 
-    </div>
-    <div id="create-form">
+            <div class="item-2">
+              <label for="fusername">Username:</label>
+              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/>
+            </div>
 
-      <h2>Create account</h2>
+            <div class="item-2">
+              <label for="femail">Email:</label>
+              <input type="text" id="femail" v-model="email" placeholder="Email" required/>
+            </div>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <div class="item-3">
+              <label for="first-name">First name:</label>
+              <input type="text" id="first-name" v-model="name" placeholder="First name" required/>
+            </div>
 
-      <form @submit.prevent="register">
-        <div>
-          <span class="material-icons" title="Username">person</span>
-          <input type="text" v-model="username" placeholder="Enter your username" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Email address">email</span>
-          <input type="text" v-model="email" placeholder="Email" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="First name">badge</span>
-          <input type="text" v-model="name" placeholder="First name" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Surname">badge</span>
-          <input type="text" v-model="surname" placeholder="Surname" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Password">lock</span>
-          <input type="password" v-model="password" placeholder="Enter your password" required/>
-        </div>
-        <div>
-          <span class="material-icons" title="Password confirmation">lock</span>
-          <input type="password" v-model="confirmPassword" placeholder="Confirm password" required/>
-        </div>
-        <button type="submit">Register</button>
-        <p>
-          Already have an account?
-          <router-link to="/login">Login</router-link>
-        </p>
-      </form>
+
+              <div class="item-4">
+                <label for="sur-name">Sur name:</label>
+                <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/>
+              </div>
+
+
+            <div class="item-3">
+              <label for="password">Password:</label>
+              <input class="input-field" type="password" id="password" v-model="password" placeholder="Enter your password" required/>
+            </div>
+
+            <div class="item-4">
+              <label for="confirm-password">Confirm Passowrd:</label>
+              <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/>
+            </div>
+
+            <div class="item-2 button">
+              <input type="submit" value="Register"/><br>\
+            </div>
+
+            <div v-if="errorMessage" class="error-message item-5">{{ errorMessage }}</div>
+
+            <div class="item-5">
+              <div class="login-route-container">
+                <p>Already have an account?</p><router-link to="/login">Login</router-link>
+              </div>
+            </div>
+          </form>
     </div>
   </div>
+
 </template>
 
-
 <style scoped >
-#rectangle-container {
+.flex {
   display: flex;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 5%;
-  height: 700px;
-  border-radius: 20px;
-  box-shadow: grey 0 0 20px 10px;
-
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
 }
 
-@media (max-width: 600px) {
-  #rectangle-container {
-    flex-direction: column;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-  }
-
-  #welcome-message, #create-form {
-    width: 100%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
+.flexbox {
+  display: flex;
+  border-radius: 35px;
+  max-width: 800px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
+  padding: 2em;
 }
 
-@media (min-width: 600px) {
-  #welcome-message, #create-form {
-    width: 50%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
+input[type="text"], input[type="password"]{
+  border: 2px solid rgba(0, 0, 0, 0.17);
+  font-weight: bold;
+  padding: 10px 10px;
+  border-radius: 15px;
 }
 
-p, h1, h2 {
+input[type=submit] {
+  display: inline;
+  font-weight: bold;
+  width: 100%;
+  background-color: #242062;
   color: white;
-  text-align: center;
-  text-shadow: black 0 0 15px;
-
+  padding: 14px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-h1 {
-  font-size: 3em;
-}
 
-p {
-  padding: 0 10%;
-}
-
-#welcome-message {
-  padding-top: 50px;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-}
-
-#create-form {
-  padding-top: 50px;
-  border-top-right-radius: inherit;
-  border-bottom-right-radius: inherit;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  background-color: var(--secondary-light);
-
-  h2 {
-    color: white;
-    font-size: 2em;
-  }
-
-  form {
-    padding-top: 20px;
-
-    border-radius: inherit;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    div, button {
-      width: 50%;
-      max-width: 300px;
-      text-align: center;
-      margin: auto auto 20px;
-      border-radius: 10px;
-      height: 40px;
-      box-shadow: grey 5px 5px 5px;
-    }
-
-    div {
-      display: flex;
-      background-color: white;
-      align-items: center;
-
-      :hover {
-        cursor: pointer;
-      }
-
-      input {
-        outline: none;
-        border-radius: inherit;
-
-        width: 100%;
-        box-sizing: border-box;
-        border: none;
-        height: 90%;
-      }
-
-      span {
-        display: flex;
-      }
-    }
-
-    button:hover {
-      cursor: pointer;
-      scale: 1.05;
-    }
-  }
+label {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .error-message {
   color: red;
+  text-align: center;
 }
+
+form {
+  display: grid;
+  gap: 20px;
+}
+
+.item-1 {
+  text-align: center;
+  grid-column: 1/5;
+}
+
+.item-2, .item-5 {
+  display: inherit;
+  grid-column: 2/4;
+}
+
+.item-3 {
+  display: inherit;
+  grid-column: 2/3;
+}
+
+.item-4 {
+  display: inherit;
+
+  grid-column: 3/4;
+}
+
+.item-5 {
+  text-align: center;
+}
+
+/*
+ Query for mobile screens.
+*/
+@media (max-width: 700px) {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  form {
+    align-items: flex-end;
+  }
+
+  .item-1 {
+    align-self: center;
+  }
+
+  .item-2.button {
+    align-self: center;
+    width: 100%;
+  }
+
+  .item-5 {
+    align-self: center;
+  }
+
+  label {
+    padding-right: 15px;
+    align-self: center;
+  }
+
+  .error-message {
+    align-self: center;
+  }
+
+
+}
+
 
 </style>

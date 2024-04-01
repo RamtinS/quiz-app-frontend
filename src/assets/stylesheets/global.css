@@ -6,17 +6,20 @@
     --neutral: #f7f5fbff;
     --default-font: 'Candal', sans-serif;
     --question-color: #a8d0fd;
-    --navigation-bar-background: white;
+    --navigation-bar-background: black;
 }
 
 body {
-    background-color: var(--neutral);
     margin: 0;
+    padding: 0;
+    background: #373B44;  /* fallback for old browsers */
+    background: linear-gradient(to bottom, #4286f4, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
+
 
 *{
     font-family: var(--default-font), sans-serif;
-    /*border: 1px solid red;*/
 }
 
 button:hover {
