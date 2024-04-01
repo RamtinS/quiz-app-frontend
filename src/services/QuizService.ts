@@ -47,6 +47,19 @@ export class QuizService {
     }
   }
 
+  public static async searchQuizByTitle(title: string, page: number, pageSize: number): Promise<QuizPreviewDTO[]> {
+    try {
+      const url = this.api_url + "/browser/previews" + `?pageSize=${pageSize}&page=${page}&search=${title}`;
+      console.log("url: " + url);
+      const result: AxiosResponse<QuizPreviewDTO[]> = await axios.get(url);
+      return result.data;
+
+    } catch (err) {
+      console.log('error: ' + err);
+      throw err;
+    }
+  }
+
 
 
 
