@@ -1,63 +1,122 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import {UserService} from "@/services/UserService";
+import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
+import DropDown from "@/components/navigation/DropDown.vue";
+import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 
-const emit = defineEmits(['SearchClicked'])
 
 const search = ref<string>('')
+const searchShake = ref(false);
+const errorMessage = ref("")
 
-const props = defineProps({
-      compressed: {type: Boolean, required: true}
+const previews = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
+
+async function searchClicked() {
+  removeError()
+  try {
+    if (search.value === "") {
+      triggerError("Please enter something")
+      return
     }
-)
 
-function emitSearchClicked() {
-  alert("search clicked: " + search.value);
-  emitMessage(search.value)
+    const result: PublicUserInformationDTO[] = await UserService.searchUserByUsername(search.value, 0, 10)
+
+
+    previews.value = result.map(user => ({
+      link: `/user/${user.username}`,
+      label: user.username,
+      authNeeded: false,
+      icon: "person"
+    }));
+
+
+
+    if (result.length === 0) {
+      triggerError("No results found")
+    }
+
+  } catch (err) {
+    triggerError("Could not connect to server")
+    console.error("error while searching: " + err)
+  }
 }
 
-function emitMessage(message: string) {
-  emit('SearchClicked', message);
+function triggerError(message: string) {
+  errorMessage.value = message;
+  searchShake.value = true
+  setTimeout(() => {
+    searchShake.value = false
+  }, 1000)
+  return;
+}
+
+function removeError() {
+  errorMessage.value = ""
+}
+
+function clearSearch() {
+  search.value = ""
+  previews.value = []
 }
 
 </script>
 
 
 <template>
-  <div id="search-bar" :class="compressed ? 'compressed' : 'notCompressed'">
-    <span class="material-icons" title="search">search</span>
+
+  <div id="search-bar"
+       :class="[
+        (errorMessage) ? 'error' : 'noError',
+         searchShake ? 'shake' : '']"
+  >
+    <span class="material-icons"
+          title="search">search</span>
     <input type="text"
-           placeholder="Search"
-           @keydown.enter="emitSearchClicked"
+           :placeholder="errorMessage ? errorMessage : 'Search'"
+           @keydown.enter="searchClicked"
            v-model="search"
+
     />
+    <DropDown v-if="previews && !errorMessage">
+      <RouterLinkBar :links="previews"></RouterLinkBar>
+    </DropDown>
+    <DropDown v-else-if="errorMessage && (search.length !== 0)">
+      <div id="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </DropDown>
   </div>
+
 
 </template>
 
 <style scoped>
 
-.compressed {
-  input{
-    display: none;
-
-  }
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: inherit;
-  height: 40px;
+h3 {
+  text-align: center;
 }
 
-.notCompressed {
 
+.error {
+  border: 1px solid red !important;
+
+  input::placeholder {
+    color: red;
+  }
+}
+
+
+#search-bar {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
   padding: 5px;
-  margin: 2px;
-  color: black;
+  margin: 10px;
   background: white;
+  border: 1px solid black;
 
 
   span, input {

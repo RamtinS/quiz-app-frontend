@@ -39,45 +39,55 @@ if (!props.username){
 <template>
   <div id="quiz-browser">
     <h1>{{props.title}}</h1>
+
+    <div id="quiz-grid">
+      <QuizPost v-for="(quiz, index) in previews"
+                :key="index"
+                :post="quiz"
+                class="quiz-post"
+      >
+      </QuizPost>
+    </div>
+    <div id="show-more">
+      <button>Show more</button>
+    </div>
   </div>
-  <div id="quiz-grid">
-    <QuizPost v-for="quiz in previews"
-              :key="quiz.title"
-              :post="quiz">
-    </QuizPost>
-  </div>
+
 </template>
 
 <style scoped>
 
 h1{
-  text-align: center;
+  text-align: left;
+  padding-left: 5%;
+  color: black;
+
+
+}
+
+#quiz-browser{
+  background: rgb(93,79,149);
+  background: linear-gradient(252deg, rgba(93,79,149,1) 0%, rgba(112,132,183,1) 55%, rgba(0,212,255,1) 100%);
 }
 
 #quiz-grid {
-  display: grid;
-  gap: 5%;
-  padding: 5% 15% 0 15%;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  justify-content: center;
+  height: auto;
+  gap: 50px;
+  width: 90%;
+  padding-left: 5%;
+}
+
+#show-more{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 
-@media (min-width: 1000px) {
-  #quiz-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 700px) and (max-width: 1000px) {
-  #quiz-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 700px) {
-  #quiz-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
 
 
 

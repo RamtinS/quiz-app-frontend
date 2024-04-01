@@ -1,5 +1,5 @@
 import {expect} from "vitest";
-import NavigationBar from "../navigation/NavigationBar.vue";
+import NavigationBar from "../navigation/navigationbar/NavigationBar.vue";
 import {mount} from "@vue/test-utils";
 import {createApp} from "vue";
 import {createPinia, setActivePinia} from "pinia";

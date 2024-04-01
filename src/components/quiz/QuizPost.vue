@@ -12,6 +12,9 @@ function startQuiz() {
   router.push({name: "quiz-runner", params: {quizId: props.post.id}})
 }
 
+
+
+
 </script>
 
 <template>
@@ -19,56 +22,50 @@ function startQuiz() {
   <div id="quiz-post" @click="startQuiz">
     <div id="quiz-image"></div>
     <div id="quiz-info">
-      <h2>{{ post.title }}</h2>
-      <p>{{ post.description }}</p>
-      <p>{{ post.open }} </p>
+      <p>{{ post.title }}</p>
+
     </div>
   </div>
 </template>
 
 <style scoped>
 
+h2{
+  margin: 0;
+}
+
+p{
+  margin: 0;
+}
 
 #quiz-post {
-  border-radius: 10px;
-  background-color: yellow;
+  width: 300px;
+  max-width: 300px;
+  aspect-ratio: 1.61/1;
+  border: 1px solid black;
+  background: url("src/assets/images/test-images/football_example.jpeg");
   display: flex;
   flex-direction: column;
+  color: white;
 
-  :hover {
-    cursor: pointer;
-  }
-
-  box-shadow: grey 5px 5px 5px;
 }
 
 #quiz-post:hover {
-  box-shadow: grey 10px 10px 10px;
-  transform: scale(1.05);
+  cursor: pointer;
+
+  #quiz-info{
+    text-decoration: underline;
+  }
 }
 
-#quiz-image {
-  aspect-ratio: 1/1;
-
-  background-image: url("src/assets/images/test-images/football_example.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
-  border: black solid 1px;
-  flex: 1;
 
 
-}
+#quiz-info{
+  background-color: rgb(205, 103, 106);
+  margin-top: auto;
+  height: 30%;
+  align-content: center;
+  padding-left: 5px;
 
-#quiz-info {
-  flex: 1;
-  border-bottom-right-radius: inherit;
-  border-bottom-left-radius: inherit;
-  display: flex;
-  border: black solid 1px;
-  flex-direction: column;
-  text-align: center;
-  background-color: var(--primary-light);
 }
 </style>

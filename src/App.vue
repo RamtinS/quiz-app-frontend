@@ -1,15 +1,17 @@
 <script setup lang="ts">
 
-import NavigationBar from "@/components/navigation/NavigationBar.vue";
+import NavigationBar from "@/components/navigation/navigationbar/NavigationBar.vue";
 
 </script>
 
 <template>
   <div id="app-container">
+
     <NavigationBar>
 
     </NavigationBar>
     <div id="content">
+
       <Suspense>
         <template #default>
 
@@ -29,13 +31,13 @@ import NavigationBar from "@/components/navigation/NavigationBar.vue";
 
 <style scoped>
 
-#app-container {
-  display: flex;
-  flex-direction: row;
-}
+
 
 #content {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  padding-top: 70px;
 }
 
 </style>
