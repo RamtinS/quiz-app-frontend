@@ -7,7 +7,6 @@ import {CreateUserService} from "@/services/CreateUserService";
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import router from "@/router";
 
-
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
@@ -16,14 +15,13 @@ const name = ref('')
 const surname = ref('')
 const store = useUserStore();
 const errorMessage = ref('');
-
-
 const service = new CreateUserService();
+
 async function register() {
   const user: CreateUserRequestDTO = {
     username: username.value,
     password: password.value,
-    email: password.value,
+    email: email.value,
     name: name.value,
     surname: surname.value,
   };

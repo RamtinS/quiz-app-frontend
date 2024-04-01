@@ -25,15 +25,15 @@ async function login() {
       switch (err.response.status) {
         case 401:
           errorMessage.value = "Your username or password was incorrect."
-          console.error("Login failed.", err.message);
+          console.error("Login failed du to bad credentials: ", err.message);
           break;
         default:
-          errorMessage.value = "Unexpected error."
-          console.error("Unexpected status: " + err.response.status);
+          errorMessage.value = "Server error. Please try again later.";
+          console.error("Login failed du to unexpected status code: " + err.response.status);
       }
     } else {
-      errorMessage.value = "Unexpected error."
-      console.error("Unexpected error: ", err);
+      errorMessage.value = "Unexpected error. Please try again later."
+      console.error("Login failed du to unexpected error: ", err);
     }
     setTimeout(() => {
       errorMessage.value = '';
