@@ -6,7 +6,7 @@
     --neutral: #f7f5fbff;
     --default-font: 'Candal', sans-serif;
     --question-color: #a8d0fd;
-    --navigation-bar-background: black;
+    --navigation-bar-background: white;
 }
 
 body {
@@ -14,12 +14,25 @@ body {
     margin: 0;
 }
 
-
-
 *{
     font-family: var(--default-font), sans-serif;
+    /*border: 1px solid red;*/
 }
 
 button:hover {
     cursor: pointer;
 }
+
+.shake {
+    animation: shake 0.5s both normal;
+}
+
+@keyframes shake {
+    20%, 50% {
+        transform: translateX(-2px);
+    }
+    25%, 75% {
+        transform: translateX(2px);
+    }
+}
+
