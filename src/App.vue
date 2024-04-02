@@ -1,6 +1,8 @@
 <script setup lang="ts">
 
 import NavigationBar from "@/components/navigation/navigationbar/NavigationBar.vue";
+import quizrun from "@/components/quizRunner/quizrunbox.vue";
+import Quizrunbox from "@/components/quizRunner/quizrunbox.vue";
 
 </script>
 
@@ -14,10 +16,7 @@ import NavigationBar from "@/components/navigation/navigationbar/NavigationBar.v
 
       <Suspense>
         <template #default>
-
-          <RouterView>
-
-          </RouterView>
+          <Quizrunbox></Quizrunbox>
         </template>
 
         <template #fallback>

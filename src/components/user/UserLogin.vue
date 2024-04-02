@@ -44,7 +44,7 @@ async function login() {
 
 <template>
   <div class="flex">
-    <div class="flexbox">
+    <div class="grid">
       <!-- First item is the welcome container -->
       <div class="container-1">
         <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
@@ -95,15 +95,15 @@ async function login() {
   font-family: "Inter", sans-serif;
 }
 
-.flexbox {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-radius: 35px;
-  max-width: 800px;
-  height: 600px;
-  background: rgba(255, 255, 255, 0.93);
-  box-shadow: 0 4px 4px -2px #000000;
-}
+.grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   border-radius: 35px;
+   max-width: 800px;
+   height: 600px;
+   background: rgba(255, 255, 255, 0.93);
+   box-shadow: 0 4px 4px -2px #000000;
+ }
 
 .container-1 {
   display: flex;
