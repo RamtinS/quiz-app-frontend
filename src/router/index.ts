@@ -3,12 +3,12 @@ import UserLogin from "@/components/user/UserLogin.vue";
 import {useUserStore} from "@/stores/UserStore";
 import HomeView from "@/components/home/HomeView.vue";
 import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
-import QuizRunner from "@/components/quiz/QuizRunner.vue";
 import CreateUser from "@/components/user/CreateUser.vue";
 import NotFound from "@/components/navigation/NotFound.vue";
 import UserProfile from "@/components/user/UserProfile.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
 import QuizCreator from "@/components/quiz/QuizCreator.vue";
+import QuizRunnerMenu from "@/components/quiz/QuizRunnerMenu.vue";
 
 
 const router = createRouter({
@@ -47,7 +47,7 @@ const router = createRouter({
     {
       path: '/quiz-runner/:quizId',
       name: 'quiz-runner',
-      component: QuizRunner,
+      component: QuizRunnerMenu,
       meta: {authRequired: false}
     },
     {
