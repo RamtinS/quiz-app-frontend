@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
 
-const username = ref('')
-const password = ref('')
-const store = useUserStore();
+const username = ref('');
+const password = ref('');
 const errorMessage = ref('');
+const store = useUserStore();
 const route = useRoute();
-
 
 async function login() {
   try {
@@ -25,21 +24,27 @@ async function login() {
       switch (err.response.status) {
         case 401:
           errorMessage.value = "Your username or password was incorrect."
-          console.error("Login failed du to bad credentials: ", err.message);
+          console.error("Login failed du to bad credentials.", err);
+          break;
+        case 500:
+          errorMessage.value = "Server error. Please try again later.";
+          console.error("Login failed: " + err.response.data.errorMessage, err);
           break;
         default:
-          errorMessage.value = "Server error. Please try again later.";
+          errorMessage.value = "Login error. Please try again later.";
           console.error("Login failed du to unexpected status code: " + err.response.status);
       }
     } else {
       errorMessage.value = "Unexpected error. Please try again later."
       console.error("Login failed du to unexpected error: ", err);
     }
-    setTimeout(() => {
-      errorMessage.value = '';
-    }, 5000);
   }
 }
+
+watch([username, password], () => {
+  errorMessage.value = '';
+});
+
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
 import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
@@ -9,16 +9,11 @@ import axios from "axios";
 
 const userStore = useUserStore();
 const email = ref(userStore.getUserData("email"));
-console.log("email: " + email.value)
 const firstName = ref(userStore.getUserData("name"));
 const surname = ref(userStore.getUserData("surname"));
 const password = ref('');
 const editMode = ref(false);
 const errorMessage = ref('');
-
-watch([email, firstName, surname], () => {
-  userStore.updateUserNames(firstName.value, surname.value);
-});
 
 async function toggleEdit() {
 
@@ -30,33 +25,43 @@ async function toggleEdit() {
       newSurname: surname.value,
     };
 
+    password.value = "";
+
     try {
       await UserDetailService.editUserDetails(newUserDetails);
-      userStore.updateUserEmail(email.value);
+      userStore.updateUserDetails(email.value, firstName.value, surname.value);
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         switch (err.response.status) {
+          case 400:
+            errorMessage.value = err.response.data.errorMessage;
+            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
+            break;
           case 404:
-            errorMessage.value = "Failed to update because user not found.";
-            console.error("Failed to update user details: User not found.", err.message);
+            errorMessage.value = err.response.data.errorMessage;
+            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 409:
-            errorMessage.value = "Email is already in use by another user.";
-            console.error("Failed to update email because it is already in use by another user.", err);
-            email.value = userStore.getUserData("email") || "";
+            errorMessage.value = err.response.data.errorMessage;
+            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 500:
             errorMessage.value = "Server error. Please try again later.";
-            console.error("Failed to update user details: Internal server error.", err);
+            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           default:
             errorMessage.value = "Error. Please try again later.";
-            console.error("Failed to update user details. Unexpected status: " + err.response.status);
+            console.error("Failed to update user details. Unexpected status: " + err.response.status, err);
         }
       } else {
         errorMessage.value = "Error. Please try again later.";
         console.error("Failed to update user details. Unexpected error: ", err);
       }
+
+      email.value = userStore.getUserData("email");
+      firstName.value = userStore.getUserData("name");
+      surname.value = userStore.getUserData("surname");
+
       setTimeout(() => {
         errorMessage.value = '';
       }, 5000);
