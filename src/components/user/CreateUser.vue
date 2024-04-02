@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
-import {CreateUserService} from "@/services/CreateUserService";
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import router from "@/router";
 
@@ -15,9 +14,14 @@ const name = ref('')
 const surname = ref('')
 const store = useUserStore();
 const errorMessage = ref('');
-const service = new CreateUserService();
 
 async function register() {
+
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = "Password conformation not correct.";
+    return;
+  }
+
   const user: CreateUserRequestDTO = {
     username: username.value,
     password: password.value,
@@ -32,27 +36,33 @@ async function register() {
   } catch (err) {
     if (axios.isAxiosError(err) && err.response) {
       switch (err.response.status) {
+        case 400:
+          errorMessage.value = err.response.data.errorMessage;
+          console.error("Registration failed: " + err.response.data.errorMessage, err);
+          break;
         case 409:
-          errorMessage.value = "User already exists.";
-          console.error("Registration failed because user already exists.", err.message);
+          errorMessage.value = err.response.data.errorMessage;
+          console.error("Registration failed: " + err.response.data.errorMessage, err);
           break;
         case 500:
-          errorMessage.value = "Registration failed due to an internal server error.";
-          console.error("Registration failed due to an internal server error.", err);
+          errorMessage.value = "Registration error. Please try again later.";
+          console.error("Registration failed: " + err.response.data.errorMessage, err);
           break;
         default:
-          errorMessage.value = "Unexpected error."
-          console.error("Unexpected status: " + err.response.status);
+          errorMessage.value = "Registration error. Please try again later."
+          console.error("Unexpected status: " + err.response.data.errorMessage, err);
       }
     } else {
-      errorMessage.value = "Unexpected error."
+      errorMessage.value = "Registration error. Please try again later."
       console.error("Unexpected error: ", err);
     }
-    setTimeout(() => {
-      errorMessage.value = '';
-    }, 5000);
   }
 }
+
+watch([username, password, confirmPassword, email, name, surname], () => {
+  errorMessage.value = '';
+});
+
 </script>
 
 <template>
@@ -93,12 +103,12 @@ async function register() {
             </div>
 
             <div class="item-4">
-              <label for="confirm-password">Confirm Passowrd:</label>
+              <label for="confirm-password">Confirm Password:</label>
               <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/>
             </div>
 
             <div class="item-2 button">
-              <input type="submit" value="Register"/><br>\
+              <input type="submit" value="Register"/><br>
             </div>
 
             <div v-if="errorMessage" class="error-message item-5">{{ errorMessage }}</div>
@@ -153,7 +163,6 @@ input[type=submit] {
   font-size: 16px;
 }
 
-
 label {
   font-size: 14px;
   font-weight: bold;
@@ -162,6 +171,11 @@ label {
 .error-message {
   color: red;
   text-align: center;
+  font-size: 90%;
+}
+
+.login-route-container p {
+  margin-top: 0;
 }
 
 form {
@@ -229,9 +243,6 @@ form {
   .error-message {
     align-self: center;
   }
-
-
 }
-
 
 </style>
