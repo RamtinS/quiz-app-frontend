@@ -3,9 +3,9 @@
 import {ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
-import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
 import axios from "axios";
+import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 
 const userStore = useUserStore();
 const email = ref(userStore.getUserData("email"));
@@ -79,15 +79,11 @@ function preventSpace(event: any) {
 </script>
 
 <template>
+  <div id="user-profile">
 
-  <div id="profile-container">
+    <UserProfileHeader></UserProfileHeader>
 
     <div id ="profile-info">
-
-      <div class="profile-header">
-        <img src="https://via.placeholder.com/150" alt="profile picture" id="profile-picture" />
-        <h3 id="username">{{ userStore.getUserData("username") }}</h3>
-      </div>
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
@@ -121,14 +117,12 @@ function preventSpace(event: any) {
         </div>
       </div>
 
-      <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
+      <div class="button-container">
+        <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
+      </div>
 
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-    </div>
-
-    <div id="user-quizzes">
-      <QuizBrowser :title="'All user quizzes'" :username="userStore.getUserData('username')"></QuizBrowser>
     </div>
 
   </div>
@@ -137,78 +131,41 @@ function preventSpace(event: any) {
 
 <style scoped>
 
-#profile-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-}
-
-#profile-info {
-  border: 3px solid #ccc;
-  width: 30%;
-  margin-top: 7%;
-  margin-left: 7%;
-  display: flex;
-  gap: 5px;
-  flex-direction: column;
+#user-profile {
   padding: 2%;
 }
 
 .info-item {
   display: flex;
-  flex-wrap: wrap;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 
 .info-label {
-  width: 30%;
+  flex: 1;
   text-align: right;
-  margin-left: 16%;
+  margin-right: 1rem;
 }
 
 .info-value {
-  flex-grow: 1;
-  max-width: 55%;
-  overflow: auto;
-  margin-left: 6%;
+  flex: 1;
+  margin-left: 1rem;
 }
 
-input {
-  margin-left: 2%;
-  padding-top: 7%;
-  padding-bottom: 7%;
-}
-
-#user-quizzes {
-  flex-grow: 1;
-  max-height: 100vh;
-  overflow-y: auto;
-}
-
-.profile-header {
+.button-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-}
-
-#profile-picture {
-  width: 40%;
-  border-radius: 50%;
-  border: 5px solid var(--primary);
+  justify-content: center;
 }
 
 button {
-  width: 20%;
   background-color: lightgray;
   color: black;
-  margin-top: 20px;
-  margin-left: 40%;
-  margin-right: 40%;
-  padding: 6px 10px;
+  margin-top: 2%;
+  padding: 0.5% 2%;
   border-radius: 20px;
   font-size: 90%;
-  transition: opacity 0.15s;
+  transition: opacity  0.15s;
 }
 
 button:hover {
