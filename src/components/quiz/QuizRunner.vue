@@ -1,21 +1,31 @@
 <script async setup lang="ts">
 
-import {computed, ref} from "vue";
-import {useRoute} from "vue-router";
-import {QuizService} from "@/services/QuizService";
+import {ref} from "vue";
+
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import router from "@/router";
+import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import MultipleChoiceAnswerPicker from "@/components/quiz/MultipleChoiceAnswerPicker.vue";
 
 
-const route = useRoute();
-const quiz : QuizDTO | null = await loadQuizFromServer() ?? null;
+const props = defineProps(
+    {
+      quiz: {
+        type: Object as () => QuizDTO,
+        required: true,
+      }
+    }
+);
 
+
+const quiz = ref(props.quiz as QuizDTO)
+console.log(JSON.stringify(quiz.value));
 
 
 const currentQuestionIndex = ref(0);
 
-const currentQuestion = computed(() => quiz?.questions[currentQuestionIndex.value]);
-const possibleAnswers = computed(() => currentQuestion.value?.answers);
+const currentQuestion = ref<QuizQuestionDTO>(quiz.value.questions[currentQuestionIndex.value])
+
 
 const answerSubmitted = ref(false);
 const answerIsCorrect = ref(false);
@@ -23,58 +33,26 @@ const correctAnswerCounter = ref(0);
 const quizCompleted = ref(false);
 const restartMessage = ref("");
 
-
-/**
- * Loads the quiz from the server.
- */
-async function loadQuizFromServer() {
-  try {
-    let id = -1;
-    if (typeof route.params.quizId === 'string') {
-      id = parseInt(route.params.quizId);
-    } else if (Array.isArray(route.params.quizId)) {
-      id = parseInt(route.params.quizId[0]);
-    }
-
-    console.log("id: " + id)
-    return await QuizService.getQuizById(id) as QuizDTO;
-
-  } catch (err) {
-    return undefined;
-  }
-}
-
-function checkIfCorrect(answerIndex: number) {
-  answerSubmitted.value = true;
-  if (possibleAnswers.value && possibleAnswers.value[answerIndex]?.correct) {
-    answerIsCorrect.value = true
-    correctAnswerCounter.value++;
-    console.log("correct")
-  } else {
-    answerIsCorrect.value = false
-    console.log("wrong")
-  }
-}
-
 function nextQuestion() {
   answerSubmitted.value = false
   answerIsCorrect.value = false
 
-  if (quiz?.questions && currentQuestionIndex.value === quiz?.questions.length - 1) {
+  if (currentQuestionIndex.value === quiz.value.questions.length - 1) {
 
     quizCompleted.value = true;
 
     restartMessage.value = "Quiz finished, you got " +
         correctAnswerCounter.value + " correct answer" +
         (correctAnswerCounter.value === 1 ? "" : "s") +
-        " out of " + (quiz.questions.length | 0);
+        " out of " + (quiz.value.questions.length | 0);
 
   } else {
+    //TODO current question might also have to be updated here "manually"
     currentQuestionIndex.value++
   }
 }
 
-function returnToPreviousRouterPage(){
+function returnToPreviousRouterPage() {
   router.go(-1)
 }
 
@@ -86,12 +64,33 @@ function resetQuiz() {
   quizCompleted.value = false;
 }
 
+function questionIsMultipleChoice() {
+  const dtoProperties = ['questionText', 'answers'];
+
+  for (const key in currentQuestion.value) {
+    if (!dtoProperties.includes(key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function questionIsTrueOrFalse() {
+  const dtoProperties = ['questionText', 'correctAnswer'];
+
+  for (const key in currentQuestion.value) {
+    if (!dtoProperties.includes(key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 </script>
 
 <template>
 
   <div id="finishedPrompt" v-show="quizCompleted">
-
     <h1>
       {{ restartMessage }}
     </h1>
@@ -104,30 +103,25 @@ function resetQuiz() {
   </div>
   <div id="question-container">
     <h1 v-if="currentQuestion">
-      {{ currentQuestion.questionText }}
+      {{ currentQuestion }}
     </h1>
   </div>
   <div id="answer-container">
-    <div @click="checkIfCorrect(index)"
-         v-for="(answer, index) in possibleAnswers"
-         :key="answer.answerText"
-         :class="answerSubmitted ? (answer.correct ? 'correctAnswer' : 'wrongAnswer') : ''"
-         v-if="!quizCompleted"
-    >
-      ({{ index + 1 }}) {{ answer.answerText }}
-    </div>
+    <MultipleChoiceAnswerPicker
+        v-if="questionIsMultipleChoice()"
+        :question="currentQuestion">
+    </MultipleChoiceAnswerPicker>
+<!--TODO add more answer pickers, with v-else-->
+
   </div>
   <div id="button-container">
     <button id="next-question"
             @click="nextQuestion"
             v-show="answerSubmitted"
-    >Next question
+    >
+      Next question
     </button>
-
   </div>
-
-
-
 </template>
 
 <style scoped>
