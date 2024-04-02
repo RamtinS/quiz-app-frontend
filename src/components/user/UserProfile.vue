@@ -25,6 +25,8 @@ async function toggleEdit() {
       newSurname: surname.value,
     };
 
+    password.value = "";
+
     try {
       await UserDetailService.editUserDetails(newUserDetails);
       userStore.updateUserDetails(email.value, firstName.value, surname.value);
