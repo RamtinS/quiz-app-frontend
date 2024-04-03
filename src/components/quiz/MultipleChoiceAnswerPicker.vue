@@ -2,14 +2,13 @@
 
 import type { MultipleChoiceQuestionDTO } from "@/models/quiz/MultipleChoiceQuestionDTO";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
+import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 
 const props = defineProps(
     {
         question: { type: Object as () => MultipleChoiceQuestionDTO, required: true }
     }
 );
-
-console.log(props.question?.answers);
 
 const emit = defineEmits(['answer-selected'])
 
@@ -22,8 +21,9 @@ function selectAnswer(answer: AnswerDTO) {
 
 
 </script>
-  <template>
-    <div class="multiple-choice">
+
+<template>
+    <div class="grid-container">
       <button
           v-for="(answer, index) in props.question?.answers" :key="index"
           @click="selectAnswer(answer)"
@@ -32,13 +32,15 @@ function selectAnswer(answer: AnswerDTO) {
         {{ answer.answerText }}
       </button>
     </div>
-  </template>
+</template>
 
 <style scoped>
 
-.multiple-choice {
+.grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  max-width: 800px;
+  margin: auto;
 }
 
 button {
@@ -47,6 +49,8 @@ button {
   color: white;
   padding: 50px;
   margin: 5px;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .button-type-0 {
