@@ -5,7 +5,7 @@ import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 </script>
 
 <template>
-  <div id="user-progress">
+  <div class="user-progress">
 
     <UserProfileHeader></UserProfileHeader>
 
@@ -14,7 +14,7 @@ import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 
 <style scoped>
 
-#user-progress {
+.user-progress {
   padding: 2%;
 }
 
