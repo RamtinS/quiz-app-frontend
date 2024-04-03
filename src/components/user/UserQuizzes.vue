@@ -6,19 +6,15 @@ import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 
 const userStore = useUserStore();
 
-
-
-
 </script>
 
 <template>
 
-  <div id="user-quizzes">
+  <div class="user-quizzes">
 
     <UserProfileHeader></UserProfileHeader>
 
     <QuizBrowser :title="'All user quizzes'" :username="userStore.getUserData('username')"></QuizBrowser>
-
 
   </div>
 
@@ -26,11 +22,8 @@ const userStore = useUserStore();
 
 <style scoped>
 
-#user-quizzes {
+.user-quizzes {
   padding: 2%;
-}
-
-#user-quizzes {
   flex-grow: 1;
   max-height: 100vh;
   overflow-y: auto;
