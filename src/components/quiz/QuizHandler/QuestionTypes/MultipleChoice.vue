@@ -1,41 +1,41 @@
 <script setup lang="ts" generic="">
-
 import type { MultipleChoiceQuestionDTO } from "@/models/quiz/MultipleChoiceQuestionDTO";
-import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
-import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import { computed } from "vue";
 
+const emit = defineEmits(['answer-selected'])
 const props = defineProps(
     {
         question: { type: Object as () => MultipleChoiceQuestionDTO, required: true }
     }
 );
 
-const emit = defineEmits(['answer-selected'])
+//Fisher-Yates-Shuffle-Algorithm
+const shuffledQuestions = computed(() => {
+  const answers = props.question?.answers.slice()
 
-//TODO: Implement answer picker
-function selectAnswer(answer: AnswerDTO) {
-  emit("answer-selected", answer)
-}
-
-//TODO: Implement emit to parent component for answer clicked
-
+  for (let i = answers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [answers[i], answers[j]] = [answers[j], answers[i]];
+  }
+  return answers;
+})
 
 </script>
 
 <template>
     <div class="grid-container">
       <button
-          v-for="(answer, index) in props.question?.answers" :key="index"
-          @click="selectAnswer(answer)"
-          :class="['button-type', `button-type-${index}`]"
-      >
+          v-for="(answer, index) in shuffledQuestions" :key="index"
+          @click="emit('answer-selected', answer.correct)"
+          :class="['button-type', `button-type-${index}`]">
+
         {{ answer.answerText }}
+
       </button>
     </div>
 </template>
 
 <style scoped>
-
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -47,9 +47,9 @@ button {
   border-radius: 10px;
   border: 0;
   color: white;
-  padding: 50px;
+  padding: 20px;
   margin: 5px;
-  font-size: 30px;
+  font-size: 25px;
   font-weight: bold;
 }
 
@@ -69,20 +69,20 @@ button {
   background: chocolate;
 }
 
-.button-type-0:hover {
-  background: #3f0202;
+.button-type-4 {
+  background: #6e095c;
 }
 
-.button-type-1:hover {
-  background: #040828;
+.button-type-5 {
+  background: #6b261c;
 }
 
-.button-type-2:hover {
-  background: #051501;
+.button-type-6 {
+  background: #44247c;
 }
 
-.button-type-3:hover {
-  background: #914b15;
+button:hover {
+  filter: brightness(80%);
 }
 
 </style>
