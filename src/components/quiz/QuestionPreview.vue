@@ -15,6 +15,7 @@ import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 const props = defineProps({
   question: {type: Object as () => QuizQuestionDTO, required: true},
   questionIndex: {type: Number, required: true},
+  currentlySelected: {type: Boolean, required: true}
 });
 
 
@@ -32,7 +33,10 @@ function previewClicked() {
 </script>
 
 <template>
-  <div id="question-preview" @click="previewClicked">
+  <div id="question-preview"
+       @click="previewClicked"
+       :class="{selected: currentlySelected}"
+  >
     <div id="question">
       <p>({{ questionIndex }}) {{ question.questionText }} </p>
     </div>
@@ -42,15 +46,28 @@ function previewClicked() {
 <style scoped>
 #question-preview {
   border-radius: 10px;
-  background-color: yellow;
   display: flex;
+  background-color: whitesmoke;
   flex-direction: column;
+  border: 3px solid lightgrey;
+
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: auto;
+
+  height: 200px;
+  min-width: 200px;
+  min-height: 200px;
+
 
   :hover {
     cursor: pointer;
   }
 
-  box-shadow: grey 5px 5px 5px;
+}
+
+.selected{
+  border-color: cornflowerblue !important;
 }
 
 
