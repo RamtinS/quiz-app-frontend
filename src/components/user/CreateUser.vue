@@ -67,7 +67,7 @@ watch([username, password, confirmPassword, email, name, surname], () => {
 
 <template>
   <div class="flex">
-    <div class="flexbox">
+    <div class="grid">
           <form @submit.prevent="register">
             <div class="item-1">
               <h1>
@@ -133,7 +133,7 @@ watch([username, password, confirmPassword, email, name, surname], () => {
   font-family: "Inter", sans-serif;
 }
 
-.flexbox {
+.grid {
   display: flex;
   border-radius: 35px;
   max-width: 800px;

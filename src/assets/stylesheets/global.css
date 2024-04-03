@@ -3,21 +3,25 @@
     --primary-light: #A3ADCC;
     --secondary: #f58a07ff;
     --secondary-light: #f9ab55ff;
-    --neutral: #f7f5fbff;
+    --neutral: #ffffff;
     --default-font: 'Candal', sans-serif;
     --question-color: #a8d0fd;
     --navigation-bar-background: white;
 }
 
 body {
+    background-color: #eae9e9;
     margin: 0;
     padding: 0;
 }
 
 
 
+
 *{
-    font-family: var(--default-font), sans-serif;
+    font-family: "Inter", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 button:hover {

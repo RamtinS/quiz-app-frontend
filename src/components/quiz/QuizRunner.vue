@@ -1,215 +1,144 @@
-<script async setup lang="ts">
 
-import {ref} from "vue";
+  <script async setup lang="ts">
 
-import type {QuizDTO} from "@/models/quiz/QuizDTO";
-import router from "@/router";
-import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
-import MultipleChoiceAnswerPicker from "@/components/quiz/MultipleChoiceAnswerPicker.vue";
+  import {ref, watch} from "vue";
+  import type {QuizDTO} from "@/models/quiz/QuizDTO";
+  import router from "@/router";
+  import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+  import MultipleChoiceAnswerPicker from "@/components/quiz/MultipleChoiceAnswerPicker.vue";
+  import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
+  import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
+  import TrueFalsePicker from "@/components/quiz/TrueFalsePicker.vue";
+  import InputFieldAnswer from "@/components/quiz/InputFieldAnswer.vue";
+
+  const props = defineProps (
+      {
+        quiz: {
+          type: Object as () => QuizDTO,
+          required: true,
+        }
+      }
+  );
+
+  const quiz = ref(props.quiz as QuizDTO)
+
+  let questionIndex = ref(0);
+  let currentQuestion = ref(quiz.value.questions[questionIndex.value])
+
+  let answerSubmitted = false;
+  let answerIsCorrect = false;
+  let score = 0;
+  let quizCompleted = false;
+
+  let restartMessage = ref("");
 
 
-const props = defineProps(
-    {
-      quiz: {
-        type: Object as () => QuizDTO,
-        required: true,
+  function handleAnswer(answer: AnswerDTO) {
+
+    verifyAnswer(answer)
+    isQuizComplete()
+
+    questionIndex.value++
+    currentQuestion.value = quiz.value.questions[questionIndex.value]
+  }
+
+  function verifyAnswer(answer: AnswerDTO) {
+    if (answer.correct) {
+      score++;
+    }
+  }
+
+  function isQuizComplete() {
+    if (questionIndex.value == quiz.value.questions.length -1) {
+      quizCompleted = true;
+      restartMessage.value = "Quiz finished, you got " +
+          score + " correct answer" +
+          (score === 1 ? "" : "s") +
+          " out of " + (quiz.value.questions.length | 0);
+    }
+  }
+
+
+  function nextQuestion() {
+  }
+
+  /**
+   * Method to return back to the previous site.
+   */
+  function returnToPreviousRouterPage() {
+    router.go(-1)
+  }
+
+
+  /**
+   * Method to reset quiz.
+   */
+  function resetQuiz() {
+    questionIndex.value = 0
+    score.value = 0
+    answerSubmitted.value = false;
+    quizCompleted.value = false;
+  }
+
+
+  //Method to check quizzes type.
+  /**
+   * Checks the fields in the current question to determine if it is of type multiple choice.
+   */
+  function questionIsMultipleChoice() {
+
+    const dtoProperties = ['questionText', 'answers'];
+
+    for (const key in currentQuestion.value) {
+      if (!dtoProperties.includes(key)) {
+        console.log(key)
+        return false;
       }
     }
-);
 
-
-const quiz = ref(props.quiz as QuizDTO)
-console.log(JSON.stringify(quiz.value));
-
-
-const currentQuestionIndex = ref(0);
-
-const currentQuestion = ref<QuizQuestionDTO>(quiz.value.questions[currentQuestionIndex.value])
-
-
-const answerSubmitted = ref(false);
-const answerIsCorrect = ref(false);
-const correctAnswerCounter = ref(0);
-const quizCompleted = ref(false);
-const restartMessage = ref("");
-
-function nextQuestion() {
-  answerSubmitted.value = false
-  answerIsCorrect.value = false
-
-  if (currentQuestionIndex.value === quiz.value.questions.length - 1) {
-
-    quizCompleted.value = true;
-
-    restartMessage.value = "Quiz finished, you got " +
-        correctAnswerCounter.value + " correct answer" +
-        (correctAnswerCounter.value === 1 ? "" : "s") +
-        " out of " + (quiz.value.questions.length | 0);
-
-  } else {
-    //TODO current question might also have to be updated here "manually"
-    currentQuestionIndex.value++
-  }
-}
-
-function returnToPreviousRouterPage() {
-  router.go(-1)
-}
-
-
-function resetQuiz() {
-  currentQuestionIndex.value = 0
-  correctAnswerCounter.value = 0
-  answerSubmitted.value = false;
-  quizCompleted.value = false;
-}
-
-function questionIsMultipleChoice() {
-  const dtoProperties = ['questionText', 'answers'];
-
-  for (const key in currentQuestion.value) {
-    if (!dtoProperties.includes(key)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function questionIsTrueOrFalse() {
-  const dtoProperties = ['questionText', 'correctAnswer'];
-
-  for (const key in currentQuestion.value) {
-    if (!dtoProperties.includes(key)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-</script>
-
-<template>
-
-  <div id="finishedPrompt" v-show="quizCompleted">
-    <h1>
-      {{ restartMessage }}
-    </h1>
-    <button @click="returnToPreviousRouterPage">
-      go back
-    </button>
-    <button @click="resetQuiz">
-      Restart quiz
-    </button>
-  </div>
-  <div id="question-container">
-    <h1 v-if="currentQuestion">
-      {{ currentQuestion }}
-    </h1>
-  </div>
-  <div id="answer-container">
-    <MultipleChoiceAnswerPicker
-        v-if="questionIsMultipleChoice()"
-        :question="currentQuestion">
-    </MultipleChoiceAnswerPicker>
-<!--TODO add more answer pickers, with v-else-->
-
-  </div>
-  <div id="button-container">
-    <button id="next-question"
-            @click="nextQuestion"
-            v-show="answerSubmitted"
-    >
-      Next question
-    </button>
-  </div>
-</template>
-
-<style scoped>
-
-#question-container {
-  padding: 50px;
-  margin: 10px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-
-#answer-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
-  padding: 0 10%;
-
-
-  div {
-    padding: 50px;
-    margin: 10px;
-    background-color: var(--question-color);
-    border-radius: 10px;
+    return true;
   }
 
-  div:hover {
-    background-color: lightgrey;
-    cursor: pointer;
-  }
+  </script>
 
-  .correctAnswer {
-    background-color: green !important;
-  }
+  <template>
+    <div class="flex">
 
-  .wrongAnswer {
-    background-color: red !important;
-  }
-}
+      <div class="question-title">
+        <h1 v-if="currentQuestion">
+          {{ currentQuestion.questionText }}
+        </h1>
+      </div>
 
-#button-container {
-  text-align: center;
-  margin: 10px;
+      <div class="image-container">
 
-  button {
-    font-size: 2em;
-  }
-}
+      </div>
 
-#finishedPrompt {
-  width: 50%;
-  background-color: var(--secondary-light);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 30px 30px 30px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 20px;
-  text-align: center;
+      <div class="answer-container">
 
-  h1 {
-    width: 80%;
-    word-wrap: break-word;
-    text-align: center;
-    margin: auto;
-  }
+        <MultipleChoiceAnswerPicker
+            v-if="questionIsMultipleChoice()"
+            :question="currentQuestion"
+        @answer-selected="handleAnswer">
+        </MultipleChoiceAnswerPicker>
 
+      </div>
 
-  button {
-    margin: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--primary-light);
-    color: white;
-    font-size: 1.5em;
-  }
+    </div>
 
-  /*router link*/
+    <div id="finishedPrompt" v-show="quizCompleted">
+      <h1>
+        {{ restartMessage }}
+      </h1>
+      <button @click="returnToPreviousRouterPage">
+        go <back></back>
+      </button>
+      <button @click="resetQuiz">
+        Restart quiz
+      </button>
+    </div>
 
-  a {
-    text-decoration: none;
-    color: white;
-  }
+  </template>
 
-
-}
-
-
-</style>
+  <style scoped>
+  </style>
