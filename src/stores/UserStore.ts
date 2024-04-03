@@ -2,32 +2,30 @@ import axios from 'axios';
 import {defineStore} from 'pinia';
 import {LoginService} from "@/services/LoginService";
 import {CreateUserService} from "@/services/CreateUserService";
+import {UserDetailService} from "@/services/UserDetailService";
+import type {StoreDefinition} from 'pinia';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
-import {UserDetailService} from "@/services/UserDetailService";
 import type {UserDetailsDTO} from "@/models/user/UserDetailsDTO";
+import type {ErrorResponseDTO} from "@/models/ErrorResponseDTO";
 
-export const useUserStore = defineStore('user', {
+export const useUserStore :StoreDefinition<"user"> = defineStore('user', {
 
-  state: () => ({
+  state: () :{isAuthenticated: boolean} => ({
     isAuthenticated: false,
   }),
 
   actions: {
     async loginUser(username: string, password: string): Promise<void> {
       try {
-        const response: LoginResponseDTO = await LoginService.login({username, password});
+        const response: LoginResponseDTO | ErrorResponseDTO = await LoginService.login({username, password});
 
-        this.setAuthToken(response.token);
-
-        try {
-          const userDetails: UserDetailsDTO = await UserDetailService.retrieveUserDetails();
-
-          this.storeUserData(username, userDetails.email, userDetails.name, userDetails.surname);
-
-        } catch (err) {
-          console.error("Error retrieving user details:", err);
+        if ("errorMessage" in response) {
+          throw new Error(response.errorMessage);
+        } else {
+          this.setAuthToken(response.token);
+          await this.fetchUserDetails(username);
         }
 
       } catch (err) {
@@ -37,12 +35,16 @@ export const useUserStore = defineStore('user', {
 
     async registerUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
       try {
-        const response: CreateUserResponseDTO = await CreateUserService.createUser(createUserRequestDTO);
+        const response: CreateUserResponseDTO | ErrorResponseDTO = await CreateUserService.createUser(createUserRequestDTO);
 
-        this.setAuthToken(response.token);
+        if ("errorMessage" in response) {
+          throw new Error(response.errorMessage);
+        } else {
+          this.setAuthToken(response.token);
 
-        this.storeUserData(createUserRequestDTO.username, createUserRequestDTO.email,
-          createUserRequestDTO.name, createUserRequestDTO.surname);
+          this.storeUserData(createUserRequestDTO.username, createUserRequestDTO.email,
+            createUserRequestDTO.name, createUserRequestDTO.surname);
+        }
 
       } catch (err) {
         throw err;
@@ -52,6 +54,15 @@ export const useUserStore = defineStore('user', {
     logout(): void {
       this.resetToken();
       this.resetUserData();
+    },
+
+    async fetchUserDetails(username: string): Promise<void> {
+      try {
+        const userDetails: UserDetailsDTO = await UserDetailService.retrieveUserDetails();
+        this.storeUserData(username, userDetails.email, userDetails.name, userDetails.surname);
+      } catch (err) {
+        console.error("Error retrieving user details:", err);
+      }
     },
 
     setAuthToken(token: string): void {
@@ -72,13 +83,10 @@ export const useUserStore = defineStore('user', {
       return (value !== null && value !== "null") ? value : '';
     },
 
-    updateUserNames(name: string, surname: string): void {
+    updateUserDetails(email: string, name: string, surname: string): void {
+      sessionStorage.setItem("email", email);
       sessionStorage.setItem("name", name);
       sessionStorage.setItem("surname", surname);
-    },
-
-    updateUserEmail(email: string): void {
-      sessionStorage.setItem("email", email);
     },
 
     resetToken(): void {

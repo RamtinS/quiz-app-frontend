@@ -1,15 +1,16 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import UserLogin from "@/components/user/UserLogin.vue";
 import {useUserStore} from "@/stores/UserStore";
 import HomeView from "@/components/home/HomeView.vue";
 import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
-import CreateUser from "@/components/user/CreateUser.vue";
 import NotFound from "@/components/navigation/NotFound.vue";
-import UserProfile from "@/components/user/UserProfile.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
 import QuizCreator from "@/components/quiz/QuizCreator.vue";
 import QuizRunnerMenu from "@/components/quiz/QuizRunnerMenu.vue";
-
+import UserProgressView from "@/views/user/UserProgressView.vue";
+import UserQuizzesView from "@/views/user/UserQuizzesView.vue";
+import UserProfileView from "@/views/user/UserProfileView.vue";
+import UserLoginView from "@/views/user/UserLoginView.vue";
+import CreateUserView from "@/views/user/CreateUserView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,19 +24,31 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: UserLogin,
+      component: UserLoginView,
       meta: {authRequired: false}
     },
     {
       path: '/register-user',
       name: 'register',
-      component: CreateUser,
+      component: CreateUserView,
       meta: {authRequired: false}
     },
     {
       path: '/user-profile',
       name: 'user-profile',
-      component: UserProfile,
+      component: UserProfileView,
+      meta: {authRequired: true}
+    },
+    {
+      path: '/user-progress',
+      name: 'user-progress',
+      component: UserProgressView,
+      meta: {authRequired: true}
+    },
+    {
+      path: '/user-quizzes',
+      name: 'user-quizzes',
+      component: UserQuizzesView,
       meta: {authRequired: true}
     },
     {
