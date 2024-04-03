@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import QuizRunner from "@/components/quiz/QuizRunner.vue";
+import QuizRunner from "@/components/quiz/QuizHandler/QuizRunner.vue";
 import {QuizService} from "@/services/QuizService";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import {ref} from "vue";
@@ -40,8 +40,6 @@ async function loadQuizFromServer() {
     <quiz-runner :quiz="quiz">
     </quiz-runner>
   </div>
-
-
 </template>
 
 <style scoped>
