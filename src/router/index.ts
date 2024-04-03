@@ -5,7 +5,7 @@ import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
 import NotFound from "@/components/navigation/NotFound.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
 import QuizCreator from "@/components/quiz/QuizCreator.vue";
-import QuizRunnerMenu from "@/components/quiz/QuizRunnerMenu.vue";
+import QuizRunnerMenu from "@/components/quiz/QuizHandler/QuizRunnerMenu.vue";
 import UserProgressView from "@/views/user/UserProgressView.vue";
 import UserQuizzesView from "@/views/user/UserQuizzesView.vue";
 import UserProfileView from "@/views/user/UserProfileView.vue";
