@@ -79,11 +79,11 @@ function preventSpace(event: any) {
 </script>
 
 <template>
-  <div id="user-profile">
+  <div class="user-profile">
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div id ="profile-info">
+    <div class="profile-info">
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
@@ -131,7 +131,7 @@ function preventSpace(event: any) {
 
 <style scoped>
 
-#user-profile {
+.user-profile {
   padding: 2%;
 }
 

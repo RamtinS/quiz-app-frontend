@@ -8,9 +8,9 @@ const userStore = useUserStore();
 </script>
 
 <template>
-  <header id="profile-header">
-    <img src="https://via.placeholder.com/150" alt="profile picture" id="profile-picture" />
-    <h3 id="profile-username">{{userStore.getUserData("username")}}</h3>
+  <header class="profile-header">
+    <img src="https://via.placeholder.com/150" alt="profile picture" class="profile-picture" />
+    <h3 class="profile-username">{{userStore.getUserData("username")}}</h3>
   </header>
 
   <nav>
@@ -19,23 +19,23 @@ const userStore = useUserStore();
     <RouterLink :to="{name: 'user-progress'}">Progress</RouterLink>
   </nav>
 
-  <hr id="separator">
+  <hr class="separator">
 
 </template>
 
 <style scoped>
 
-#profile-header {
+.profile-header {
   display: flex;
 }
 
-#profile-picture{
+.profile-picture{
   width: 8%;
   border-radius: 50%;
   border: 5px solid var(--primary);
 }
 
-#profile-username {
+.profile-username {
   margin-top: 3.4%;
   margin-left: 2%;
 }
@@ -63,7 +63,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-#separator {
+.separator {
   border: 1px solid var(--primary);
 }
 
