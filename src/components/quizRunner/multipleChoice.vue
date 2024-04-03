@@ -24,7 +24,4 @@ input {
   border-radius: 10px;
 }
 
-
-
-
 </style>

@@ -1,12 +1,12 @@
 <script async setup lang="ts">
 
 import {ref} from "vue";
-
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import router from "@/router";
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
 import MultipleChoiceAnswerPicker from "@/components/quiz/MultipleChoiceAnswerPicker.vue";
-
+import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 
 const props = defineProps(
     {
@@ -17,14 +17,11 @@ const props = defineProps(
     }
 );
 
-
 const quiz = ref(props.quiz as QuizDTO)
-console.log(JSON.stringify(quiz.value));
-
 
 const currentQuestionIndex = ref(0);
 
-const currentQuestion = ref<QuizQuestionDTO>(quiz.value.questions[currentQuestionIndex.value])
+let currentQuestion = ref<QuizQuestionDTO>(quiz.value.questions[currentQuestionIndex.value])
 
 
 const answerSubmitted = ref(false);
@@ -32,6 +29,15 @@ const answerIsCorrect = ref(false);
 const correctAnswerCounter = ref(0);
 const quizCompleted = ref(false);
 const restartMessage = ref("");
+
+function handleAnswer(answer: AnswerDTO) {
+  answerSubmitted.value = true;
+  answerIsCorrect.value = answer.correct;
+  if (answerIsCorrect) {
+    correctAnswerCounter.value ++;
+  }
+}
+
 
 function nextQuestion() {
   answerSubmitted.value = false
@@ -49,6 +55,7 @@ function nextQuestion() {
   } else {
     //TODO current question might also have to be updated here "manually"
     currentQuestionIndex.value++
+
   }
 }
 
@@ -66,7 +73,7 @@ function resetQuiz() {
 
 function questionIsMultipleChoice() {
   const dtoProperties = ['questionText', 'answers'];
-
+  console.log("MULTIPLECHOICE")
   for (const key in currentQuestion.value) {
     if (!dtoProperties.includes(key)) {
       return false;
@@ -77,7 +84,7 @@ function questionIsMultipleChoice() {
 
 function questionIsTrueOrFalse() {
   const dtoProperties = ['questionText', 'correctAnswer'];
-
+  console.log("TRUEFALSE")
   for (const key in currentQuestion.value) {
     if (!dtoProperties.includes(key)) {
       return false;
@@ -89,6 +96,30 @@ function questionIsTrueOrFalse() {
 </script>
 
 <template>
+  <div class="flex">
+
+    <div class="question-title">
+      <h1 v-if="currentQuestion">
+        {{ currentQuestion.questionText }}
+      </h1>
+    </div>
+
+    <div class="image-container">
+
+    </div>
+
+    <div class="answer-container">
+      <MultipleChoiceAnswerPicker
+          v-if="questionIsMultipleChoice()"
+          :question="currentQuestion"
+      @answer-selected="handleAnswer">
+      </MultipleChoiceAnswerPicker>
+    </div>
+
+
+  </div>
+
+
 
   <div id="finishedPrompt" v-show="quizCompleted">
     <h1>
@@ -101,24 +132,12 @@ function questionIsTrueOrFalse() {
       Restart quiz
     </button>
   </div>
-  <div id="question-container">
-    <h1 v-if="currentQuestion">
-      {{ currentQuestion }}
-    </h1>
-  </div>
-  <div id="answer-container">
-    <MultipleChoiceAnswerPicker
-        v-if="questionIsMultipleChoice()"
-        :question="currentQuestion">
-    </MultipleChoiceAnswerPicker>
-<!--TODO add more answer pickers, with v-else-->
 
-  </div>
+
   <div id="button-container">
     <button id="next-question"
             @click="nextQuestion"
-            v-show="answerSubmitted"
-    >
+            v-show="answerSubmitted">
       Next question
     </button>
   </div>
@@ -134,32 +153,23 @@ function questionIsTrueOrFalse() {
 }
 
 
-#answer-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.image-container {
+  height: 400px;
+  width: 90%;
+  background: red;
+}
 
-  padding: 0 10%;
+.flex {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 
 
-  div {
-    padding: 50px;
-    margin: 10px;
-    background-color: var(--question-color);
-    border-radius: 10px;
-  }
-
-  div:hover {
-    background-color: lightgrey;
-    cursor: pointer;
-  }
-
-  .correctAnswer {
-    background-color: green !important;
-  }
-
-  .wrongAnswer {
-    background-color: red !important;
-  }
+.answer-container {
+  width: 100%;
+  max-width: 700px;
 }
 
 #button-container {
@@ -210,6 +220,4 @@ function questionIsTrueOrFalse() {
 
 
 }
-
-
 </style>

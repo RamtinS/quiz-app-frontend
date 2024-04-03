@@ -16,7 +16,7 @@ import Quizrunbox from "@/components/quizRunner/quizrunbox.vue";
 
       <Suspense>
         <template #default>
-          <Quizrunbox></Quizrunbox>
+          <RouterView></RouterView>
         </template>
 
         <template #fallback>
