@@ -1,21 +1,21 @@
 <script async setup lang="ts">
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import router from "@/router";
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 import MultipleChoiceView from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
-import TrueFalsePicker from "@/components/quiz/QuizHandler/QuestionTypes/Boolean.vue";
+import TrueFalsePicker from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
 import InputFieldAnswer from "@/components/quiz/QuizHandler/QuestionTypes/TextInput.vue";
 import {QuestionTypeUtility} from "@/models/quiz/QuestionTypeUtility"
 import MultipleChoice from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
-import Boolean from "@/components/quiz/QuizHandler/QuestionTypes/Boolean.vue";
+import Boolean from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
 import {QuizAttemptService} from "@/services/QuizAttemptService";
-import {ContactRequestDTO} from "@/models/contact/ContactRequestDTO";
 import {FeedbackService} from "@/services/FeedbackService";
 import type {QuizAttemptDTO} from "@/models/quiz/QuizAttemptDTO";
 import QuizExit from "@/components/quiz/QuizHandler/QuestionTypes/QuizExit.vue";
+import BooleanChoice from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
 
 const props = defineProps(
     {
@@ -27,20 +27,34 @@ const props = defineProps(
 );
 
 let quiz = ref(props.quiz as QuizDTO)
-let questionIndex = ref(0);
-let currentQuestion = ref<QuizQuestionDTO>(quiz.value.questions[questionIndex.value])
-let score = 0;
 
-// Watch for changes in questionIndex and update currentQuestion accordingly
+const shuffledQuestions = computed(() => {
+  const questions = props.quiz?.questions.slice()
+
+  //Fisher-Yates-Shuffle-Algorithm
+  for (let i = questions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [questions[i], questions[j]] = [questions[j], questions[i]];
+  }
+
+  return questions;
+})
+
+let questions = shuffledQuestions;
+let questionIndex = ref(0);
+let currentQuestion = ref<QuizQuestionDTO>(questions.value[questionIndex.value])
+let score = 0;
+let quizCompleted = false;
+let restartMessage = ref("");
+
+/**
+ * Watcher which checks if the questionIndex gets updates.
+ * If so, updates the current question.
+ */
 watch(questionIndex, (newValue) => {
   currentQuestion.value = quiz.value.questions[newValue];
 });
 
-let answerSubmitted = false;
-let quizCompleted = false;
-
-console.log(quiz.questions)
-let restartMessage = ref("");
 
 /**
  * Handles various operations when an answer to a question has been given.
@@ -49,12 +63,11 @@ let restartMessage = ref("");
  * @param answer the chosen answer, which is to be verified for score points.
  */
 function handleAnswer(answer: AnswerDTO | any) {
-
   verifyAnswer(answer)
   isQuizComplete()
   questionIndex.value++
-
 }
+
 
 /**
  * Resets a quiz to its initial state.
@@ -63,9 +76,9 @@ function resetQuiz() {
   questionIndex.value = 0;
   currentQuestion.value = quiz.value.questions[questionIndex.value]
   score = 0
-  answerSubmitted = false;
   quizCompleted = false;
 }
+
 
 /**
  * Method for taking an answer and checking whether they are correct.
@@ -73,11 +86,12 @@ function resetQuiz() {
  *
  * @param answer is the answer in which we are going to check.
  */
-function verifyAnswer(answer: AnswerDTO | any) {
-  if (answer.correct || answer) {
+function verifyAnswer(answer: boolean) {
+  if (answer) {
     score++;
   }
 }
+
 
 /**
  * Checks to see if the quiz is finished.
@@ -92,12 +106,14 @@ function isQuizComplete() {
   }
 }
 
+
 /**
  * Method to return back to the previous site.
  */
 function returnToPreviousRouterPage() {
   router.go(-1)
 }
+
 
 /**
  * Checks whether the current question is of type boolean.
@@ -116,13 +132,16 @@ function isQuestionMultipleQuestion() {
   return QuestionTypeUtility.questionIsMultipleChoice(currentQuestion.value)
 }
 
-async function handleSubmit() {
 
+/**
+ * Handle submits for quiz attempts.
+ * Takes the score and id from quiz and sends it down to backend for persistent storage.
+ */
+async function handleSubmit() {
   const quizAttempt: QuizAttemptDTO = {
     score: score,
     quizId: quiz.quizId
   }
-
   try {
     await QuizAttemptService.sendQuizAttempt(quizAttempt);
     handleSubmissionSuccess();
@@ -134,19 +153,26 @@ async function handleSubmit() {
   }
 }
 
+
+/**
+ * General info for managing successive requests.
+ */
 function handleSubmissionSuccess() {
   console.log("Form successfully submitted!")
 }
 
+/**
+ * General info for managing errors.
+ */
 function handleSubmissionError(error: any) {
   let conformationMessage = "An error occurred during form submission.";
   console.log(conformationMessage, error);
 }
-
 </script>
 
 <template>
   <div class="flex">
+
     <div class="title-container">
       <h1 v-if="currentQuestion">
         {{ currentQuestion.questionText }}
@@ -160,16 +186,16 @@ function handleSubmissionError(error: any) {
     <div class="answer-container">
 
       <MultipleChoiceView
-          v-if="isQuestionMultipleQuestion() & !quizCompleted"
+          v-if="isQuestionMultipleQuestion() && !quizCompleted"
           :question="currentQuestion"
           @answer-selected="handleAnswer">
       </MultipleChoiceView>
 
-      <Boolean
-          v-if="isQuestionBoolean() & !quizCompleted"
+      <BooleanChoice
+          v-if="isQuestionBoolean() && !quizCompleted"
           :question="currentQuestion"
           @answer-selected="handleAnswer">
-      </Boolean>
+      </BooleanChoice>
 
       <QuizExit
           v-if=quizCompleted
@@ -179,12 +205,18 @@ function handleSubmissionError(error: any) {
           @restart-selected="resetQuiz"
           @save-selected="handleSubmit">
       </QuizExit>
+
     </div>
   </div>
-
-
 </template>
 
 <style scoped>
+.title-container {
+  text-align: center;
+}
+
+.answer-container {
+  min-width: 400px;
+}
 
 </style>
