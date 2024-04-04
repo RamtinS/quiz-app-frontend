@@ -1,4 +1,4 @@
-:root{
+:root {
     --primary: #084887ff;
     --primary-light: #A3ADCC;
     --secondary: #f58a07ff;
@@ -16,15 +16,17 @@ body {
 }
 
 
-
-
-*{
+* {
     font-family: "Inter", monospace;
     font-optical-sizing: auto;
     font-style: normal;
 }
 
 button:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
     cursor: pointer;
 }
 
