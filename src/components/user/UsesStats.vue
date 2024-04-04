@@ -1,13 +1,40 @@
 <script setup lang="ts">
 
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
+import {onMounted, ref} from "vue";
+import {UserService} from "@/services/UserService";
 
-const quizData = [5, 10, 20, 15, 35, 5, 20];
+const xScale = 80;
+const yScale = 30;
 
-const width = 700 ; // Width of the graph
-const height = 500; // Height of the graph
-const xScale = 80; // Scale for x-axis
-const yScale = 6; // Scale for y-axis
+const yAxisLabels = ref<Array<number>>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+const xAxisLabels = ref<Array<string>>(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+const quizData = ref<Array<number>>([0, 0, 0, 0, 0, 0, 0]);
+const totalAttempts = ref<number>(0);
+const totalScore = ref<number>(0);
+const errorMessage = ref<string>("")
+
+onMounted(async () => {
+  try {
+    const UserStatsDTO = await UserService.getUserStats();
+
+    const attemptsPerDayMap = UserStatsDTO.quizAttemptsPerDay;
+
+    if (Object.keys(attemptsPerDayMap).length > 0) {
+      quizData.value = Object.values(attemptsPerDayMap);
+      const dates = Object.keys(attemptsPerDayMap);
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      xAxisLabels.value = dates.map(dateString => days[new Date(dateString).getDay()]);
+    }
+
+    totalAttempts.value = UserStatsDTO.totalQuizAttempts;
+    totalScore.value = UserStatsDTO.totalScore;
+
+  } catch (err) {
+    errorMessage.value = "An error occurred while retrieving the statistics. Please try again later."
+    console.error(err);
+  }
+})
 
 </script>
 
@@ -16,13 +43,15 @@ const yScale = 6; // Scale for y-axis
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div class="grid-container">
+    <div v-if="errorMessage" class="error-message"> {{ errorMessage }} </div>
+
+    <div v-else class="grid-container">
 
       <div class="graph-container">
 
-        <p>The amount of quizzes completed the last 7 days</p>
+        <p class="graph-title">The amount of quizzes completed the last 7 days</p>
 
-        <svg :width="width" :height="height">
+        <svg width="700" height="450">
 
           <g id="y-axis" class="axis" >
             <line x1="120" y1="0" x2="120" y2="400"></line>
@@ -33,37 +62,18 @@ const yScale = 6; // Scale for y-axis
           </g>
 
           <g class="y-labels">
-
-            <text x="73" y="15">+65</text>
-            <text x="80" y="45">60</text>
-            <text x="80" y="75">55</text>
-            <text x="80" y="105">50</text>
-            <text x="80" y="135">45</text>
-            <text x="80" y="165">40</text>
-            <text x="80" y="195">35</text>
-            <text x="80" y="225">30</text>
-            <text x="80" y="255">25</text>
-            <text x="80" y="285">20</text>
-            <text x="80" y="315">15</text>
-            <text x="80" y="345">10</text>
-            <text x="85" y="375">5</text>
-            <text x="85" y="405">0</text>
+            <text v-for="(label, index) in yAxisLabels" :key="index" x="80" :y="405 - index * 30"> {{label}} </text>
             <text x="0" y="200" class="label-title">Quizzes</text>
           </g>
 
           <g class="x-labels">
-            <text x="100" y="430">Day 1</text>
-            <text x="180" y="430">Day 2</text>
-            <text x="260" y="430">Day 3</text>
-            <text x="340" y="430">Day 4</text>
-            <text x="420" y="430">Day 5</text>
-            <text x="500" y="430">Day 6</text>
-            <text x="580" y="430">Day 7</text>
+            <text v-for="(label, index) in xAxisLabels" :key="index" :x="100 + index * 82" y="430">{{ label }}</text>
           </g>
 
-          <!-- Data points and lines -->
           <template v-for="(quiz, index) in quizData" :key="index">
+
             <circle class="point" :cx="(index * xScale) + 120" :cy="400 - quiz * yScale" r="5"/>
+
             <line class="graph-line"
                   v-if="index > 0"
                   :x1="((index - 1) * xScale) + 120"
@@ -77,14 +87,17 @@ const yScale = 6; // Scale for y-axis
       </div>
 
       <div class="stats-container">
+
         <div class="stats-item">
-          <div class="stats-label">Total Quizzes Completed:</div>
-          <div class="stats-value">20</div>
+          <div class="stats-label">All-time completed quizzes:</div>
+          <div class="stats-value">{{ totalAttempts }}</div>
         </div>
+
         <div class="stats-item">
-          <div class="stats-label">Total Score:</div>
-          <div class="stats-value">350</div>
+          <div class="stats-label">All-time score:</div>
+          <div class="stats-value">{{ totalScore }}</div>
         </div>
+
       </div>
 
     </div>
@@ -100,17 +113,21 @@ const yScale = 6; // Scale for y-axis
 }
 
 .grid-container {
+  padding-left: 2%;
+  padding-right: 2%;
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  border: 4px solid purple;
 }
 
 .graph-container {
-  padding: 2%;
-
-  height: calc(100vh - 220px);
   overflow: auto;
-  border: 2px solid black;
+}
+
+.graph-title {
+  margin-top: 2%;
+  margin-bottom: 0;
+  text-align: center;
+  text-decoration: underline;
 }
 
 .axis {
@@ -123,8 +140,7 @@ const yScale = 6; // Scale for y-axis
 }
 
 svg {
-  padding-top: 3%;
-  border: 2px solid green;
+  padding-top: 2%;
 }
 
 .graph-line {
@@ -134,7 +150,6 @@ svg {
 
 .stats-container {
   padding: 2%;
-  border: 2px solid blue;
 }
 
 .stats-item {
@@ -151,6 +166,14 @@ svg {
 
 .stats-value {
   flex: 1;
+}
+
+.error-message {
+  color: red;
+  font-size: 150%;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10%;
 }
 
 @media (max-width: 700px) {
