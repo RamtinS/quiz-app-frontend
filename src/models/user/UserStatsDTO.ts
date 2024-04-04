@@ -1,5 +1,5 @@
 export type UserStatsDTO = {
-  quizAttemptsPerDay: Map<string, number>;
+  quizAttemptsLastSevenDays: Map<string, number>;
   totalQuizAttempts: number;
   totalScore: number;
 }

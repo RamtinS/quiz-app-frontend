@@ -8,8 +8,8 @@ const xScale = 80;
 const yScale = 30;
 
 const yAxisLabels = ref<Array<number>>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
-const xAxisLabels = ref<Array<string>>(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
-const quizData = ref<Array<number>>([0, 0, 0, 0, 0, 0, 0]);
+const xAxisLabels = ref<Array<string>>([])
+const quizData = ref<Array<number>>([]);
 const totalAttempts = ref<number>(0);
 const totalScore = ref<number>(0);
 const errorMessage = ref<string>("")
@@ -18,7 +18,7 @@ onMounted(async () => {
   try {
     const UserStatsDTO = await UserService.getUserStats();
 
-    const attemptsPerDayMap = UserStatsDTO.quizAttemptsPerDay;
+    const attemptsPerDayMap = UserStatsDTO.quizAttemptsLastSevenDays;
 
     if (Object.keys(attemptsPerDayMap).length > 0) {
       quizData.value = Object.values(attemptsPerDayMap);
