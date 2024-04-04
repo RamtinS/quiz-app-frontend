@@ -16,7 +16,7 @@ const userStore = useUserStore();
   <nav>
     <RouterLink :to="{name: 'user-profile'}">Profile</RouterLink>
     <RouterLink :to="{name: 'user-quizzes'}">Quizzes</RouterLink>
-    <RouterLink :to="{name: 'user-progress'}">Progress</RouterLink>
+    <RouterLink :to="{name: 'user-stats'}">Statistics</RouterLink>
   </nav>
 
   <hr class="separator">

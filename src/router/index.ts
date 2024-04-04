@@ -6,11 +6,11 @@ import NotFound from "@/components/navigation/NotFound.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
 import QuizCreator from "@/components/quiz/QuizCreator.vue";
 import QuizRunnerMenu from "@/components/quiz/QuizHandler/QuizRunnerMenu.vue";
-import UserProgressView from "@/views/user/UserProgressView.vue";
 import UserQuizzesView from "@/views/user/UserQuizzesView.vue";
 import UserProfileView from "@/views/user/UserProfileView.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import CreateUserView from "@/views/user/CreateUserView.vue";
+import UserStatsView from "@/views/user/UserStatsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,9 +40,9 @@ const router = createRouter({
       meta: {authRequired: true}
     },
     {
-      path: '/user-progress',
-      name: 'user-progress',
-      component: UserProgressView,
+      path: '/user-stats',
+      name: 'user-stats',
+      component: UserStatsView,
       meta: {authRequired: true}
     },
     {
