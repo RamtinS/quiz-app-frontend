@@ -3,7 +3,6 @@ import type {AxiosResponse} from 'axios';
 import axios from 'axios';
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
-
 export class QuizService {
   private static readonly api_url = "http://localhost:8080/api/v1/quiz-management"
 

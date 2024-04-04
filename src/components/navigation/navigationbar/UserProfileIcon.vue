@@ -22,7 +22,9 @@ function toggleCompressed() {
 <template>
   <div>
     <div id="my-account-preview" @click="toggleCompressed">
-      @{{ username }}
+      <div class="username-container">
+        @{{ username }}
+      </div>
       <img src="https://via.placeholder.com/40x40"
            alt="profile picture"
            id="profile-picture"/>
@@ -45,6 +47,9 @@ function toggleCompressed() {
   cursor: pointer;
 }
 
+.username-container {
+  font-size: 1em;
+}
 
 #profile-picture {
   margin-top: 5px;
