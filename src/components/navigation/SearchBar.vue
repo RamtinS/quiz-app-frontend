@@ -4,91 +4,62 @@ import {UserService} from "@/services/UserService";
 import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
-
+import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
+import {SearchService} from "@/services/SearchService";
 
 const search = ref<string>('')
-const searchShake = ref(false);
 const errorMessage = ref("")
 
-const previews = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
+const preview = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
 
-async function searchClicked() {
-  removeError()
-  try {
-    if (search.value === "") {
-      triggerError("Please enter something")
-      return
-    }
-
-    const result: PublicUserInformationDTO[] = await UserService.searchUserByUsername(search.value, 0, 10)
-
-
-    previews.value = result.map(user => ({
-      link: `/user/${user.username}`,
-      label: user.username,
-      authNeeded: false,
-      icon: "person"
-    }));
-
-
-
-    if (result.length === 0) {
-      triggerError("No results found")
-    }
-
-  } catch (err) {
-    triggerError("Could not connect to server")
-    console.error("error while searching: " + err)
+async function searchInteract() {
+  if (search.value === "") {
+    return
   }
-}
 
-function triggerError(message: string) {
-  errorMessage.value = message;
-  searchShake.value = true
-  setTimeout(() => {
-    searchShake.value = false
-  }, 1000)
-  return;
-}
+  //const publicUserResult: PublicUserInformationDTO[] = await UserService.searchUserByUsername(search.value, 0, 3)
+  const quizResult: QuizPreviewDTO[] = await SearchService.searchQuizzesByName(search.value, 0, 3)
 
-function removeError() {
-  errorMessage.value = ""
-}
+  console.log(quizResult)
 
-function clearSearch() {
-  search.value = ""
-  previews.value = []
-}
+  /*
+    preview.value = publicUserResult.map(user => ({
+    link: `/user/${user.username}`,
+    label: user.username,
+    authNeeded: false,
+    icon: "person"
+  }));
+   */
 
+
+
+  preview.value = quizResult.map(quizPreview => ({
+    link: ``,
+    label: quizPreview.title,
+    authNeeded: false,
+    icon: "help_center"
+  }));
+
+}
 </script>
 
 
 <template>
+  <div class="search-bar">
+    <span class="material-icons" title="search">
+      search
+    </span>
 
-  <div id="search-bar"
-       :class="[
-        (errorMessage) ? 'error' : 'noError',
-         searchShake ? 'shake' : '']"
-  >
-    <span class="material-icons"
-          title="search">search</span>
     <input type="text"
-           :placeholder="errorMessage ? errorMessage : 'Search'"
-           @keydown.enter="searchClicked"
-           v-model="search"
+           :placeholder="'Search'"
+           @keydown.capture="searchInteract"
+           @keydown.enter=""
+           v-model="search"/>
 
-    />
-    <DropDown v-if="previews && !errorMessage">
-      <RouterLinkBar :links="previews"></RouterLinkBar>
-    </DropDown>
-    <DropDown v-else-if="errorMessage && (search.length !== 0)">
-      <div id="errorMessage">
-        {{ errorMessage }}
-      </div>
+    <DropDown v-if="preview && !errorMessage">
+      <RouterLinkBar :links="preview"></RouterLinkBar>
     </DropDown>
   </div>
-
-
 </template>
 
 <style scoped>
@@ -98,22 +69,13 @@ h3 {
 }
 
 
-.error {
-  border: 1px solid red !important;
-
-  input::placeholder {
-    color: red;
-  }
-}
-
-
-#search-bar {
+.search-bar {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
-  padding: 5px;
+  border-radius: 6px;
+  padding: 10px;
   margin: 10px;
   background: white;
   border: 1px solid black;
@@ -128,11 +90,9 @@ h3 {
   }
 
   input {
-    flex-grow: 1;
     border-top-right-radius: inherit;
     border-bottom-right-radius: inherit;
     border: none;
-
   }
 
   span {
