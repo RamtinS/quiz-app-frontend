@@ -1,11 +1,10 @@
 import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
 import axios from "axios";
 import type {AxiosResponse} from 'axios';
-
+import type {UserStatsDTO} from "@/models/user/UserStatsDTO";
 
 export class UserService {
   private static readonly api_url = "http://localhost:8080/api/v1/users"
-
 
   public static async searchUserByUsername(username: string, page: number,
                                            pageSize: number): Promise<PublicUserInformationDTO[]> {
@@ -21,4 +20,12 @@ export class UserService {
     }
   }
 
+  public static async getUserStats() :Promise<UserStatsDTO> {
+    try {
+      const response: AxiosResponse<UserStatsDTO> = await axios.get(this.api_url + "/stats");
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
