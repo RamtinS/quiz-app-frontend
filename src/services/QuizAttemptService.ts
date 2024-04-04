@@ -1,7 +1,5 @@
 import axios from "axios";
-import type { AxiosResponse } from 'axios';
 import type { QuizAttemptDTO } from "@/models/quiz/QuizAttemptDTO";
-import type { QuizProgressDTO } from "@/models/quiz/QuizProgressDTO";
 
 export class QuizAttemptService {
 
