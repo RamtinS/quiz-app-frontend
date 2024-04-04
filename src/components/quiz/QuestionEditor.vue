@@ -12,62 +12,94 @@ const props = defineProps(
     }
 )
 
-const questionText = ref<String>('')
+
+const questionText = ref<String>(props.preExistingQuestion.questionText)
 const currentQuestion = ref(props.preExistingQuestion)
 const children = ref()
+const questionHasBeenSubmitted = ref<boolean>(false)
+const submissionErrorMessage = ref<String>("")
 
 
 const emit = defineEmits(['create-clicked'])
 
 watch(() => props.preExistingQuestion, (newValue) => {
   currentQuestion.value = newValue
-  // alert("between: "+ JSON.stringify(currentQuestion.value))
-
   questionText.value = newValue.questionText
 })
 
-function handleCreateClickedChild(receivedEmitData: any) {
-  let newQuestion = receivedEmitData.question as QuizQuestionDTO
-  newQuestion.questionText = questionText.value as string
-  emit('create-clicked', {questionIndex: props.questionIndex, question: newQuestion})
+
+function handleCreateClickedQuestionEditorChild(receivedEmitData: any) {
+  if (questionText.value === "") {
+    submissionErrorMessage.value = "Error: Question title cannot be empty"
+    return
+  }
+
+
+  let errorMessage = receivedEmitData.errorMessage as string
+  if (errorMessage) {
+    submissionErrorMessage.value = errorMessage
+    return
+  } else {
+    submissionErrorMessage.value = ""
+    let newQuestion = receivedEmitData.question as QuizQuestionDTO
+    newQuestion.questionText = questionText.value as string
+    emit('create-clicked', {questionIndex: props.questionIndex, question: newQuestion})
+  }
 }
 
-function submitChild() {
-  children.value.submitQuestion()
+function submitChildQuestion() {
+  const errorMessage = children.value.submitQuestion()
+  questionHasBeenSubmitted.value = true
+  if (errorMessage) {
+    submissionErrorMessage.value = errorMessage
+  }
 }
 
 </script>
 
 <template>
-  <div v-if="currentQuestion" id="question-editor">
+  <div v-if="currentQuestion"
+       id="question-editor"
+       @click="questionHasBeenSubmitted = false"
+  >
     <div id="header">
       <input id="question"
+             class="question-input"
              type="text"
-             placeholder="enter question"
+             placeholder="Enter a question"
              v-model="questionText">
     </div>
     <MultipleChoiceQuestionEditor ref="children"
                                   v-if="QuestionTypeUtility.questionIsMultipleChoice(currentQuestion)"
                                   :pre-existing-question="props.preExistingQuestion"
-                                  @submit-changes="handleCreateClickedChild"
+                                  @submit-changes="handleCreateClickedQuestionEditorChild"
     >
     </MultipleChoiceQuestionEditor>
     <TrueFalseQuestionEditor
         v-else-if="QuestionTypeUtility.questionIsTrueOrFalse(currentQuestion)"
         ref="children"
         :pre-existing-question="props.preExistingQuestion"
-        @submit-changes="handleCreateClickedChild"
+        @submit-changes="handleCreateClickedQuestionEditorChild"
     >
 
     </TrueFalseQuestionEditor>
     <div v-else id="incorrect-type-message">
       <p>Error: The question could not load properly as it seems to be of an invalid type</p>
     </div>
-    <div>
-      <!--      TODO add click functionality-->
-      <button @click="submitChild">
-        Confirm changes
+    <div class="question-submit-container">
+      <button class="question-submit-button"
+              @click.stop="submitChildQuestion"
+              v-if="!questionHasBeenSubmitted">
+        Submit question changes
       </button>
+      <div v-else class="shake">
+        <p v-if="submissionErrorMessage" class="error-message">
+          {{ submissionErrorMessage }}
+        </p>
+        <p v-else class="confirmation-message">
+          Question submitted successfully
+        </p>
+      </div>
     </div>
 
   </div>
@@ -82,6 +114,27 @@ function submitChild() {
 
 #incorrect-type-message {
   text-align: center;
+  color: red;
+}
+
+.question-input {
+  display: block;
+  margin: 20px auto 0;
+  text-align: center;
+  width: 25%;
+  height: 50px;
+}
+
+.question-submit-container {
+  display: flex;
+  justify-content: center;
+}
+
+.confirmation-message {
+  color: green;
+}
+
+.error-message {
   color: red;
 }
 

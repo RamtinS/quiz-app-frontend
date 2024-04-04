@@ -33,41 +33,48 @@ function previewClicked() {
 </script>
 
 <template>
-  <div id="question-preview"
+  <div class="question-preview"
        @click="previewClicked"
        :class="{selected: currentlySelected}"
   >
     <div id="question">
-      <p>({{ questionIndex }}) {{ question.questionText }} </p>
+      <p class="question-index">{{questionIndex + 1}}</p>
+      <p>{{ question.questionText }} </p>
     </div>
   </div>
 </template>
 
 <style scoped>
-#question-preview {
+.question-preview {
   border-radius: 10px;
   display: flex;
   background-color: whitesmoke;
   flex-direction: column;
   border: 3px solid lightgrey;
-
   overflow: hidden;
   word-wrap: break-word;
   hyphens: auto;
-
-  height: 200px;
+  max-width: 200px;
+  max-height: 200px;
   min-width: 200px;
   min-height: 200px;
 
-
-  :hover {
-    cursor: pointer;
-  }
-
+}
+.question-preview:hover {
+  cursor: pointer;
+  border: 3px solid black;
 }
 
 .selected{
-  border-color: cornflowerblue !important;
+  border-color: var(--question-color);
+}
+
+.question-index {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+  padding-top: 10px;
 }
 
 
