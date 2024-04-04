@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-
 import {useUserStore} from '@/stores/UserStore'
 
 defineProps({
@@ -37,6 +35,7 @@ function isAuthorized() {
   top: 100%;
   background: inherit;
   display: flex;
+
   flex-direction: column;
   border-radius: 10px;
   border: 1px solid black;
@@ -45,8 +44,6 @@ function isAuthorized() {
   .bar-item {
     display: flex;
     align-items: center;
-    padding-left: 10px;
-    padding-right: 20px;
     border-radius: inherit;
     height: 40px;
   }
@@ -70,19 +67,7 @@ function isAuthorized() {
     text-decoration: underline;
     text-decoration-color: lightgrey;
     white-space: nowrap;
-
-
   }
 }
 
-@media (max-width: 800px) {
-  .generic-dropdown {
-    border-radius: 0;
-  }
-  .bar-item {
-    width: 100vw;
-    padding: 0;
-  }
-
-}
 </style>

@@ -1,48 +1,52 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {UserService} from "@/services/UserService";
+import {ref, watch} from "vue";
+import { UserService } from "@/services/UserService";
 import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 import {SearchService} from "@/services/SearchService";
+import router from "@/router";
 
-const search = ref<string>('')
-const errorMessage = ref("")
-
-const preview = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
+const searchField = ref<string>('')
+let searchQuery = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
+let hideDropDown
 
 async function searchInteract() {
-  if (search.value === "") {
-    return
-  }
+  const publicUserResult: PublicUserInformationDTO[] = await SearchService.searchUserByUsername(searchField.value, 0, 3);
 
-  //const publicUserResult: PublicUserInformationDTO[] = await UserService.searchUserByUsername(search.value, 0, 3)
-  const quizResult: QuizPreviewDTO[] = await SearchService.searchQuizzesByName(search.value, 0, 3)
+  //const quizResult: QuizPreviewDTO[] = await SearchService.searchQuizzesByName(searchField.value, 0, 3);
 
-  console.log(quizResult)
-
-  /*
-    preview.value = publicUserResult.map(user => ({
+  searchQuery.value = publicUserResult.map(user => ({
     link: `/user/${user.username}`,
     label: user.username,
     authNeeded: false,
     icon: "person"
   }));
-   */
+
+}
+
+watch(searchField, () => {
+  searchInteract();
+  hideDropDown = searchField.value.length !== 0;
+})
+
+function onSearchEnter() {
+  router.push("/search-query")
+}
 
 
 
+
+/*
   preview.value = quizResult.map(quizPreview => ({
     link: ``,
     label: quizPreview.title,
     authNeeded: false,
     icon: "help_center"
   }));
-
-}
+ */
 </script>
-
 
 <template>
   <div class="search-bar">
@@ -50,15 +54,17 @@ async function searchInteract() {
       search
     </span>
 
-    <input type="text"
+    <input type="search"
            :placeholder="'Search'"
-           @keydown.capture="searchInteract"
-           @keydown.enter=""
-           v-model="search"/>
+           @keydown.enter="onSearchEnter"
+           v-model="searchField"/>
 
-    <DropDown v-if="preview && !errorMessage">
-      <RouterLinkBar :links="preview"></RouterLinkBar>
-    </DropDown>
+    <div class="dropdown-container">
+      <DropDown v-if="searchQuery && hideDropDown">
+        <RouterLinkBar :links="searchQuery"></RouterLinkBar>
+      </DropDown>
+    </div>
+
   </div>
 </template>
 
@@ -80,8 +86,8 @@ h3 {
   background: white;
   border: 1px solid black;
 
-
   span, input {
+
     background: inherit;
     outline: none;
     height: auto;
@@ -100,6 +106,7 @@ h3 {
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
   }
+
 }
 
 

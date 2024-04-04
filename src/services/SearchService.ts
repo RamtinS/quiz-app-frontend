@@ -2,6 +2,7 @@ import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformation
 import axios from "axios";
 import type {AxiosResponse} from 'axios';
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
+import type {SearchResultDTO} from "@/models/search/SearchResult";
 
 
 export class SearchService {
@@ -36,5 +37,7 @@ export class SearchService {
             throw err;
         }
     }
+
+
 
 }
