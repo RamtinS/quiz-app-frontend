@@ -3,6 +3,7 @@
 import {ref, watchEffect} from "vue";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
+import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
 
 const props = defineProps({
   preExistingQuestion: {type: Object as () => MultipleChoiceQuestionDTO, required: true},
@@ -38,22 +39,6 @@ defineExpose({
  */
 function submitQuestion() {
   console.log('submitting question in child')
-  const amountOfCorrectAnswers = inputAnswers.value.filter((answer) => answer.answerIsCorrect).length;
-  if (amountOfCorrectAnswers === 0) {
-    alert("You need to have at least one correct answer")
-    return
-  }
-  if (inputAnswers.value.length === 0) {
-    alert("You need to have at least one correct answer")
-    return
-  }
-
-  const emptyAnswers = inputAnswers.value.filter((answer) => answer.inputText === '')
-  if (emptyAnswers.length > 0) {
-    alert("You need to fill in all answers")
-    return
-  }
-
 
   const questionDTO: MultipleChoiceQuestionDTO = {
     questionType: "MultipleChoiceQuestionDTO",
@@ -66,20 +51,17 @@ function submitQuestion() {
     })
   }
 
-  emit('submit-changes', {question: questionDTO});
-  clearFields()
+  const errorMessage = QuizValidationUtility.multipleChoiceQuestionIsValid(questionDTO)
+
+  if (errorMessage){
+    emit('submit-changes', {question: null, errorMessage: errorMessage});
+  } else {
+    emit('submit-changes', {question: questionDTO, errorMessage: null});
+  }
 }
 
 
-/**
- * Clears the fields of the question editor, to enable creating a new question.
- */
-function clearFields() {
-  inputAnswers.value.forEach((question) => {
-    question.inputText = ''
-    question.answerIsCorrect = false
-  })
-}
+
 
 /**
  * Adds a new empty answer to the list of answers.
@@ -115,7 +97,6 @@ function removeAnswer() {
 </script>
 
 <template>
-
   <div id="question-editor">
 
     <div id="answers">
@@ -140,41 +121,32 @@ function removeAnswer() {
       <button @click="removeAnswer">
         Remove answer
       </button>
-
     </div>
-
-  </div>
-
-
-  <div id="debug" v-show="false">
-    {{ inputAnswers }}
   </div>
 </template>
 
 <style scoped>
 
 #question-editor {
-  border: 3px red dashed;
-  padding: 10px;
+  padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-
+  gap: 20px;
 }
 
 #answers {
   display: grid;
   grid-template-columns: auto auto;
   width: 100%;
-  gap: 10px;
+  gap: 25px;
 
 }
 
 .answer {
-  background-color: orangered;
+  background-color: var(--question-color);
   color: white;
-  border: 1px solid black;
+  border: 4px solid #b22028;
   height: 150px;
   display: flex;
   flex-direction: row;
@@ -183,10 +155,10 @@ function removeAnswer() {
   align-items: center;
 }
 
-
 .answer:hover {
-  border: 3px solid black;
+  border-color: black;
 }
+
 
 .answer-text {
   margin: 10px;
@@ -209,14 +181,26 @@ function removeAnswer() {
 }
 
 .correct-checkbox {
-
+  opacity: 0.7;
   height: 90%;
   aspect-ratio: 1/1;
+  margin-right: 10px;
 
 }
 
 .correct-checkbox:checked {
   background-color: indigo !important;
+  opacity: 1;
+}
+
+.correct-checkbox:not(:checked)::after {
+  content: "Toggle correct answer";
+  color: black;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  width: 100%;
+  height: 100%;
 }
 
 
