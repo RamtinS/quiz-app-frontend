@@ -8,7 +8,13 @@ const emit = defineEmits(['submit-tags']);
 
 const possibleTags = ref<TagDTO[]>([])
 const selectedTags = ref<TagDTO[]>([])
-const showDropDown = ref(true)
+const showDropDown = ref(false)
+
+
+const props = defineProps({
+  preSelectedTags: {type: Array as () => TagDTO[], required: true}
+})
+
 
 fetchPossibleTags()
 
@@ -27,6 +33,7 @@ function searchForTags() {
 
 
 function submitTags() {
+  showDropDown.value = false
   emit('submit-tags', selectedTags.value)
 }
 
@@ -55,14 +62,14 @@ function toggleDropdown() {
         </div>
 
       </div>
-      <div>
-        <button @click="submitTags">Submit</button>
+      <div >
+        <button class="save-button" @click="submitTags">Save</button>
       </div>
 
     </DropDown>
 
   </div>
-  <div id="debug" v-show="true">
+  <div id="debug" v-show="false">
     Selected: {{ selectedTags }}
   </div>
 
@@ -96,6 +103,12 @@ h3 {
   white-space: nowrap;
   overflow-x: hidden;
 
+}
+
+.save-button {
+  min-width: 300px;
+  max-width: 300px;
+  min-height: 50px;
 }
 
 
