@@ -12,18 +12,27 @@ import QuestionPreview from "@/components/quiz/QuestionPreview.vue";
 import QuestionEditor from "@/components/quiz/QuestionEditor.vue";
 import NewQuestionModal from "@/components/quiz/NewQuestionModal.vue";
 import type {TagDTO} from "@/models/quiz/TagDTO";
-import TagPicker from "@/components/quiz/TagPicker.vue";
+import QuestionSettingsModal from "@/components/quiz/QuizSettingsModal.vue";
+import type {QuizSettings} from "@/models/quiz/QuizSettings";
+import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
 
 
-const title = ref<string>('');
-const description = ref<string>('')
 const questionIndex = ref<number>(0)
-const isPublic = ref<boolean>(false)
 
-const showModal = ref<boolean>(false)
+const showQuestionTypeModal = ref<boolean>(false)
+const showQuizSettingsModal = ref<boolean>(false)
 
 const createdQuestions = ref<QuizQuestionDTO[]>([])
 const selectedTags = ref<TagDTO[]>([])
+
+const postQuizErrorMessage = ref<string>("")
+
+const quizSettings = ref<QuizSettings>({
+  title: '',
+  description: '',
+  open: false,
+  tags: []
+})
 
 //TODO delete test data
 const exampleMultipleChoice: MultipleChoiceQuestionDTO = {
@@ -54,7 +63,6 @@ const currentQuestion = computed(() => createdQuestions.value[questionIndex.valu
  * @param emitData - includes a question and where to put it in the array of questions.
  */
 const handleAddQuestionEmit = (emitData: { questionIndex: number, question: QuizQuestionDTO }) => {
-  alert(JSON.stringify(emitData));
 
   if (!emitData.question) {
     alert("no question")
@@ -77,19 +85,47 @@ function handlePreviewEmit(emitData: { questionIndex: number }) {
 function postQuizToServer() {
   console.log("trying to submit quiz")
 
-
-
+  if (quizSettings.value.title === '') {
+    postQuizErrorMessage.value = "You need to have a title"
+    return
+  }
 
   const quizCreationRequestDTO: QuizCreationRequestDTO =
       {
         type: "QuizCreationRequestDTO",
-        title: title.value,
-        description: description.value,
-        categoryDescription: "cat desc not implemented in frontend",
+        title: quizSettings.value.title,
+        description: quizSettings.value.title,
+        categoryDescription: quizSettings.value.description,
         questions: createdQuestions.value,
         tags: selectedTags.value,
         open: false
       }
+
+  for (let i = 0; i < createdQuestions.value.length; i++) {
+    const question: QuizQuestionDTO = createdQuestions.value[i];
+
+    if (question.questionText === "") {
+      postQuizErrorMessage.value = "Question number " + (i + 1) + " has no text"
+      return;
+    }
+
+    if (question.questionType === "MultipleChoiceQuestionDTO") {
+      const message = QuizValidationUtility.multipleChoiceQuestionIsValid(question as MultipleChoiceQuestionDTO)
+      if (message) {
+        postQuizErrorMessage.value = "Question " + (i + 1) + ": " + message
+        return;
+      }
+    } else if (question.questionType === "TrueOrFalseQuestionDTO") {
+      const message = QuizValidationUtility.trueOrFalseQuestionIsValid(question as TrueOrFalseQuestionDTO)
+      if (message) {
+        postQuizErrorMessage.value = "Question " + (i + 1) + ": " + message
+        return;
+      }
+    } else {
+      postQuizErrorMessage.value = "Question number " + (i + 1) + " has an unknown question type"
+      return;
+    }
+  }
 
   try {
     QuizCreationService.postQuizForLoggedInnUser(quizCreationRequestDTO)
@@ -99,19 +135,24 @@ function postQuizToServer() {
   }
 }
 
-function handleSubmitTags(TagDTOs: TagDTO[]) {
-  selectedTags.value = TagDTOs;
-  alert(selectedTags.value)
+function removeQuestionTypeModal() {
+  showQuestionTypeModal.value = false;
 }
 
-
-function removeModal() {
-  showModal.value = false;
+function removeQuizSettingsModal() {
+  showQuizSettingsModal.value = false;
 }
 
-function handleModalChoice(choice: QuestionType) {
-  showModal.value = false;
+function handleQuestionTypeModalChoice(choice: QuestionType) {
+  showQuestionTypeModal.value = false;
   addNewEmptyQuestion(choice);
+}
+
+function handleQuizSettingsModalSubmit(submitData: QuizSettings) {
+  postQuizErrorMessage.value = "";
+  quizSettings.value = submitData;
+  showQuizSettingsModal.value = false;
+  selectedTags.value = submitData.tags;
 }
 
 function addNewEmptyQuestion(questionType: QuestionType) {
@@ -164,37 +205,36 @@ function addNewEmptyQuestion(questionType: QuestionType) {
 </script>
 
 <template>
-  {{ createdQuestions }}
+  {{quizSettings}}
+
   <div id="quiz-creator">
 
     <div id="quiz-info">
-      <div>
-        <h1>Create a quiz</h1>
-      </div>
-      <div>
-        <label for="isPublic">Public:
-          <input type="checkbox"
-                 v-model="isPublic"/>
-        </label>
-
-        <label for="title">Title:
-          <input type="text"
-                 required
-                 v-model="title"/>
-        </label>
-
-        <label for="description">Description:
-          <input type="text"
-                 required
-                 v-model="description"/></label>
-        <TagPicker @submit-tags="handleSubmitTags">
-
-        </TagPicker>
+      <h1 v-if="quizSettings.title">
+        {{ quizSettings.title }}
+      </h1>
+      <h1 v-else>
+        Create a quiz
+      </h1>
+      <div class="button-container">
+        <button @click="showQuizSettingsModal=true">Edit quiz info</button>
+        <button v-if="!postQuizErrorMessage" @click="postQuizToServer">Submit quiz</button>
+        <p
+            v-if="postQuizErrorMessage"
+            class="post-quiz-error-message"
+        >
+          {{ postQuizErrorMessage }}
+        </p>
       </div>
 
-      <div>
-        <button @click="postQuizToServer">Post quiz</button>
-      </div>
+
+      <QuestionSettingsModal v-show="showQuizSettingsModal"
+                             @close-modal="removeQuizSettingsModal"
+                             @submit-settings-from-modal="handleQuizSettingsModalSubmit"
+                             :pre-existing-settings="quizSettings"
+      >
+      </QuestionSettingsModal>
+
     </div>
 
     <div id="question-editor">
@@ -208,10 +248,12 @@ function addNewEmptyQuestion(questionType: QuestionType) {
 
     </div>
 
-    <div id="previews">
-      <button id="add-question"
-              @click="showModal = true"
-      >Add new
+    <div id="previews" class="preview-container">
+      <button class="add-question-button"
+              @click="showQuestionTypeModal = true"
+      >
+        <span class="material-icons">add_box</span>
+        Add new question
       </button>
 
       <QuestionPreview
@@ -224,9 +266,9 @@ function addNewEmptyQuestion(questionType: QuestionType) {
       />
     </div>
     <NewQuestionModal
-        v-if="showModal"
-        @close-modal="removeModal"
-        @confirm-choice="handleModalChoice"
+        v-if="showQuestionTypeModal"
+        @close-modal="removeQuestionTypeModal"
+        @confirm-choice="handleQuestionTypeModalChoice"
     />
 
 
@@ -246,7 +288,7 @@ h1 {
   #quiz-creator {
     height: 100vh;
     grid-template-columns: 300px auto;
-    grid-template-rows: 200px auto;
+    grid-template-rows: 150px auto;
     grid-template-areas: "quiz-info quiz-info" "previews question-editor";
   }
 
@@ -258,7 +300,7 @@ h1 {
 
 @media (max-width: 900px) {
   #quiz-creator {
-    grid-template-rows: 200px auto;
+    grid-template-rows: 150px auto;
     grid-template-areas: "quiz-info"  "question-editor" "previews";
   }
 
@@ -268,27 +310,37 @@ h1 {
 }
 
 #quiz-creator {
-
+  background-color: white;
   display: grid;
-  background: rgb(200, 200, 200, 0.8);
-
 }
 
-#previews {
+.preview-container {
+  padding-top: 30px;
   display: flex;
-  border: 3px green solid;
   gap: 20px;
   align-items: center;
   overflow: scroll;
-
-
 }
 
+.add-question-button {
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: lightblue;
+  border: 3px solid grey;
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 200px;
+  min-height: 200px;
+}
 
-#add-question {
-  width: 80%;
-  min-height: 50px;
-  margin-top: 30px;
+.add-question-button:hover {
+  border: 3px solid black;
 }
 
 
@@ -298,10 +350,28 @@ h1 {
 
 #quiz-info {
   grid-area: quiz-info;
+  align-items: center;
+  background-color: lightblue;
+  display: flex;
+  flex-direction: column;
+
 }
 
-#question-editor {
-  grid-area: question-editor;
+.material-icons {
+  font-size: 100px;
+}
+
+.post-quiz-error-message {
+  color: red;
+  background-color: white;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
 }
 
 
