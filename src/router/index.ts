@@ -11,6 +11,8 @@ import UserQuizzesView from "@/views/user/UserQuizzesView.vue";
 import UserProfileView from "@/views/user/UserProfileView.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import CreateUserView from "@/views/user/CreateUserView.vue";
+import UserLogout from "@/components/user/UserLogout.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +28,15 @@ const router = createRouter({
       name: 'login',
       component: UserLoginView,
       meta: {authRequired: false}
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: UserLogout,
+      beforeEnter: (_to, _from, next) => {
+        logOut();
+        next();
+      }
     },
     {
       path: '/register-user',
@@ -87,6 +98,11 @@ const router = createRouter({
 function isAuthenticated() {
   const store = useUserStore();
   return store.isAuthenticated;
+}
+
+function logOut() {
+  const store = useUserStore();
+  store.logout();
 }
 
 router.beforeEach(async (to, from) => {

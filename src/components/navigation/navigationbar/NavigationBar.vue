@@ -16,6 +16,7 @@ const hamburgerLinks = ref([
 
 const profileLinks = ref([
   {link: '/user-profile', label: "Profile", authNeeded: false, icon: 'person'},
+  {link: '/logout', label: "Logout", authNeeded: false, icon: 'logout'},
 ]);
 
 </script>
@@ -63,9 +64,6 @@ const profileLinks = ref([
   .end-item {
     padding: 0
   }
-
-
-
 }
 
 .end-item {
