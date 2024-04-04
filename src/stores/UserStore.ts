@@ -3,14 +3,13 @@ import {defineStore} from 'pinia';
 import {LoginService} from "@/services/LoginService";
 import {CreateUserService} from "@/services/CreateUserService";
 import {UserDetailService} from "@/services/UserDetailService";
-import type {StoreDefinition} from 'pinia';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
 import type {UserDetailsDTO} from "@/models/user/UserDetailsDTO";
 import type {ErrorResponseDTO} from "@/models/ErrorResponseDTO";
 
-export const useUserStore :StoreDefinition<"user"> = defineStore('user', {
+export const useUserStore = defineStore('user', {
 
   state: () :{isAuthenticated: boolean} => ({
     isAuthenticated: false,

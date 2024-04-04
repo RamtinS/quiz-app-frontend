@@ -4,16 +4,24 @@
 import {ref} from "vue";
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
+import {useUserStore} from "@/stores/UserStore";
 
-const username = ref('Username');
+const userStore = useUserStore();
 
-
+const username = ref('Not logged in');
 const compressed = ref(true);
+username.value = userStore.getUserData("name")
 
+/**
+ * Router links for the dropdown
+ */
 defineProps({
   links: {type: Object, required: true},
 })
 
+/**
+ * Toggles the compressed state of the component, either showing or hiding the dropdown
+ */
 function toggleCompressed() {
   compressed.value = !compressed.value;
 }
@@ -45,7 +53,6 @@ function toggleCompressed() {
   cursor: pointer;
 }
 
-
 #profile-picture {
   margin-top: 5px;
   margin-bottom: 2px;
@@ -56,6 +63,5 @@ function toggleCompressed() {
 #profile-picture:hover {
   cursor: pointer;
 }
-
 
 </style>
