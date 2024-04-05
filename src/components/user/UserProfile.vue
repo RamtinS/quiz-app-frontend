@@ -29,7 +29,11 @@ async function toggleEdit() {
 
     try {
       await UserDetailService.editUserDetails(newUserDetails);
-      userStore.updateUserDetails(email.value, firstName.value, surname.value);
+      if (email.value !== "" && firstName.value !== "" && surname.value !== "") {
+        userStore.updateUserDetails(email.value, firstName.value, surname.value);
+      } else {
+        restoreUserDetails();
+      }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         switch (err.response.status) {
@@ -58,9 +62,7 @@ async function toggleEdit() {
         console.error("Failed to update user details. Unexpected error: ", err);
       }
 
-      email.value = userStore.getUserData("email");
-      firstName.value = userStore.getUserData("name");
-      surname.value = userStore.getUserData("surname");
+      restoreUserDetails();
 
       setTimeout(() => {
         errorMessage.value = '';
@@ -68,6 +70,12 @@ async function toggleEdit() {
     }
   }
   editMode.value = !editMode.value
+}
+
+function restoreUserDetails() {
+  email.value = userStore.getUserData("email");
+  firstName.value = userStore.getUserData("name");
+  surname.value = userStore.getUserData("surname");
 }
 
 function preventSpace(event: any) {
