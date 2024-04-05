@@ -43,7 +43,6 @@ const quizSettings = ref<QuizSettings>({
 })
 
 if (props.preExistingQuiz) {
-  alert("props.quiz: " + JSON.stringify(props.preExistingQuiz))
   const quiz: QuizDTO = props.preExistingQuiz
   quizSettings.value.title = props.preExistingQuiz.name
   quizSettings.value.description = quiz.description
@@ -113,7 +112,7 @@ async function postQuizToServer() {
         categoryDescription: quizSettings.value.description,
         questions: createdQuestions.value,
         tags: selectedTags.value,
-        open: false
+        open: quizSettings.value.open
       }
 
   for (let i = 0; i < createdQuestions.value.length; i++) {
@@ -145,7 +144,6 @@ async function postQuizToServer() {
   try {
 
     if (props.preExistingQuiz) {
-      alert(JSON.stringify(props.preExistingQuiz));
       await QuizCreationService.updateQuizForLoggedInUser(quizCreationRequestDTO, props.preExistingQuiz.quizId)
 
     } else {
@@ -153,7 +151,6 @@ async function postQuizToServer() {
     }
     quizHasBeenSubmitted.value = true;
   } catch (err) {
-    alert(err)
     postQuizErrorMessage.value = "There was an error handling your request: " + err
   }
 }
