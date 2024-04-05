@@ -25,6 +25,7 @@ export const useUserStore = defineStore('user', {
         } else {
           this.setAuthToken(response.token);
           await this.fetchUserDetails(username);
+          this.isAuthenticated = true;
         }
 
       } catch (err) {
@@ -40,9 +41,9 @@ export const useUserStore = defineStore('user', {
           throw new Error(response.errorMessage);
         } else {
           this.setAuthToken(response.token);
-
           this.storeUserData(createUserRequestDTO.username, createUserRequestDTO.email,
             createUserRequestDTO.name, createUserRequestDTO.surname);
+          this.isAuthenticated = true;
         }
 
       } catch (err) {
@@ -67,7 +68,6 @@ export const useUserStore = defineStore('user', {
     setAuthToken(token: string): void {
       sessionStorage.setItem("token", token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      this.isAuthenticated = true;
     },
 
     storeUserData(username: string, email: string, name: string, surname: string): void {
