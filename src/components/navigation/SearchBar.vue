@@ -5,15 +5,15 @@ import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformation
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
-import {SearchService} from "@/services/SearchService";
 import router from "@/router";
+import {QuizService} from "@/services/QuizService";
 
 const searchField = ref<string>('')
 let searchQuery = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
 let hideDropDown;
 
 async function searchInteract() {
-  const publicUserResult: PublicUserInformationDTO[] = await SearchService.searchUserByUsername(searchField.value, 0, 3);
+  const publicUserResult: PublicUserInformationDTO[] = await UserService.searchUserByUsername(searchField.value, 0, 3);
 
   searchQuery.value = publicUserResult.map(user => ({
     link: `/user/${user.username}`,

@@ -8,11 +8,15 @@ const previews = ref<QuizPreviewDTO[]>([])
 
 
 let page = ref(0);
+
+watch(page, async () => {
+  previews.value = await QuizService.getQuizBySpecifiedCriteria(10, page.value, searchField.value, searchByCategory, searchByTags)
+})
 const searchField = ref<string>('')
 
-let searchByCategory = true
+let searchByCategory = false
 
-let searchByTags = true
+let searchByTags = false
 
 
 function increasePage() {
@@ -83,10 +87,10 @@ if (!props.username){
 
       <div>
         <label for="tags">Search by tags</label>
-        <input name="tags" type="checkbox"  v-model="searchByTags" @change="changeTags">
+        <input name="tags" type="checkbox"  @change="changeTags">
 
         <label for="category">Search by category</label>
-        <input name="category" type="checkbox" v-model="searchByCategory" @change="changeCategory">
+        <input name="category" type="checkbox"  @change="changeCategory">
       </div>
 
     </div>
