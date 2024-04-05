@@ -4,7 +4,6 @@ import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
-import {returnValue} from "happy-dom/lib/PropertySymbol.d.ts.js";
 
 const username = ref('');
 const password = ref('');
