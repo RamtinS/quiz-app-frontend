@@ -70,4 +70,16 @@ function isAuthorized() {
   }
 }
 
+@media (max-width: 800px) {
+  .generic-dropdown {
+    border-radius: 0;
+  }
+  .bar-item {
+    width: 100vw;
+    padding: 0;
+  }
+
+}
+
+
 </style>

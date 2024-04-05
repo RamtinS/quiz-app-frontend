@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
+import {returnValue} from "happy-dom/lib/PropertySymbol.d.ts.js";
 
 const username = ref('');
 const password = ref('');
@@ -41,6 +42,13 @@ async function login() {
   }
 }
 
+const fieldsFilled = computed(() => {
+  return password.value.length !== 0 && username.value.length !== 0;
+})
+
+
+const allValid = computed(() => !fieldsFilled.value)
+
 watch([username, password], () => {
   errorMessage.value = '';
 });
@@ -70,15 +78,15 @@ watch([username, password], () => {
 
 
               <label for="fusername">Username:</label><br>
-              <input class="input" type="text" id="fusername" v-model="username" required/>
+              <input class="input" type="text" id="username" v-model="username" required/>
               <i class="fa fa-user icon"></i><br>
 
 
               <label for="fpassword">Password:</label><br>
-              <input class="input" type="password" id="fpassword" v-model="password" name="fpassword" required/>
+              <input class="input" type="password" id="password" v-model="password" name="fpassword" required/>
               <i class="fa fa-lock icon"></i><br>
 
-              <input type="submit" value="Login"/>
+              <input type="submit" value="Login" :disabled="allValid"/>
             </form>
         </div>
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -148,6 +156,14 @@ input[type=submit] {
   font-size: 16px;
 }
 
+input[type=submit]:hover {
+  background-color: #0f0e33;
+}
+
+input[type=submit]:disabled {
+  background-color: #8b8a98;
+}
+
 input[type="text"], input[type="password"]{
   border: 2px solid rgba(0, 0, 0, 0.17);
   font-weight: bold;
@@ -161,6 +177,7 @@ label {
   font-weight: bold;
   margin-top: 10px;
 }
+
 
 .error-message {
   color: red;

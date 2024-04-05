@@ -28,7 +28,6 @@ const props = defineProps(
   position: absolute;
   top: 100%;
   height: auto;
-  width: 100%;
 }
 
 .left {
