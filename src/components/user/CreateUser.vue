@@ -23,11 +23,11 @@ async function register() {
   }
 
   const user: CreateUserRequestDTO = {
-    username: username.value,
-    password: password.value,
-    email: email.value,
-    name: name.value,
-    surname: surname.value,
+    username: username.value.trim(),
+    password: password.value.trim(),
+    email: email.value.trim(),
+    name: name.value.trim(),
+    surname: surname.value.trim(),
   };
 
   try {
@@ -63,6 +63,12 @@ watch([username, password, confirmPassword, email, name, surname], () => {
   errorMessage.value = '';
 });
 
+function preventSpace(event: any) {
+  if (event.key === ' ' || event.code === 'Space') {
+    event.preventDefault();
+  }
+}
+
 </script>
 
 <template>
@@ -77,34 +83,40 @@ watch([username, password, confirmPassword, email, name, surname], () => {
 
             <div class="item-2">
               <label for="fusername">Username:</label>
-              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/>
+              <input type="text" id="fusername" v-model="username"
+                     placeholder="Enter your username" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-2">
               <label for="femail">Email:</label>
-              <input type="text" id="femail" v-model="email" placeholder="Email" required/>
+              <input type="text" id="femail" v-model="email"
+                     placeholder="Email" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-3">
               <label for="first-name">First name:</label>
-              <input type="text" id="first-name" v-model="name" placeholder="First name" required/>
+              <input type="text" id="first-name" v-model="name"
+                     placeholder="First name" required @keydown="preventSpace"/>
             </div>
 
 
               <div class="item-4">
                 <label for="sur-name">Sur name:</label>
-                <input type="text" id="sur-name" v-model="surname" placeholder="Surname" required/>
+                <input type="text" id="sur-name" v-model="surname"
+                       placeholder="Surname" required @keydown="preventSpace"/>
               </div>
 
 
             <div class="item-3">
               <label for="password">Password:</label>
-              <input class="input-field" type="password" id="password" v-model="password" placeholder="Enter your password" required/>
+              <input class="input-field" type="password" id="password" v-model="password"
+                     placeholder="Enter your password" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-4">
               <label for="confirm-password">Confirm Password:</label>
-              <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" required/>
+              <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword"
+                      placeholder="Confirm password" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-2 button">
