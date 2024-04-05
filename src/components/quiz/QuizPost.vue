@@ -4,7 +4,8 @@ import router from "@/router";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
 const props = defineProps({
-  post: {type: Object as () => QuizPreviewDTO, required: true}
+  post: {type: Object as () => QuizPreviewDTO, required: true},
+  isOwnedByUser: {type: Boolean, required: false, default: false}
 })
 
 
@@ -12,8 +13,9 @@ function startQuiz() {
   router.push({name: "quiz-runner", params: {quizId: props.post.id}})
 }
 
-
-
+function editQuiz(){
+  router.push({name: "quiz-editor", params: {quizId: props.post.id}});
+}
 
 </script>
 
@@ -23,7 +25,17 @@ function startQuiz() {
     <div id="quiz-image"></div>
     <div id="quiz-info">
       <p>{{ post.title }}</p>
-
+    </div>
+    <div v-if="props.isOwnedByUser"
+        class="edit-container"
+         @click.stop="editQuiz"
+    >
+      <p class="edit-message">
+        click to edit
+      </p>
+      <span class="material-icons">
+        edit
+      </span>
     </div>
   </div>
 </template>
@@ -47,18 +59,19 @@ p{
   display: flex;
   flex-direction: column;
   color: white;
+  position: relative;
 
 }
 
 #quiz-post:hover {
   cursor: pointer;
 
-  #quiz-info{
-    text-decoration: underline;
+  &:hover{
+    #quiz-info{
+      text-decoration: underline;
+    }
   }
 }
-
-
 
 #quiz-info{
   background-color: rgb(205, 103, 106);
@@ -68,4 +81,28 @@ p{
   padding-left: 5px;
 
 }
+
+.edit-container{
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+}
+
+.edit-container:hover{
+  .edit-message{
+    visibility: visible;
+  }
+}
+
+.edit-message{
+  padding-top: 5px;
+  visibility: hidden;
+}
+
+.material-icons {
+  font-size: 30px;
+}
+
+
 </style>

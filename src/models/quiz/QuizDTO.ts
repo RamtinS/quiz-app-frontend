@@ -2,7 +2,7 @@ import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 
 export type QuizDTO = {
     quizId: number;
-    title: string;
+    name: string;
     date: Date;
     creator: string;
     description: string;
@@ -10,4 +10,3 @@ export type QuizDTO = {
     open: boolean;
 }
 
-//TODO add image
