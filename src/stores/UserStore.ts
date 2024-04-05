@@ -12,7 +12,7 @@ import type {ErrorResponseDTO} from "@/models/ErrorResponseDTO";
 export const useUserStore = defineStore('user', {
 
   state: () :{isAuthenticated: boolean} => ({
-    isAuthenticated: false,
+    isAuthenticated: sessionStorage.getItem("isAuthenticated") === "true"
   }),
 
   actions: {
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', {
         } else {
           this.setAuthToken(response.token);
           await this.fetchUserDetails(username);
-          this.isAuthenticated = true;
+          this.setAuthenticationState();
         }
 
       } catch (err) {
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', {
           this.setAuthToken(response.token);
           this.storeUserData(createUserRequestDTO.username, createUserRequestDTO.email,
             createUserRequestDTO.name, createUserRequestDTO.surname);
-          this.isAuthenticated = true;
+          this.setAuthenticationState();
         }
 
       } catch (err) {
@@ -77,6 +77,11 @@ export const useUserStore = defineStore('user', {
       sessionStorage.setItem("surname", surname);
     },
 
+    setAuthenticationState() :void {
+      this.isAuthenticated = true;
+      sessionStorage.setItem("isAuthenticated", "true");
+    },
+
     getUserData(key: string): string {
       const value: string | null = sessionStorage.getItem(key);
       return (value !== null && value !== "null") ? value : '';
@@ -95,7 +100,7 @@ export const useUserStore = defineStore('user', {
 
     resetUserData(): void {
       this.isAuthenticated = false;
-
+      sessionStorage.removeItem("isAuthenticated");
       sessionStorage.removeItem("username");
       sessionStorage.removeItem("email");
       sessionStorage.removeItem("name");
