@@ -3,6 +3,7 @@
 import QuizBrowser from "@/components/quiz/QuizBrowser.vue";
 import {useUserStore} from "@/stores/UserStore";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
+import PersonalQuizView from "@/components/quiz/PersonalQuizView.vue";
 
 const userStore = useUserStore();
 
@@ -13,13 +14,7 @@ const userStore = useUserStore();
   <div class="user-quizzes">
 
     <UserProfileHeader></UserProfileHeader>
-
-    <QuizBrowser :title="'All user quizzes'"
-                 :username="userStore.getUserData('username')"
-                 :quizzes-are-from-current-user="true"
-    ></QuizBrowser>
-
-
+    <PersonalQuizView></PersonalQuizView>
   </div>
 
 </template>
