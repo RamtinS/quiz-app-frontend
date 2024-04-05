@@ -15,4 +15,17 @@ export class QuizCreationService {
             throw err;
         }
     }
+
+    public static async updateQuizForLoggedInUser(quiz: QuizCreationRequestDTO, quizId: number): Promise<QuizCreationResponseDTO> {
+        alert("quizId in service: " + quizId)
+        try {
+            const result: AxiosResponse<QuizCreationResponseDTO> = await axios.put(this.api_url +
+              "/quizzes/" + quizId,
+              quiz);
+            return result.data;
+        } catch (err) {
+            console.log('error in quiz service: ' + err);
+            throw err;
+        }
+    }
 }
