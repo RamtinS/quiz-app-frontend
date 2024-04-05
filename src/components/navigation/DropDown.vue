@@ -2,34 +2,33 @@
 
 const props = defineProps(
     {
-      left: {type: Boolean, required: false, default: false},
-    }
-)
-
-
+      left: {
+        type: Boolean,
+        required: false,
+        default: false
+      },
+    })
 
 </script>
 
 <template>
 
   <div
-      id="dropdown"
-      :class="[left ? 'left' : 'right']"
-  >
+      class="dropdown"
+      :class="[left ? 'left' : 'right']">
     <slot>
     </slot>
   </div>
+
 </template>
 
 <style scoped>
 
-
-
-#dropdown {
+.dropdown {
   position: absolute;
   top: 100%;
   height: auto;
-
+  width: 100%;
 }
 
 .left {
@@ -39,8 +38,5 @@ const props = defineProps(
 .right {
   right: 0;
 }
-
-
-
 
 </style>

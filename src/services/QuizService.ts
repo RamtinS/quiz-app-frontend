@@ -3,7 +3,6 @@ import type {AxiosResponse} from 'axios';
 import axios from 'axios';
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
-
 export class QuizService {
   private static readonly api_url = "http://localhost:8080/api/v1/quiz-management"
 
@@ -47,9 +46,9 @@ export class QuizService {
     }
   }
 
-  public static async searchQuizByTitle(title: string, page: number, pageSize: number): Promise<QuizPreviewDTO[]> {
+  public static async getQuizBySpecifiedCriteria( pageSize: number, page: number, title: string, searchInCategory: boolean, searchInTags: boolean): Promise<QuizPreviewDTO[]> {
     try {
-      const url = this.api_url + "/browser/previews" + `?pageSize=${pageSize}&page=${page}&search=${title}`;
+      const url = this.api_url + "/browser/search" + `?pageSize=${pageSize}&page=${page}&title=${title}&searchInCategory=${searchInCategory}&searchInTags=${searchInTags}`;
       console.log("url: " + url);
       const result: AxiosResponse<QuizPreviewDTO[]> = await axios.get(url);
       return result.data;
@@ -58,7 +57,13 @@ export class QuizService {
       console.log('error: ' + err);
       throw err;
     }
+
   }
+
+
+
+
+
 
 
 
