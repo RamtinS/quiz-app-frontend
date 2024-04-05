@@ -1,16 +1,22 @@
 <script setup lang="ts">
 
-
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import {useUserStore} from "@/stores/UserStore";
 
 const userStore = useUserStore();
+const username = ref<string>('Not logged in');
+const compressed = ref<boolean>(true);
 
-const username = ref('Not logged in');
-const compressed = ref(true);
-username.value = userStore.getUserData("name")
+watch(() => userStore.isAuthenticated, (newValue) => {
+  if (newValue) {
+    username.value = userStore.getUserData("username");
+    console.log(username.value);
+  } else {
+    username.value = "Not logged in";
+  }
+});
 
 /**
  * Router links for the dropdown
@@ -25,12 +31,13 @@ defineProps({
 function toggleCompressed() {
   compressed.value = !compressed.value;
 }
+
 </script>
 
 <template>
   <div>
     <div id="my-account-preview" @click="toggleCompressed">
-      @{{ username }}
+      {{ username }}
       <img src="https://via.placeholder.com/40x40"
            alt="profile picture"
            id="profile-picture"/>
