@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserProgress from "@/components/user/UserProgress.vue";
+import UserProgress from "@/components/user/UsesStats.vue";
 </script>
 
 <template>
