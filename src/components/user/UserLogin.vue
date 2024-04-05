@@ -5,15 +5,15 @@ import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
 
-const username = ref('');
-const password = ref('');
-const errorMessage = ref('');
+const username = ref<string>('');
+const password = ref<string>('');
+const errorMessage = ref<string>('');
 const store = useUserStore();
 const route = useRoute();
 
 async function login() {
   try {
-    await store.loginUser(username.value, password.value);
+    await store.loginUser(username.value.trim(), password.value.trim());
     if (route.query.redirect) {
       await router.push(route.query.redirect as string)
     } else {
@@ -45,12 +45,17 @@ const fieldsFilled = computed(() => {
   return password.value.length !== 0 && username.value.length !== 0;
 })
 
-
 const allValid = computed(() => !fieldsFilled.value)
 
 watch([username, password], () => {
   errorMessage.value = '';
 });
+
+function preventSpace(event: any) {
+  if (event.key === ' ' || event.code === 'Space') {
+    event.preventDefault();
+  }
+}
 
 </script>
 
@@ -77,12 +82,12 @@ watch([username, password], () => {
 
 
               <label for="fusername">Username:</label><br>
-              <input class="input" type="text" id="username" v-model="username" required/>
+              <input class="input" type="text" id="username" v-model="username" required @keydown="preventSpace"/>
               <i class="fa fa-user icon"></i><br>
 
 
               <label for="fpassword">Password:</label><br>
-              <input class="input" type="password" id="password" v-model="password" name="fpassword" required/>
+              <input class="input" type="password" id="password" v-model="password" name="fpassword" required @keydown="preventSpace"/>
               <i class="fa fa-lock icon"></i><br>
 
               <input type="submit" value="Login" :disabled="allValid"/>
