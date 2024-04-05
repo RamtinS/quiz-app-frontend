@@ -11,6 +11,8 @@ import UserProfileView from "@/views/user/UserProfileView.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import CreateUserView from "@/views/user/CreateUserView.vue";
 import UserLogout from "@/components/user/UserLogout.vue";
+import QuizEditWrapper from "@/components/quiz/QuizEditWrapper.vue";
+
 import UserStatsView from "@/views/user/UserStatsView.vue";
 
 const router = createRouter({
@@ -84,6 +86,11 @@ const router = createRouter({
       name: 'quiz-creator',
       component: QuizCreator,
       meta: {authRequired: false}
+    },
+    {
+      path: '/quiz-editor/:quizId',
+      name: 'quiz-editor',
+      component: QuizEditWrapper,
     },
     {
       path: '/:pathName(.*)',
