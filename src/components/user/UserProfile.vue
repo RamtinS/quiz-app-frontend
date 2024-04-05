@@ -17,7 +17,7 @@ const errorMessage = ref('');
 
 async function toggleEdit() {
 
-  if (editMode.value) {
+  if (editMode.value && userDetailsChanged()) {
     const newUserDetails: EditUserDTO = {
       newPassword: password.value,
       newEmail: email.value,
@@ -70,6 +70,15 @@ async function toggleEdit() {
     }
   }
   editMode.value = !editMode.value
+}
+
+function userDetailsChanged(): boolean {
+  return (
+      email.value !== userStore.getUserData("email") ||
+      firstName.value !== userStore.getUserData("name") ||
+      surname.value !== userStore.getUserData("surname") ||
+      password.value !== ""
+  );
 }
 
 function restoreUserDetails() {
