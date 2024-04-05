@@ -14,6 +14,7 @@ import UserLogout from "@/components/user/UserLogout.vue";
 import QuizEditWrapper from "@/components/quiz/QuizEditWrapper.vue";
 
 import UserStatsView from "@/views/user/UserStatsView.vue";
+import PublicProfile from "@/components/user/PublicProfile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +92,11 @@ const router = createRouter({
       path: '/quiz-editor/:quizId',
       name: 'quiz-editor',
       component: QuizEditWrapper,
+    },
+    {
+      path: '/user/:username',
+      name: 'profile-viewer',
+      component: PublicProfile,
     },
     {
       path: '/:pathName(.*)',

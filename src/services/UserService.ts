@@ -28,4 +28,15 @@ export class UserService {
       throw err;
     }
   }
+
+  public static async getPublicUserInformationFromUsername(username: string): Promise<PublicUserInformationDTO> {
+    try {
+      const request = this.api_url + "/" + username + "/public-info";
+      console.log("request: " + request);
+      const response: AxiosResponse<PublicUserInformationDTO> = await axios.get(request);
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
