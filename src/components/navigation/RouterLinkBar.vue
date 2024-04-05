@@ -17,7 +17,7 @@ function isAuthorized() {
 
 <template>
   <div class="generic-dropdown">
-    <router-link class="router-link" v-for="(value, index) in links" :key="index" :to="value.link">
+    <router-link class="router-link" v-for="(value, index) in links" :id="value.id" :key="index" :to="value.link">
 
       <div class="bar-item" v-if="!value.authNeeded || isAuthorized()">
         <span class="material-icons">{{ value.icon }}</span>

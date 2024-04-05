@@ -180,7 +180,7 @@ function handleSubmissionError(error: any) {
     </div>
 
     <div class="image-container">
-
+      <img src="../../../assets/images/detective.png" height="200" width="200" alt="Quiz Picture"/>
     </div>
 
     <div class="answer-container">
@@ -205,18 +205,29 @@ function handleSubmissionError(error: any) {
           @restart-selected="resetQuiz"
           @save-selected="handleSubmit">
       </QuizExit>
-
     </div>
   </div>
 </template>
 
 <style scoped>
+
 .title-container {
   text-align: center;
 }
 
 .answer-container {
   min-width: 400px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  width: 300px;
+  height: auto;
 }
 
 </style>

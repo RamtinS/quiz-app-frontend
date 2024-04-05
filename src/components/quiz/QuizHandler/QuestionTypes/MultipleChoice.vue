@@ -1,7 +1,9 @@
 <script setup lang="ts" generic="">
 import type { MultipleChoiceQuestionDTO } from "@/models/quiz/MultipleChoiceQuestionDTO";
-import { computed } from "vue";
+import {computed, ref} from "vue";
+import router from "@/router";
 
+const errorMessage = ref("");
 const emit = defineEmits(['answer-selected'])
 const props = defineProps(
     {
@@ -9,27 +11,49 @@ const props = defineProps(
     }
 );
 
+/**
+ * Method to return back to the previous site.
+ */
+function returnToPreviousRouterPage() {
+  router.go(-1)
+}
+
+
 //Fisher-Yates-Shuffle-Algorithm
 const shuffledQuestions = computed(() => {
-  const answers = props.question?.answers.slice()
+  try {
+    const answers = props.question?.answers.slice()
 
-  for (let i = answers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [answers[i], answers[j]] = [answers[j], answers[i]];
+    for (let i = answers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [answers[i], answers[j]] = [answers[j], answers[i]];
+    }
+    return answers;
+  } catch (err) {
+    errorMessage.value = "An error happened" + err;
   }
-  return answers;
 })
 
 </script>
 
 <template>
-    <div class="grid-container">
+    <div v-if="!errorMessage" class="grid-container" >
       <button
           v-for="(answer, index) in shuffledQuestions" :key="index"
           @click="emit('answer-selected', answer.correct)"
           :class="['button-type', `button-type-${index}`]">
 
         {{ answer.answerText }}
+
+        <div class="error-container" v-if="errorMessage">
+          <h1>
+            {{ errorMessage }}
+          </h1>
+
+          <button @click="returnToPreviousRouterPage">
+            Exit Quiz
+          </button>
+        </div>
 
       </button>
     </div>
@@ -42,6 +66,7 @@ const shuffledQuestions = computed(() => {
   max-width: 800px;
   margin: auto;
 }
+
 
 button {
   border-radius: 10px;
