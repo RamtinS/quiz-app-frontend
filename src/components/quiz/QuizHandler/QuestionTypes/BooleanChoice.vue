@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { TrueOrFalseQuestionDTO } from "@/models/quiz/TrueOrFalseQuestionDTO";
+import router from "@/router";
+import {ref} from "vue";
 
+const errorMessage = ref("");
 const emit = defineEmits(['answer-selected'])
 const props = defineProps(
     {
@@ -10,12 +13,26 @@ const props = defineProps(
 
 let questions = props.question;
 
+try {
+   questions = props.question;
+} catch (err) {
+  errorMessage.value = "An error happened" + err;
+}
+
+
 function verifyAnswer(value: boolean) {
   let isAnswerCorrect = questions?.questionIsCorrect == value
   console.log(isAnswerCorrect)
   emit('answer-selected', isAnswerCorrect)
 }
 
+
+/**
+ * Method to return back to the previous site.
+ */
+function returnToPreviousRouterPage() {
+  router.go(-1)
+}
 </script>
 
 <template>
@@ -23,6 +40,17 @@ function verifyAnswer(value: boolean) {
     <button class="button-1" @click="verifyAnswer(true)">True</button>
     <button class="button-2" @click="verifyAnswer(false)">False</button>
   </div>
+
+  <div class="error-container" v-if="errorMessage">
+    <h1>
+      {{ errorMessage }}
+    </h1>
+
+    <button @click="returnToPreviousRouterPage">
+      Exit Quiz
+    </button>
+  </div>
+
 </template>
 
 <style scoped>

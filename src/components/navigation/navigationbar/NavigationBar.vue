@@ -25,14 +25,12 @@ const profileLinks = ref([
   <div id="navigation-bar">
 
     <HamburgerSidebar :links="hamburgerLinks"
-                      class="end-item"
-    ></HamburgerSidebar>
+                      class="end-item"></HamburgerSidebar>
     <SearchBar>
     </SearchBar>
     <MyAccountPreview id="right-preview"
                       class="end-item"
-                      :links="profileLinks"
-    >
+                      :links="profileLinks">
     </MyAccountPreview>
 
   </div>
