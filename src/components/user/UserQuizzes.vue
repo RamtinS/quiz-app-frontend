@@ -10,13 +10,9 @@ const userStore = useUserStore();
 </script>
 
 <template>
-
   <div class="user-quizzes">
-
-    <UserProfileHeader></UserProfileHeader>
     <PersonalQuizView></PersonalQuizView>
   </div>
-
 </template>
 
 <style scoped>
