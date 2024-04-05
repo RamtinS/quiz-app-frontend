@@ -51,7 +51,8 @@ function decreasePage() {
 const props = defineProps(
   {
     title: {type: String, required: false, default: "Browse quizzes:"},
-    username: {type: String, required: false} //use field when browsing other user profiles
+    username: {type: String, required: false}, //use field when browsing other user profiles
+    quizzesAreFromCurrentUser: {type: Boolean, required: false, default: false}
   }
 )
 
@@ -99,6 +100,7 @@ if (!props.username){
       <QuizPost v-for="(quiz, index) in previews"
                 :key="index"
                 :post="quiz"
+                :is-owned-by-user="quizzesAreFromCurrentUser"
                 class="quiz-post"
       >
       </QuizPost>
@@ -113,7 +115,7 @@ if (!props.username){
       <button @click="increasePage">
         Next
       </button>
-    </div>
+    </div>¨
   </div>
 
 </template>
