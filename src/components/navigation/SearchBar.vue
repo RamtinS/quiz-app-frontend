@@ -10,12 +10,10 @@ import router from "@/router";
 
 const searchField = ref<string>('')
 let searchQuery = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
-let hideDropDown
+let hideDropDown;
 
 async function searchInteract() {
   const publicUserResult: PublicUserInformationDTO[] = await SearchService.searchUserByUsername(searchField.value, 0, 3);
-
-  //const quizResult: QuizPreviewDTO[] = await SearchService.searchQuizzesByName(searchField.value, 0, 3);
 
   searchQuery.value = publicUserResult.map(user => ({
     link: `/user/${user.username}`,
@@ -23,7 +21,6 @@ async function searchInteract() {
     authNeeded: false,
     icon: "person"
   }));
-
 }
 
 watch(searchField, () => {
@@ -35,17 +32,6 @@ function onSearchEnter() {
   router.push("/search-query")
 }
 
-
-
-
-/*
-  preview.value = quizResult.map(quizPreview => ({
-    link: ``,
-    label: quizPreview.title,
-    authNeeded: false,
-    icon: "help_center"
-  }));
- */
 </script>
 
 <template>
@@ -67,13 +53,11 @@ function onSearchEnter() {
 
   </div>
 </template>
-
 <style scoped>
 
 h3 {
   text-align: center;
 }
-
 
 .search-bar {
   position: relative;
