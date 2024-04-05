@@ -11,7 +11,6 @@ import UserQuizzesView from "@/views/user/UserQuizzesView.vue";
 import UserProfileView from "@/views/user/UserProfileView.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import CreateUserView from "@/views/user/CreateUserView.vue";
-import SearchResult from "@/components/navigation/SearchResult.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,12 +73,6 @@ const router = createRouter({
       path: '/quiz-creator',
       name: 'quiz-creator',
       component: QuizCreator,
-      meta: {authRequired: false}
-    },
-    {
-      path: '/search-query',
-      name: 'search-query',
-      component: SearchResult,
       meta: {authRequired: false}
     },
     {
