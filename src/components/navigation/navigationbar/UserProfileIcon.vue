@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import DropDown from "@/components/navigation/DropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import {useUserStore} from "@/stores/UserStore";
@@ -9,10 +9,17 @@ const userStore = useUserStore();
 const username = ref<string>('Not logged in');
 const compressed = ref<boolean>(true);
 
+onMounted(() => {
+  if (userStore.isAuthenticated) {
+    username.value = userStore.getUserData("username");
+  } else {
+    username.value = "Not logged in";
+  }
+})
+
 watch(() => userStore.isAuthenticated, (newValue) => {
   if (newValue) {
     username.value = userStore.getUserData("username");
-    console.log(username.value);
   } else {
     username.value = "Not logged in";
   }
