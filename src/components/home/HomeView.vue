@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <p>
+  <p id="welcome">
     Welcome to the home page
   </p>
 </template>
