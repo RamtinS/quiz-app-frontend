@@ -15,6 +15,14 @@ import type {TagDTO} from "@/models/quiz/TagDTO";
 import QuestionSettingsModal from "@/components/quiz/QuizSettingsModal.vue";
 import type {QuizSettings} from "@/models/quiz/QuizSettings";
 import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
+import type {QuizDTO} from "@/models/quiz/QuizDTO";
+
+
+const props = defineProps({
+  preExistingQuiz: {type: Object as () => QuizDTO, required: false}
+})
+
+const quizHasBeenSubmitted = ref<boolean>(false)
 
 
 const questionIndex = ref<number>(0)
@@ -34,26 +42,37 @@ const quizSettings = ref<QuizSettings>({
   tags: []
 })
 
-//TODO delete test data
-const exampleMultipleChoice: MultipleChoiceQuestionDTO = {
-  questionType: "MultipleChoiceQuestionDTO",
-  questionText: 'What is the capital of France?',
-  answers: [
-    {answerText: 'Paris', correct: true},
-    {answerText: 'London', correct: false},
-    {answerText: 'Berlin', correct: false},
-    {answerText: 'Madrid', correct: false}
-  ]
+if (props.preExistingQuiz) {
+  alert("props.quiz: " + JSON.stringify(props.preExistingQuiz))
+  const quiz: QuizDTO = props.preExistingQuiz
+  quizSettings.value.title = props.preExistingQuiz.name
+  quizSettings.value.description = quiz.description
+  quizSettings.value.open = quiz.open
+  createdQuestions.value = quiz.questions
+
+} else {
+  //TODO delete test data
+  const exampleMultipleChoice: MultipleChoiceQuestionDTO = {
+    questionType: "MultipleChoiceQuestionDTO",
+    questionText: 'What is the capital of France?',
+    answers: [
+      {answerText: 'Paris', correct: true},
+      {answerText: 'London', correct: false},
+      {answerText: 'Berlin', correct: false},
+      {answerText: 'Madrid', correct: false}
+    ]
+  }
+
+  const exampleTrueFalse = {
+    questionType: "TrueOrFalseQuestionDTO",
+    questionText: 'Is the sky blue?',
+    questionIsCorrect: true
+  }
+
+  createdQuestions.value.push(exampleMultipleChoice)
+  createdQuestions.value.push(exampleTrueFalse)
 }
 
-const exampleTrueFalse = {
-  questionType: "TrueOrFalseQuestionDTO",
-  questionText: 'Is the sky blue?',
-  questionIsCorrect: true
-}
-
-createdQuestions.value.push(exampleMultipleChoice)
-createdQuestions.value.push(exampleTrueFalse)
 
 const currentQuestion = computed(() => createdQuestions.value[questionIndex.value])
 
@@ -64,9 +83,6 @@ const currentQuestion = computed(() => createdQuestions.value[questionIndex.valu
  */
 const handleAddQuestionEmit = (emitData: { questionIndex: number, question: QuizQuestionDTO }) => {
 
-  if (!emitData.question) {
-    alert("no question")
-  }
   createdQuestions.value[emitData.questionIndex] = emitData.question
 }
 
@@ -82,7 +98,7 @@ function handlePreviewEmit(emitData: { questionIndex: number }) {
 /**
  * Posts the quiz to the server.
  */
-function postQuizToServer() {
+async function postQuizToServer() {
   console.log("trying to submit quiz")
 
   if (quizSettings.value.title === '') {
@@ -92,7 +108,6 @@ function postQuizToServer() {
 
   const quizCreationRequestDTO: QuizCreationRequestDTO =
       {
-        type: "QuizCreationRequestDTO",
         title: quizSettings.value.title,
         description: quizSettings.value.title,
         categoryDescription: quizSettings.value.description,
@@ -128,10 +143,18 @@ function postQuizToServer() {
   }
 
   try {
-    QuizCreationService.postQuizForLoggedInnUser(quizCreationRequestDTO)
 
+    if (props.preExistingQuiz) {
+      alert(JSON.stringify(props.preExistingQuiz));
+      await QuizCreationService.updateQuizForLoggedInUser(quizCreationRequestDTO, props.preExistingQuiz.quizId)
+
+    } else {
+      await QuizCreationService.postQuizForLoggedInnUser(quizCreationRequestDTO)
+    }
+    quizHasBeenSubmitted.value = true;
   } catch (err) {
-    console.error("error posting quiz", err)
+    alert(err)
+    postQuizErrorMessage.value = "There was an error handling your request: " + err
   }
 }
 
@@ -205,13 +228,14 @@ function addNewEmptyQuestion(questionType: QuestionType) {
 </script>
 
 <template>
-  {{quizSettings}}
-
-  <div id="quiz-creator">
+  <div id="quiz-creator" v-if="!quizHasBeenSubmitted">
 
     <div id="quiz-info">
       <h1 v-if="quizSettings.title">
         {{ quizSettings.title }}
+      </h1>
+      <h1 v-else-if="props.preExistingQuiz">
+        Edit quiz
       </h1>
       <h1 v-else>
         Create a quiz
@@ -271,6 +295,18 @@ function addNewEmptyQuestion(questionType: QuestionType) {
         @confirm-choice="handleQuestionTypeModalChoice"
     />
 
+
+  </div>
+  <div v-else class="confirmation-message">
+    <p v-if="props.preExistingQuiz">
+      Quiz has been edited, you may return
+    </p>
+    <p v-else>
+      Quiz has been submitted, you may return
+    </p>
+    <button>
+      <router-link to="/">Return to home</router-link>
+    </button>
 
   </div>
 
@@ -374,5 +410,16 @@ h1 {
   gap: 20px;
 }
 
+.confirmation-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  p {
+    font-size: 40px;
+  }
+}
 
 </style>
