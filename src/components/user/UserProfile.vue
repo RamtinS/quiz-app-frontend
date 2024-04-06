@@ -9,9 +9,9 @@ import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 import {ExpiredTokenService} from "@/services/ExpiredTokenService";
 
 const userStore = useUserStore();
-const email = ref(userStore.getUserData("email"));
-const firstName = ref(userStore.getUserData("name"));
-const surname = ref(userStore.getUserData("surname"));
+const email = ref(userStore.email);
+const firstName = ref(userStore.name);
+const surname = ref(userStore.surname);
 const password = ref('');
 const editMode = ref(false);
 const errorMessage = ref('');
@@ -71,7 +71,7 @@ async function toggleEdit() {
 
       setTimeout(() => {
         errorMessage.value = '';
-      }, 5000);
+      }, 7000);
     }
   }
   editMode.value = !editMode.value
@@ -79,17 +79,17 @@ async function toggleEdit() {
 
 function userDetailsChanged(): boolean {
   return (
-      email.value !== userStore.getUserData("email") ||
-      firstName.value !== userStore.getUserData("name") ||
-      surname.value !== userStore.getUserData("surname") ||
+      email.value !== userStore.email ||
+      firstName.value !== userStore.name ||
+      surname.value !== userStore.surname ||
       password.value !== ""
   );
 }
 
 function restoreUserDetails() {
-  email.value = userStore.getUserData("email");
-  firstName.value = userStore.getUserData("name");
-  surname.value = userStore.getUserData("surname");
+  email.value = userStore.email;
+  firstName.value = userStore.name;
+  surname.value = userStore.surname;
 }
 
 function preventSpace(event: any) {

@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router';
 import {onMounted, ref} from "vue";
 
 const userStore = useUserStore();
-const username = ref<string>(userStore.getUserData("username"));
+const username = ref<string>(userStore.username);
 const userImagePath = ref<string>("");
 
 function generateNumber(): number {

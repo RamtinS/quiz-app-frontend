@@ -15,7 +15,7 @@ const userStore = useUserStore();
     <UserProfileHeader></UserProfileHeader>
 
     <QuizBrowser :title="'All user quizzes'"
-                 :username="userStore.getUserData('username')"
+                 :username="userStore.username"
                  :quizzes-are-from-current-user="true"
     ></QuizBrowser>
 
