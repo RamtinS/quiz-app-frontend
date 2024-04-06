@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+import {computed, ref, watch, watchEffect} from 'vue'
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
@@ -10,6 +10,17 @@ const password = ref<string>('');
 const errorMessage = ref<string>('');
 const store = useUserStore();
 const route = useRoute();
+
+
+/**
+ * If the login has been routed because of an expired token, show an alert and set the error message.
+ */
+watchEffect(() => {
+  if (route.params.tokenStatus === 'expired') {
+    alert("expired")
+    errorMessage.value = "Your session has expired. Please log in again.";
+  }
+})
 
 async function login() {
   try {
