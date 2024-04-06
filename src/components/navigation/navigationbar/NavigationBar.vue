@@ -6,17 +6,17 @@ import MyAccountPreview from "@/components/navigation/navigationbar/UserProfileI
 import HamburgerSidebar from "@/components/navigation/navigationbar/HamburgerSidebar.vue";
 
 const hamburgerLinks = ref([
-  {link: '/', label: 'Home', authNeeded: false, icon: 'home'},
-  {link: '/login', label: 'Login', authNeeded: false, icon: 'login'},
-  {link: '/quiz-browser', label: 'Quiz Browser', authNeeded: false, icon: 'travel_explore'},
-  {link: '/register-user', label: "Register", authNeeded: false, icon: 'app_registration'},
-  {link: '/contact', label: 'Contact us', authNeeded: false, icon: 'contact_support'},
-  {link: '/quiz-creator', label: 'Quiz Creator', authNeeded: false, icon: 'edit_square'},
+  {link: '/', label: 'Home', authNeeded: false, icon: 'home', id: 'home-link'},
+  {link: '/login', label: 'Login', authNeeded: false, icon: 'login', id: 'login-link'},
+  {link: '/quiz-browser', label: 'Quiz Browser', authNeeded: false, icon: 'travel_explore', id: 'browser-link'},
+  {link: '/register-user', label: "Register", authNeeded: false, icon: 'app_registration', id: 'register-link'},
+  {link: '/contact', label: 'Contact us', authNeeded: false, icon: 'contact_support', id: 'contact-link'},
+  {link: '/quiz-creator', label: 'Quiz Creator', authNeeded: false, icon: 'edit_square', id: 'creator-link'},
 ]);
 
 const profileLinks = ref([
-  {link: '/user-profile', label: "Profile", authNeeded: false, icon: 'person'},
-  {link: '/logout', label: "Logout", authNeeded: false, icon: 'logout'},
+  {link: '/user-profile', label: "Profile", authNeeded: false, icon: 'person', id: 'user-profile'},
+  {link: '/logout', label: "Logout", authNeeded: false, icon: 'logout', id: 'log-out'},
 ]);
 
 </script>
@@ -25,14 +25,12 @@ const profileLinks = ref([
   <div id="navigation-bar">
 
     <HamburgerSidebar :links="hamburgerLinks"
-                      class="end-item"
-    ></HamburgerSidebar>
+                      class="end-item"></HamburgerSidebar>
     <SearchBar>
     </SearchBar>
     <MyAccountPreview id="right-preview"
                       class="end-item"
-                      :links="profileLinks"
-    >
+                      :links="profileLinks">
     </MyAccountPreview>
 
   </div>

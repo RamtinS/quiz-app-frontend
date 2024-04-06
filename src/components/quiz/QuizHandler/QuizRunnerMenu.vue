@@ -33,9 +33,6 @@ async function loadQuizFromServer() {
 </script>
 
 <template>
-    <div id="quiz-runner-menu">
-        Quiz runner menu
-    </div>
   <div v-if="quiz">
     <quiz-runner :quiz="quiz">
     </quiz-runner>

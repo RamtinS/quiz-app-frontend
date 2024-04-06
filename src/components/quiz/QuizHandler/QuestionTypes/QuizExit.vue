@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
-import {QuizDTO} from "@/models/quiz/QuizDTO";
+import type { QuizDTO } from "@/models/quiz/QuizDTO";
 import {ref, watch} from "vue";
 
 const props = defineProps({

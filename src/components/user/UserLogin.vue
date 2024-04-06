@@ -4,7 +4,6 @@ import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
-import {returnValue} from "happy-dom/lib/PropertySymbol.d.ts.js";
 
 const username = ref('');
 const password = ref('');
@@ -42,8 +41,12 @@ async function login() {
   }
 }
 
+function isBlank(str: string) {
+  return (!str || /^\s*$/.test(str));
+}
+
 const fieldsFilled = computed(() => {
-  return password.value.length !== 0 && username.value.length !== 0;
+  return !isBlank(password.value) && !isBlank(username.value);
 })
 
 
@@ -86,12 +89,12 @@ watch([username, password], () => {
               <input class="input" type="password" id="password" v-model="password" name="fpassword" required/>
               <i class="fa fa-lock icon"></i><br>
 
-              <input type="submit" value="Login" :disabled="allValid"/>
+              <input type="submit" value="Login" id="login" :disabled="allValid"/>
             </form>
         </div>
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div v-if="errorMessage" id="error" class="error-message">{{ errorMessage }}</div>
         <p>
-          <router-link to="/register-user">Create your account --></router-link>
+          <router-link id="register-link" to="/register-user">Create your account --></router-link>
         </p>
       </div>
     </div>

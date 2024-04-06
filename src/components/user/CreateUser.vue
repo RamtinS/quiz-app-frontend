@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
+import {useRoute} from "vue-router";
 import router from "@/router";
 
 const username = ref('')
@@ -14,6 +15,7 @@ const name = ref('')
 const surname = ref('')
 const store = useUserStore();
 const errorMessage = ref('');
+const route = useRoute();
 
 async function register() {
 
@@ -32,7 +34,12 @@ async function register() {
 
   try {
     await store.registerUser(user);
-    await router.push('/');
+
+    if (route.query.redirect) {
+      await router.push(route.query.redirect as string)
+    } else {
+      await router.push('/')
+    }
   } catch (err) {
     if (axios.isAxiosError(err) && err.response) {
       switch (err.response.status) {
@@ -59,6 +66,16 @@ async function register() {
   }
 }
 
+function isBlank(str: string) {
+  return (!str || /^\s*$/.test(str));
+}
+
+const fieldsFilled = computed(() => {
+  return !isBlank(username.value) && !isBlank(email.value) && !isBlank(name.value) && !isBlank(surname.value) && !isBlank(confirmPassword.value);
+})
+
+
+
 watch([username, password, confirmPassword, email, name, surname], () => {
   errorMessage.value = '';
 });
@@ -77,12 +94,12 @@ watch([username, password, confirmPassword, email, name, surname], () => {
 
             <div class="item-2">
               <label for="fusername">Username:</label>
-              <input type="text" id="fusername" v-model="username" placeholder="Enter your username" required/>
+              <input type="text" id="username" v-model="username" placeholder="Enter your username" required/>
             </div>
 
             <div class="item-2">
               <label for="femail">Email:</label>
-              <input type="text" id="femail" v-model="email" placeholder="Email" required/>
+              <input type="text" id="email" v-model="email" placeholder="Email" required/>
             </div>
 
             <div class="item-3">
@@ -108,10 +125,10 @@ watch([username, password, confirmPassword, email, name, surname], () => {
             </div>
 
             <div class="item-2 button">
-              <input type="submit" value="Register"/><br>
+              <input id="register-button" type="submit" value="Register" :disabled="!fieldsFilled"/><br>
             </div>
 
-            <div v-if="errorMessage" class="error-message item-5">{{ errorMessage }}</div>
+            <div v-if="errorMessage" id="error" class="error-message item-5">{{ errorMessage }}</div>
 
             <div class="item-5">
               <div class="login-route-container">
@@ -121,7 +138,6 @@ watch([username, password, confirmPassword, email, name, surname], () => {
           </form>
     </div>
   </div>
-
 </template>
 
 <style scoped >
@@ -161,6 +177,14 @@ input[type=submit] {
   border-radius: 15px;
   cursor: pointer;
   font-size: 16px;
+}
+
+input[type=submit]:hover {
+  background-color: #0f0e33;
+}
+
+input[type=submit]:disabled {
+  background-color: #8b8a98;
 }
 
 label {
