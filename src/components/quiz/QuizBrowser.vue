@@ -15,7 +15,7 @@ async function getSearchResult() {
 }
 
 watch(page, async () => {
-  previews.value = await getSearchResult()
+  previews.value = getSearchResult()
 })
 
 
