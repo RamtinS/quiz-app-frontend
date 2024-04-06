@@ -6,6 +6,7 @@ import {useUserStore} from '@/stores/UserStore';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import {useRoute} from "vue-router";
 import router from "@/router";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const username = ref('')
 const password = ref('')
@@ -41,28 +42,7 @@ async function register() {
       await router.push('/')
     }
   } catch (err) {
-    if (axios.isAxiosError(err) && err.response) {
-      switch (err.response.status) {
-        case 400:
-          errorMessage.value = err.response.data.errorMessage;
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        case 409:
-          errorMessage.value = err.response.data.errorMessage;
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        case 500:
-          errorMessage.value = "Registration error. Please try again later.";
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        default:
-          errorMessage.value = "Registration error. Please try again later."
-          console.error("Unexpected status: " + err.response.data.errorMessage, err);
-      }
-    } else {
-      errorMessage.value = "Registration error. Please try again later."
-      console.error("Unexpected error: ", err);
-    }
+    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Registration failed");
   }
 }
 
