@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
@@ -16,9 +16,29 @@ const password = ref('');
 const editMode = ref(false);
 const errorMessage = ref('');
 
+onMounted(retrieveUserDetailsIfNeeded);
+
+async function retrieveUserDetailsIfNeeded() {
+  if (email.value === "" || firstName.value === "" || surname.value === "") {
+    await retrieveUserDetails();
+  }
+}
+
+async function retrieveUserDetails() {
+  try {
+    const userDetailsDTO = await UserDetailService.retrieveUserDetails();
+    email.value = userDetailsDTO.email;
+    firstName.value = userDetailsDTO.name;
+    surname.value = userDetailsDTO.surname;
+  } catch (error) {
+    errorMessage.value = "Failed to retrieve user details. Please try again later.";
+    console.error("Failed to retrieve user details.", error);
+  }
+}
+
 async function toggleEdit() {
 
-  if (editMode.value && userDetailsChanged()) {
+  if (editMode.value && userDetailsChanged() && errorMessage.value === '') {
     const newUserDetails: EditUserDTO = {
       newPassword: password.value,
       newEmail: email.value,
@@ -71,7 +91,7 @@ async function toggleEdit() {
 
       setTimeout(() => {
         errorMessage.value = '';
-      }, 7000);
+      }, 5000);
     }
   }
   editMode.value = !editMode.value
@@ -105,7 +125,7 @@ function preventSpace(event: any) {
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div class="profile-info">
+    <div class="profile-info" v-if="!errorMessage">
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
@@ -143,9 +163,9 @@ function preventSpace(event: any) {
         <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
       </div>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-
     </div>
+
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
   </div>
 
@@ -195,9 +215,11 @@ button:hover {
 }
 
 .error-message {
-  margin-top: 2%;
+  margin-top: 5%;
   color: red;
   text-align: center;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 
 </style>
