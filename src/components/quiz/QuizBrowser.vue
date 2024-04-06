@@ -1,22 +1,22 @@
 <script setup lang="ts">
-
 import { ref, watch } from "vue";
 import QuizPost from "@/components/quiz/QuizPost.vue";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 import {QuizService} from "@/services/QuizService";
+
 const previews = ref<QuizPreviewDTO[]>([])
-
-
 let page = ref(0);
+const searchField = ref<string>('')
+let searchByCategory = false
+let searchByTags = false
+
+async function getSearchResult() {
+  previews.value = await QuizService.getQuizBySpecifiedCriteria(6, page.value, searchField.value, searchByCategory, searchByTags);
+}
 
 watch(page, async () => {
-  previews.value = await QuizService.getQuizBySpecifiedCriteria(10, page.value, searchField.value, searchByCategory, searchByTags)
+  previews.value = await getSearchResult()
 })
-const searchField = ref<string>('')
-
-let searchByCategory = false
-
-let searchByTags = false
 
 
 function increasePage() {
@@ -25,9 +25,6 @@ function increasePage() {
   }
 }
 
-async function searchQuiz() {
-  previews.value = await QuizService.getQuizBySpecifiedCriteria(10, page.value, searchField.value, searchByCategory, searchByTags)
-}
 async function changeCategory() {
   searchByCategory = !searchByCategory;
   console.log(searchByCategory)
@@ -36,10 +33,6 @@ async function changeCategory() {
 async function changeTags() {
   searchByTags = !searchByTags;
   console.log(searchByTags)
-}
-
-async function getQuizzes(){
-  previews.value = await QuizService.getQuizPreviewsPublic(page.value, 10);
 }
 
 function decreasePage() {
@@ -56,47 +49,37 @@ const props = defineProps(
   }
 )
 
-if (!props.username){
-  try {
-    console.log("browsing public")
-    previews.value = await QuizService.getQuizPreviewsPublic(page.value, 10)
-  } catch (err) {
-    console.error("Could not public quizzes: " + err)
-  }
-} else {
-  console.log("browsing user");
-  try {
-    previews.value = await QuizService.getQuizPreviewsSpecifiedUser(props.username, 0, 100)
-
-  } catch (err){
-    console.error("Could not user quizzes: " + err)
-  }
+try {
+  console.log("browsing public")
+  previews.value = await QuizService.getQuizBySpecifiedCriteria(6, page.value, searchField.value, searchByCategory, searchByTags);
+} catch (err) {
+  console.log("Quizzes could not be loaded, " + err)
 }
 </script>
 
 <template>
-  <div id="quiz-browser">
+  <div class="quiz-browser">
 
     <div class="options-container">
       <h1>{{props.title}}</h1>
 
-      <div>
-        <input v-model="searchField" type="search" name="" id="" placeholder="">
-        <input value="Search" type="button" @click="searchQuiz">
+      <div class="search-container">
+        <input @keydown.enter="getSearchResult" v-model="searchField" type="search" name="" id="search" placeholder="">
+        <button id="search-button" @click="getSearchResult">Search</button>
       </div>
 
 
       <div>
         <label for="tags">Search by tags</label>
-        <input name="tags" type="checkbox"  @change="changeTags">
+        <input name="tags" type="checkbox" id="tags" @change="changeTags">
 
         <label for="category">Search by category</label>
-        <input name="category" type="checkbox"  @change="changeCategory">
+        <input name="category" id="category" type="checkbox"  @change="changeCategory">
       </div>
 
     </div>
 
-    <div id="quiz-grid">
+    <div class="quiz-grid">
       <QuizPost v-for="(quiz, index) in previews"
                 :key="index"
                 :post="quiz"
@@ -106,39 +89,44 @@ if (!props.username){
       </QuizPost>
     </div>
 
-
     <div class="browser-navigator">
-      <button @click="decreasePage">
+      <button id="previous" @click="decreasePage">
         Previous
       </button>
       <p>Page: {{page}}</p>
-      <button @click="increasePage">
+      <button id="next" @click="increasePage">
         Next
       </button>
     </div>¨
   </div>
-
 </template>
 
 <style scoped>
-
 h1{
   color: black;
 }
 
-#quiz-browser{
-  background: rgb(93,79,149);
-  background: linear-gradient(252deg, rgba(93,79,149,1) 0%, rgba(112,132,183,1) 55%, rgba(0,212,255,1) 100%);
+.quiz-browser{
+  min-width: 400px;
 }
 
 .browser-navigator {
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 20px;
+  font-weight: bold;
 }
 
-#quiz-grid {
+button {
+  padding: 10px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.quiz-grid {
   display: flex;
   flex-wrap: wrap;
   overflow-x: hidden;
@@ -153,15 +141,34 @@ h1{
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
+
 
 .options-container h1 {
   text-align: center;
 }
 
+
 input {
-  margin: 30px;
-  font-size: 20px;
+  margin: 15px;
+  font-size: 15px;
+}
+
+@media screen and (max-width: 600px) {
+  .search-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.search-container {
+}
+
+input[type=checkbox] {
+  width: 15px;
+  height: 15px;
+  padding-bottom: 20px;
 }
 
 </style>
