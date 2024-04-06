@@ -4,9 +4,7 @@ import {onMounted, ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
-import axios from "axios";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
-import {ExpiredTokenService} from "@/services/ExpiredTokenService";
 import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const userStore = useUserStore();

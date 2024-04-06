@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import {useRoute} from "vue-router";
