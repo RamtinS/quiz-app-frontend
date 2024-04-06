@@ -114,7 +114,7 @@ function removeAnswer() {
                class="correct-checkbox">
       </div>
     </div>
-    <div>
+    <div class="button-container">
       <button @click="addNewAnswer">
         Add new answer
       </button>
@@ -126,6 +126,8 @@ function removeAnswer() {
 </template>
 
 <style scoped>
+
+
 
 #question-editor {
   padding: 50px;
@@ -148,6 +150,18 @@ function removeAnswer() {
     grid-template-columns: auto;
   }
 
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+button{
+  aspect-ratio: 3/1;
+  width: 5%%;
 }
 
 .answer {

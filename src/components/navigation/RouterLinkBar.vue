@@ -46,6 +46,7 @@ function isAuthorized() {
     align-items: center;
     border-radius: inherit;
     height: 40px;
+    margin: 5px;
   }
 
   .bar-item:hover {

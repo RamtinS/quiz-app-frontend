@@ -316,12 +316,16 @@ h1 {
   text-align: center;
 }
 
+.button-container button{
+  aspect-ratio: 3/1;
+}
+
 
 @media (min-width: 900px) {
   #quiz-creator {
     height: 100vh;
     grid-template-columns: 300px auto;
-    grid-template-rows: 150px auto;
+    grid-template-rows: minmax(150px, auto);
     grid-template-areas: "quiz-info quiz-info" "previews question-editor";
   }
 
@@ -372,9 +376,8 @@ h1 {
   min-height: 200px;
 }
 
-.add-question-button:hover {
-  border: 3px solid black;
-}
+
+
 
 
 #previews {
