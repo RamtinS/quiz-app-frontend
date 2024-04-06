@@ -5,7 +5,7 @@
 describe('User stats page test', () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/user-stats");
-    cy.login('http://localhost:3000/login?redirect=/user-stats', 'admin', 'password');
+    cy.login('http://localhost:3000/login?redirect=/user-stats', 'TestUser', 'password');
   });
 
   it('displays user progress graph and stats', () => {
