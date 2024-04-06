@@ -100,13 +100,13 @@ function preventSpace(event: any) {
 
             <div class="item-2">
               <label for="fusername">Username:</label>
-              <input type="text" id="fusername" v-model="username"
+              <input type="text" id="username" v-model="username"
                      placeholder="Enter your username" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-2">
               <label for="femail">Email:</label>
-              <input type="text" id="femail" v-model="email"
+              <input type="text" id="email" v-model="email"
                      placeholder="Email" required @keydown="preventSpace"/>
             </div>
 
