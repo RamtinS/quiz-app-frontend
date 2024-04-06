@@ -170,7 +170,7 @@ svg {
 
 .error-message {
   color: red;
-  font-size: 150%;
+  font-size: 1.5em;
   font-weight: bold;
   text-align: center;
   margin-top: 10%;

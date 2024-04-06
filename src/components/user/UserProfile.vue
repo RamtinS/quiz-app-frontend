@@ -1,23 +1,45 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
 import axios from "axios";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
+import {ExpiredTokenService} from "@/services/ExpiredTokenService";
 
 const userStore = useUserStore();
-const email = ref(userStore.getUserData("email"));
-const firstName = ref(userStore.getUserData("name"));
-const surname = ref(userStore.getUserData("surname"));
+const email = ref(userStore.email);
+const firstName = ref(userStore.name);
+const surname = ref(userStore.surname);
 const password = ref('');
 const editMode = ref(false);
-const errorMessage = ref('');
+const errorMessageEdit = ref('');
+const errorMessageRetrieval = ref('');
+
+onMounted(retrieveUserDetailsIfNeeded);
+
+async function retrieveUserDetailsIfNeeded() {
+  if (email.value === "" || firstName.value === "" || surname.value === "") {
+    await retrieveUserDetails();
+  }
+}
+
+async function retrieveUserDetails() {
+  try {
+    const userDetailsDTO = await UserDetailService.retrieveUserDetails();
+    email.value = userDetailsDTO.email;
+    firstName.value = userDetailsDTO.name;
+    surname.value = userDetailsDTO.surname;
+  } catch (error) {
+    errorMessageRetrieval.value = "Failed to retrieve user details. Please try again later.";
+    console.error("Failed to retrieve user details.", error);
+  }
+}
 
 async function toggleEdit() {
 
-  if (editMode.value) {
+  if (editMode.value && userDetailsChanged()) {
     const newUserDetails: EditUserDTO = {
       newPassword: password.value,
       newEmail: email.value,
@@ -38,44 +60,57 @@ async function toggleEdit() {
       if (axios.isAxiosError(err) && err.response) {
         switch (err.response.status) {
           case 400:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 404:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 409:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 500:
-            errorMessage.value = "Server error. Please try again later.";
+            errorMessageEdit.value = "Server error. Please try again later.";
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
+          case 403:
+            errorMessageEdit.value = "You are not authorized to perform this action.";
+            await ExpiredTokenService.refreshAccessToken();
+            break;
           default:
-            errorMessage.value = "Error. Please try again later.";
+            errorMessageEdit.value = "Error. Please try again later.";
             console.error("Failed to update user details. Unexpected status: " + err.response.status, err);
         }
       } else {
-        errorMessage.value = "Error. Please try again later.";
+        errorMessageEdit.value = "Error. Please try again later.";
         console.error("Failed to update user details. Unexpected error: ", err);
       }
 
       restoreUserDetails();
 
       setTimeout(() => {
-        errorMessage.value = '';
+        errorMessageEdit.value = '';
       }, 5000);
     }
   }
   editMode.value = !editMode.value
 }
 
+function userDetailsChanged(): boolean {
+  return (
+      email.value !== userStore.email ||
+      firstName.value !== userStore.name ||
+      surname.value !== userStore.surname ||
+      password.value !== ""
+  );
+}
+
 function restoreUserDetails() {
-  email.value = userStore.getUserData("email");
-  firstName.value = userStore.getUserData("name");
-  surname.value = userStore.getUserData("surname");
+  email.value = userStore.email;
+  firstName.value = userStore.name;
+  surname.value = userStore.surname;
 }
 
 function preventSpace(event: any) {
@@ -91,7 +126,7 @@ function preventSpace(event: any) {
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div class="profile-info">
+    <div class="profile-info" v-if="!errorMessageRetrieval">
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
@@ -129,9 +164,11 @@ function preventSpace(event: any) {
         <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
       </div>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <div v-if="errorMessageEdit" class="error-message-edit">{{ errorMessageEdit }}</div>
 
     </div>
+
+    <div v-if="errorMessageRetrieval" class="error-message-retrieval">{{ errorMessageRetrieval }}</div>
 
   </div>
 
@@ -180,10 +217,18 @@ button:hover {
   box-shadow: 5px 5px 5px gray;
 }
 
-.error-message {
+.error-message-edit {
   margin-top: 2%;
   color: red;
   text-align: center;
+}
+
+.error-message-retrieval {
+  margin-top: 5%;
+  color: red;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 
 </style>

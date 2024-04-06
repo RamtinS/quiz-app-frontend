@@ -1,9 +1,16 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import SearchBar from "@/components/navigation/SearchBar.vue";
 import MyAccountPreview from "@/components/navigation/navigationbar/UserProfileIcon.vue";
 import HamburgerSidebar from "@/components/navigation/navigationbar/HamburgerSidebar.vue";
+import {useUserStore} from "@/stores/UserStore";
+
+const userStore = useUserStore();
+
+onMounted(() => {
+  userStore.setAuthToken(userStore.token);
+});
 
 const hamburgerLinks = ref([
   {link: '/', label: 'Home', authNeeded: false, icon: 'home', id: 'home-link'},

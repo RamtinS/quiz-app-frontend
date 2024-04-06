@@ -2,15 +2,28 @@
 
 import {useUserStore} from "@/stores/UserStore";
 import { RouterLink } from 'vue-router';
+import {onMounted, ref} from "vue";
 
 const userStore = useUserStore();
+const username = ref<string>(userStore.username);
+const userImagePath = ref<string>("");
+
+function generateNumber(): number {
+  const length = username.value.length;
+  return Math.round(length/3.5);
+}
+
+onMounted(() => {
+  const imageNumber = generateNumber();
+  userImagePath.value = "/src/assets/images/user/owl" + imageNumber + ".png";
+})
 
 </script>
 
 <template>
   <header class="profile-header">
-    <img src="https://via.placeholder.com/150" alt="profile picture" class="profile-picture" />
-    <h3 class="profile-username">{{userStore.getUserData("username")}}</h3>
+    <img :src="userImagePath" alt="profile picture" class="profile-picture" />
+    <h3 class="profile-username">{{username}}</h3>
   </header>
 
   <nav>
@@ -30,13 +43,14 @@ const userStore = useUserStore();
 }
 
 .profile-picture{
+  margin-left: 1%;
   width: 8%;
   border-radius: 50%;
-  border: 5px solid var(--primary);
+  border: 4px solid var(--primary);
 }
 
 .profile-username {
-  margin-top: 3.4%;
+  margin-top: 4%;
   margin-left: 2%;
 }
 
