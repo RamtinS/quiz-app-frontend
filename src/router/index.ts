@@ -25,7 +25,7 @@ const router = createRouter({
       meta: {authRequired: false}
     },
     {
-      path: '/login',
+      path: '/login/:tokenStatus?',
       name: 'login',
       component: UserLoginView,
       meta: {authRequired: false}
