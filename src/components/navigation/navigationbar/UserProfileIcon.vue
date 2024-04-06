@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref, watch} from "vue";
-import DropDown from "@/components/navigation/DropDown.vue";
+import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import {useUserStore} from "@/stores/UserStore";
 
@@ -9,10 +9,16 @@ const userStore = useUserStore();
 const username = ref<string>('Not logged in');
 const compressed = ref<boolean>(true);
 
+/**
+ * Update the displayed username when the component is mounted
+ */
 onMounted(() => {
   updateUsername()
 })
 
+/**
+ * Update the displayed user-info when the authentication status changes
+ */
 watch(() => userStore.isAuthenticated, () => {
   updateUsername()
 });
