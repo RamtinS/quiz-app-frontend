@@ -24,7 +24,7 @@ describe('Register page test', () => {
     });
 
     it("Different passwords should give error.", () => {
-        cy.get('#username').type('a ');
+        cy.get('#username').type('as ');
         cy.get('#password').type('a');
         cy.get("#email").type('a');
         cy.get('#first-name').type('a');
@@ -66,7 +66,7 @@ describe('Register page test', () => {
         cy.get('#sur-name').type('Wonderland');
         cy.get("#confirm-password").type('testPassword');
         cy.get("#register-button").click()
-        cy.get("#welcome").should('not.be.hidden')
+        cy.url().should('not.include', '/register-user')
     });
 
 

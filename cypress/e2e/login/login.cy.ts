@@ -1,3 +1,6 @@
+/**
+ * Cypress tests for testing components in frontend.
+ */
 describe('Login page test', () => {
     beforeEach(() => {
         cy.visit("http://localhost:3000/login")
@@ -31,7 +34,7 @@ describe('Login page test', () => {
 
     it("Create-Account button pushes you to a new route.", () => {
         cy.get('#register-link').click()
-        cy.get("#register-button").should("be.visible");
+        cy.url().should('include', '/register-user')
     });
 })
 

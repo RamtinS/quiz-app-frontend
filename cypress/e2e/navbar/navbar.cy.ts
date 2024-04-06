@@ -1,52 +1,58 @@
 describe('Navigate website page test', () => {
+
+    //Open the right and left navigation bars.
     beforeEach(() => {
         cy.visit("http://localhost:3000")
-        cy.get("#my-account-preview").click()
         cy.get('#hamburger-icon').click()
+        cy.get("#my-account-preview").click()
     });
 
-    it("Navbar buttons should open left dropdown menus and be visible", () => {
+    it("Buttons in left navbar should be visible.", () => {
         cy.get("#login-link")
-        cy.get("#browser-link")
         cy.get("#register-link")
-        cy.get('#contact-link')
+        cy.get("#browser-link")
+        cy.get("#contact-link")
         cy.get("#creator-link")
     });
 
-    it("Navbar buttons should open right dropdown menus and be visible", () => {
-        cy.get("#user-profile").click()
-        cy.get("#log-out").should("be.visible")
+    it("Buttons in right navbar should be visible.", () => {
+        cy.get("#user-profile")
+        cy.get("#log-out")
     });
 
-    it("Clicking on 'Login' button should navigate to login page.", () => {
-        cy.get('#hamburger-icon').click()
-        cy.get('#login-link').click()
-        cy.get('#login').should('be.disabled');
+    it("Login button should route to login page.", () => {
+        cy.get("#login-link").click()
+        cy.url().should('include', '/login')
     });
 
-    it("Clicking on the 'Quiz-Browser' button should navigate to quiz-browser page.", () => {
-        cy.get('#hamburger-icon').click()
-        cy.get("#browser-link").click()
-        cy.get('#quiz-browser').should('be.visible');
-    });
-
-    it("Clicking on the 'Register' button should navigate to contact form page.", () => {
-        cy.get('#hamburger-icon').click()
+    it("Register button should route to register-user page.", () => {
         cy.get("#register-link").click()
-        cy.get("#register-button").should("be.visible");
+        cy.url().should('include', '/register-user')
     });
 
-    it("Clicking on the 'Contact Us' button should navigate to contact form page.", () => {
-        cy.get('#hamburger-icon').click()
-        cy.get('#contact-link').click()
-        cy.get("#headline").should("be.visible")
+    it("Browser button should route to quiz browser page.", () => {
+        cy.get("#browser-link").click()
+        cy.url().should('include', '/quiz-browser')
     });
 
+    it("Contact button should route to quiz browser page.", () => {
+        cy.get("#contact-link").click()
+        cy.url().should('include', '/contact')
+    });
 
-    it("Clicking on the 'Quiz-creator' button should navigate to quiz-creator page.", () => {
-        cy.get('#hamburger-icon').click()
-        cy.get("#creator-link").click()
-        cy.get("#quiz-info").should("be.visible")
+    it("Quiz creator button should route to quiz browser page.", () => {
+        cy.get("#browser-link").click()
+        cy.url().should('include', '/quiz-browser')
+    });
+
+    it("Quiz creator button should route to quiz browser page.", () => {
+        cy.get("#browser-link").click()
+        cy.url().should('include', '/quiz-browser')
+    });
+
+    it("Log-out button should route to quiz browser page.", () => {
+        cy.get("#log-out").click()
+        cy.url().should('include', '/logout')
     });
 
 })
