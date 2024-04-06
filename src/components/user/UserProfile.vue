@@ -14,7 +14,8 @@ const firstName = ref(userStore.name);
 const surname = ref(userStore.surname);
 const password = ref('');
 const editMode = ref(false);
-const errorMessage = ref('');
+const errorMessageEdit = ref('');
+const errorMessageRetrieval = ref('');
 
 onMounted(retrieveUserDetailsIfNeeded);
 
@@ -31,14 +32,14 @@ async function retrieveUserDetails() {
     firstName.value = userDetailsDTO.name;
     surname.value = userDetailsDTO.surname;
   } catch (error) {
-    errorMessage.value = "Failed to retrieve user details. Please try again later.";
+    errorMessageRetrieval.value = "Failed to retrieve user details. Please try again later.";
     console.error("Failed to retrieve user details.", error);
   }
 }
 
 async function toggleEdit() {
 
-  if (editMode.value && userDetailsChanged() && errorMessage.value === '') {
+  if (editMode.value && userDetailsChanged()) {
     const newUserDetails: EditUserDTO = {
       newPassword: password.value,
       newEmail: email.value,
@@ -59,38 +60,38 @@ async function toggleEdit() {
       if (axios.isAxiosError(err) && err.response) {
         switch (err.response.status) {
           case 400:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 404:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 409:
-            errorMessage.value = err.response.data.errorMessage;
+            errorMessageEdit.value = err.response.data.errorMessage;
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 500:
-            errorMessage.value = "Server error. Please try again later.";
+            errorMessageEdit.value = "Server error. Please try again later.";
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
             break;
           case 403:
-            errorMessage.value = "You are not authorized to perform this action.";
+            errorMessageEdit.value = "You are not authorized to perform this action.";
             await ExpiredTokenService.refreshAccessToken();
             break;
           default:
-            errorMessage.value = "Error. Please try again later.";
+            errorMessageEdit.value = "Error. Please try again later.";
             console.error("Failed to update user details. Unexpected status: " + err.response.status, err);
         }
       } else {
-        errorMessage.value = "Error. Please try again later.";
+        errorMessageEdit.value = "Error. Please try again later.";
         console.error("Failed to update user details. Unexpected error: ", err);
       }
 
       restoreUserDetails();
 
       setTimeout(() => {
-        errorMessage.value = '';
+        errorMessageEdit.value = '';
       }, 5000);
     }
   }
@@ -125,7 +126,7 @@ function preventSpace(event: any) {
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div class="profile-info" v-if="!errorMessage">
+    <div class="profile-info" v-if="!errorMessageRetrieval">
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
@@ -163,9 +164,11 @@ function preventSpace(event: any) {
         <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
       </div>
 
+      <div v-if="errorMessageEdit" class="error-message-edit">{{ errorMessageEdit }}</div>
+
     </div>
 
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div v-if="errorMessageRetrieval" class="error-message-retrieval">{{ errorMessageRetrieval }}</div>
 
   </div>
 
@@ -214,7 +217,13 @@ button:hover {
   box-shadow: 5px 5px 5px gray;
 }
 
-.error-message {
+.error-message-edit {
+  margin-top: 2%;
+  color: red;
+  text-align: center;
+}
+
+.error-message-retrieval {
   margin-top: 5%;
   color: red;
   text-align: center;
