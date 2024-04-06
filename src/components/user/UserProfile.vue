@@ -94,53 +94,64 @@ function preventSpace(event: any) {
 </script>
 
 <template>
-  <div class="user-profile">
+  <div class="user-profile" data-cy="user-profile-header">
 
-    <UserProfileHeader></UserProfileHeader>
+    <UserProfileHeader data-cy="user-profile-header"></UserProfileHeader>
 
-    <div class="profile-info" v-if="!errorMessageRetrieval">
+    <div class="profile-info" v-if="!errorMessageRetrieval" data-cy="profile-info">
 
       <div class="info-item">
         <p class="info-label"> First name: </p>
         <div class="info-value">
-          <p v-if="!editMode">{{ firstName }}</p>
-          <input v-else v-model.trim="firstName" type="text" placeholder="Enter new first name" @keydown="preventSpace"/>
+          <p v-if="!editMode" data-cy="first-name">{{ firstName }}</p>
+          <input v-else v-model.trim="firstName" type="text" placeholder="Enter new first name"
+                 @keydown="preventSpace" data-cy="edit-first-name"/>
         </div>
       </div>
 
       <div class="info-item">
         <p class="info-label"> Surname: </p>
         <div class="info-value">
-          <p v-if="!editMode"> {{ surname }} </p>
-          <input v-else v-model="surname" type="text" placeholder="Enter new surname" @keydown="preventSpace"/>
+          <p v-if="!editMode" data-cy="surname"> {{ surname }} </p>
+          <input v-else v-model="surname" type="text" placeholder="Enter new surname"
+                 @keydown="preventSpace" data-cy="edit-surname"/>
         </div>
       </div>
 
       <div class="info-item">
         <p class="info-label"> Email: </p>
         <div class="info-value">
-          <p v-if="!editMode"> {{ email }} </p>
-          <input v-else v-model="email" type="text" placeholder="Enter new email" @keydown="preventSpace"/>
+          <p v-if="!editMode" data-cy="email"> {{ email }} </p>
+          <input v-else v-model="email" type="text" placeholder="Enter new email"
+                 @keydown="preventSpace" data-cy="edit-email"/>
         </div>
       </div>
 
       <div class="info-item">
         <p class="info-label"> Password: </p>
         <div class="info-value">
-          <p v-if="!editMode"> ********* </p>
+          <p v-if="!editMode" data-cy="password"> ********* </p>
           <input v-else v-model="password" type="password" placeholder="Enter new password" @keydown="preventSpace"/>
         </div>
       </div>
 
       <div class="button-container">
-        <button @click="toggleEdit"> {{ editMode ? 'Save' : 'Edit' }} </button>
+        <button @click="toggleEdit" data-cy="edit-button"> {{ editMode ? 'Save' : 'Edit' }} </button>
       </div>
 
-      <div v-if="errorMessageEdit" class="error-message-edit">{{ errorMessageEdit }}</div>
+      <div v-if="errorMessageEdit"
+           class="error-message-edit"
+           data-cy="edit-error-message">
+        {{ errorMessageEdit }}
+      </div>
 
     </div>
 
-    <div v-if="errorMessageRetrieval" class="error-message-retrieval">{{ errorMessageRetrieval }}</div>
+    <div v-if="errorMessageRetrieval"
+         class="error-message-retrieval"
+         data-cy="retrieval-error-message">
+      {{ errorMessageRetrieval }}
+    </div>
 
   </div>
 
