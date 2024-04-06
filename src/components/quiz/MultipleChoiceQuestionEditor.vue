@@ -143,6 +143,13 @@ function removeAnswer() {
 
 }
 
+@media (max-width: 600px) {
+  #answers {
+    grid-template-columns: auto;
+  }
+
+}
+
 .answer {
   background-color: var(--question-color);
   color: white;
