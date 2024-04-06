@@ -112,6 +112,10 @@ function submitChildQuestion() {
 
 <style scoped>
 
+button{
+  aspect-ratio: 3/1;
+}
+
 #incorrect-type-message {
   text-align: center;
   color: red;

@@ -7,14 +7,14 @@
     --default-font: 'Candal', sans-serif;
     --question-color: #a8d0fd;
     --navigation-bar-background: white;
+    --default-background-color: #eae9e9
 }
 
 body {
-    background-color: #eae9e9;
+    background-color: var(--default-background-color);
     margin: 0;
     padding: 0;
 }
-
 
 * {
     font-family: "Inter", monospace;
@@ -22,8 +22,14 @@ body {
     font-style: normal;
 }
 
+button{
+    border-radius: 10px;
+
+}
+
 button:hover {
     cursor: pointer;
+    filter: brightness(0.9);
 }
 
 input[type="checkbox"] {

@@ -77,11 +77,11 @@ function resetForm() {
 
 <template>
 
-  <div id="contact-form">
-
+  <div id="form-container">
     <h1 id="headline"> Contact us </h1>
-
-    <form @submit.prevent="handleSubmit" v-show="!submitted" :class="{ 'entered': firstName != null}">
+    <form @submit.prevent="handleSubmit" v-show="!submitted"
+          :class="{ 'entered': firstName != null}"
+    >
 
       <div>
       <span class="material-icons"
@@ -127,6 +127,7 @@ function resetForm() {
       <div>
 
         <span class="material-icons"
+              title="Please enter a message"
             :class="textValid ? 'valid-input' : 'invalid-input'"> assignment
         </span>
 
@@ -138,7 +139,7 @@ function resetForm() {
         </textarea>
       </div>
 
-      <div>
+      <div class="submit-container">
         <button type="submit"
                 id="submit-button"
                 title="submit by pressing her"
@@ -149,7 +150,7 @@ function resetForm() {
 
     </form>
 
-    <div v-show="submitted" id="conformation-message"> {{conformationMessage}} </div>
+    <div v-show="submitted" id="confirmation-message"> {{conformationMessage}} </div>
 
   </div>
 
@@ -157,22 +158,26 @@ function resetForm() {
 
 <style scoped>
 
-#contact-form {
+#form-container {
   margin: auto;
   width: 60%;
   padding: 5% 15%;
   text-align: center;
 }
 
-body {
-  --accent-color: #FF4500FF;
-  --background-color: #efeaea;
+@media (max-width: 900px) {
+  #form-container {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 form {
-  height: auto;
+  height: 100%;
   width: 100%;
-  background-color: var(--background-color);
+  background-color: var(--neutral);
   color: black;
   align-items: center;
   display: flex;
@@ -221,21 +226,19 @@ textarea {
 h1 {
   font-weight: bold;
   text-align: center;
-  border: 2px var(--accent-color) solid;
   padding: 0;
   margin: 0;
   border-radius: 10px;
 }
 
-#submit-button {
-  border-radius: 20px;
-  height: 50%;
-  width: 50%;
-  margin-left: 30%;
+button {
+  width: 70%;
+  margin-left: auto;
   margin-right: auto;
+  aspect-ratio: 4/1;
 }
 
-#submit-button[disabled] {
+button[disabled] {
   cursor: not-allowed;
 }
 
@@ -248,7 +251,7 @@ h1 {
   text-align: center;
 }
 
-#conformation-message {
+#confirmation-message {
   margin-top: 10%;
   font-size: 30px;
 }
