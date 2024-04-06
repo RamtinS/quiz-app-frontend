@@ -21,7 +21,7 @@ export class QuizService {
 
   public static async getQuizPreviewsSpecifiedUser(username: string, page: number, pageSize: number): Promise<QuizPreviewDTO[]> {
     try {
-      console.log("Browsing public quizzes with specified criteria.")
+      console.log("Browsing quiz from specified user.")
       const url = this.api_url + "/users/" + username + "/previews" + `?pageSize=${pageSize}&page=${page}`;
       const result: AxiosResponse<QuizPreviewDTO[]> = await axios.get(url);
       return result.data;
@@ -58,16 +58,4 @@ export class QuizService {
     }
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
 }
