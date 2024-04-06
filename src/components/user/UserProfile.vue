@@ -6,6 +6,7 @@ import {UserDetailService} from "@/services/UserDetailService";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
 import axios from "axios";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
+import {ExpiredTokenService} from "@/services/ExpiredTokenService";
 
 const userStore = useUserStore();
 const email = ref(userStore.getUserData("email"));
@@ -52,6 +53,10 @@ async function toggleEdit() {
           case 500:
             errorMessage.value = "Server error. Please try again later.";
             console.error("Failed to update user details: " + err.response.data.errorMessage, err);
+            break;
+          case 403:
+            errorMessage.value = "You are not authorized to perform this action.";
+            await ExpiredTokenService.refreshAccessToken();
             break;
           default:
             errorMessage.value = "Error. Please try again later.";
