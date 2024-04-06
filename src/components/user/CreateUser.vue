@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import {useRoute} from "vue-router";
 import router from "@/router";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const username = ref('')
 const password = ref('')
@@ -41,28 +41,7 @@ async function register() {
       await router.push('/')
     }
   } catch (err) {
-    if (axios.isAxiosError(err) && err.response) {
-      switch (err.response.status) {
-        case 400:
-          errorMessage.value = err.response.data.errorMessage;
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        case 409:
-          errorMessage.value = err.response.data.errorMessage;
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        case 500:
-          errorMessage.value = "Registration error. Please try again later.";
-          console.error("Registration failed: " + err.response.data.errorMessage, err);
-          break;
-        default:
-          errorMessage.value = "Registration error. Please try again later."
-          console.error("Unexpected status: " + err.response.data.errorMessage, err);
-      }
-    } else {
-      errorMessage.value = "Registration error. Please try again later."
-      console.error("Unexpected error: ", err);
-    }
+    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Registration failed");
   }
 }
 
@@ -100,13 +79,13 @@ function preventSpace(event: any) {
 
             <div class="item-2">
               <label for="fusername">Username:</label>
-              <input type="text" id="fusername" v-model="username"
+              <input type="text" id="username" v-model="username"
                      placeholder="Enter your username" required @keydown="preventSpace"/>
             </div>
 
             <div class="item-2">
               <label for="femail">Email:</label>
-              <input type="text" id="femail" v-model="email"
+              <input type="text" id="email" v-model="email"
                      placeholder="Email" required @keydown="preventSpace"/>
             </div>
 

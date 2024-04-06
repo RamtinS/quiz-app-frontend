@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import {computed, ref, watch, watchEffect} from 'vue'
-import axios from 'axios';
 import {useUserStore} from '@/stores/UserStore';
 import router from "@/router";
 import {useRoute} from "vue-router";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const username = ref<string>('');
 const password = ref<string>('');
 const errorMessage = ref<string>('');
 const store = useUserStore();
 const route = useRoute();
-
 
 /**
  * If the login has been routed because of an expired token, show an alert and set the error message.
@@ -20,8 +19,18 @@ watchEffect(() => {
     alert("expired")
     errorMessage.value = "Your session has expired. Please log in again.";
   }
-})
+});
 
+/**
+ * Watch for changes in username and password fields and clear error message.
+ */
+watch([username, password], () => {
+  errorMessage.value = '';
+});
+
+/**
+ * Attempts to log in the user.
+ */
 async function login() {
   try {
     await store.loginUser(username.value.trim(), password.value.trim());
@@ -31,41 +40,33 @@ async function login() {
       await router.push('/')
     }
   } catch (err) {
-    if (axios.isAxiosError(err) && err.response) {
-      switch (err.response.status) {
-        case 401:
-          errorMessage.value = "Your username or password was incorrect."
-          console.error("Login failed du to bad credentials.", err);
-          break;
-        case 500:
-          errorMessage.value = "Server error. Please try again later.";
-          console.error("Login failed: " + err.response.data.errorMessage, err);
-          break;
-        default:
-          errorMessage.value = "Login error. Please try again later.";
-          console.error("Login failed du to unexpected status code: " + err.response.status);
-      }
-    } else {
-      errorMessage.value = "Unexpected error. Please try again later."
-      console.error("Login failed du to unexpected error: ", err);
-    }
+    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Login failed")
   }
 }
 
+/**
+ * Check if a string is blank.
+ *
+ * @param str The string to check.
+ * @returns True if the string is blank, false otherwise.
+ */
 function isBlank(str: string) {
   return (!str || /^\s*$/.test(str));
 }
 
+// Computed property to check if both username and password fields are filled.
 const fieldsFilled = computed(() => {
   return !isBlank(password.value) && !isBlank(username.value);
 })
 
+// Computed property to check if any input is invalid.
 const allValid = computed(() => !fieldsFilled.value)
 
-watch([username, password], () => {
-  errorMessage.value = '';
-});
-
+/**
+ * Prevent entering space in input fields.
+ *
+ * @param event The keydown event object.
+ */
 function preventSpace(event: any) {
   if (event.key === ' ' || event.code === 'Space') {
     event.preventDefault();

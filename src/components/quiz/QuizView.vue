@@ -1,19 +1,26 @@
 <script setup lang="ts">
-
-import { ref, watch } from "vue";
+import {ref, watch} from "vue";
 import QuizPost from "@/components/quiz/QuizPost.vue";
-import type { QuizPreviewDTO } from "@/models/quiz/QuizPreviewDTO";
-import { QuizService } from "@/services/QuizService";
-import { useUserStore } from "@/stores/UserStore";
-import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
-const previews = ref<QuizPreviewDTO[]>([])
 
-let userStore = useUserStore();
-const username = userStore.getUserData("username")
-let page = ref(0);
-
+const page = ref(0);
+const emit = defineEmits(['page-change'])
+const props = defineProps({
+      previews: {type: Array, required: false},
+      title: {type: String, required: false, default: "Browse quizzes:"},
+      userOwnsThem: {type: Boolean, required: false, default: false}
+    }
+)
 watch(page, async () => {
-  previews.value = await QuizService.getQuizPreviewsSpecifiedUser(username, page.value, 4)
+  emit('page-change', page.value)
+})
+
+let previews = props.previews;
+const username = props.username;
+let doesUserOwnThem = props.userOwnsThem;
+
+watch(props, async () => {
+  console.log("Lol")
+  previews = props.previews
 })
 
 function increasePage() {
@@ -28,47 +35,28 @@ function decreasePage() {
   }
 }
 
-const props = defineProps(
-    {
-      title: {type: String, required: false, default: "Browse quizzes:"},
-    }
-)
-
-if (username) {
-  try {
-    console.log("browsing public")
-    previews.value = await QuizService.getQuizPreviewsSpecifiedUser(username, page.value, 4)
-  } catch (err) {
-    console.error("Could not find users quizzes: " + err)
-  }
-}
 </script>
-
 <template>
-
   <div class="">
-    <UserProfileHeader></UserProfileHeader>
-
     <div id="quiz-browser">
       <div class="options-container">
-        <h1>{{props.title}}</h1>
+        <h1>{{ props.title }}</h1>
       </div>
 
       <div id="quiz-grid">
         <QuizPost v-for="(quiz, index) in previews"
                   :key="index"
                   :post="quiz"
-                  class="quiz-post"
-        >
+                  :is-owned-by-user="doesUserOwnThem"
+                  class="quiz-post">
         </QuizPost>
       </div>
 
       <div class="browser-navigator">
-
         <button @click="decreasePage">
           Previous
         </button>
-        <p>Page: {{page}}</p>
+        <p>Page: {{ page }}</p>
         <button @click="increasePage">
           Next
         </button>
@@ -78,14 +66,11 @@ if (username) {
 </template>
 
 <style scoped>
-
-h1{
+h1 {
   color: black;
 }
 
-#quiz-browser{
-  background: rgb(93,79,149);
-  background: linear-gradient(252deg, rgba(93,79,149,1) 0%, rgba(112,132,183,1) 55%, rgba(0,212,255,1) 100%);
+#quiz-browser {
 }
 
 .browser-navigator {

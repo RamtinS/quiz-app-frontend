@@ -4,7 +4,7 @@ describe('Navigate website page test', () => {
     beforeEach(() => {
         cy.visit("http://localhost:3000")
         cy.get('#hamburger-icon').click()
-        cy.get("#my-account-preview").click()
+        cy.get('#right-preview').click()
     });
 
     it("Buttons in left navbar should be visible.", () => {

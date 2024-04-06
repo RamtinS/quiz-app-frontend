@@ -4,9 +4,8 @@ import {onMounted, ref} from "vue";
 import {useUserStore} from "@/stores/UserStore";
 import {UserDetailService} from "@/services/UserDetailService";
 import type {EditUserDTO} from "@/models/user/EditUserDTO";
-import axios from "axios";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
-import {ExpiredTokenService} from "@/services/ExpiredTokenService";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const userStore = useUserStore();
 const email = ref(userStore.email);
@@ -57,36 +56,9 @@ async function toggleEdit() {
         restoreUserDetails();
       }
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        switch (err.response.status) {
-          case 400:
-            errorMessageEdit.value = err.response.data.errorMessage;
-            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
-            break;
-          case 404:
-            errorMessageEdit.value = err.response.data.errorMessage;
-            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
-            break;
-          case 409:
-            errorMessageEdit.value = err.response.data.errorMessage;
-            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
-            break;
-          case 500:
-            errorMessageEdit.value = "Server error. Please try again later.";
-            console.error("Failed to update user details: " + err.response.data.errorMessage, err);
-            break;
-          case 403:
-            errorMessageEdit.value = "You are not authorized to perform this action.";
-            await ExpiredTokenService.refreshAccessToken();
-            break;
-          default:
-            errorMessageEdit.value = "Error. Please try again later.";
-            console.error("Failed to update user details. Unexpected status: " + err.response.status, err);
-        }
-      } else {
-        errorMessageEdit.value = "Error. Please try again later.";
-        console.error("Failed to update user details. Unexpected error: ", err);
-      }
+
+      errorMessageEdit.value = await ErrorHandlingService
+          .handleRequestError(err, "Failed to update user details");
 
       restoreUserDetails();
 

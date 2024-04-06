@@ -25,7 +25,7 @@ describe('Login page test', () => {
         cy.get("#error").should('not.be.hidden')
     });
 
-    it("Display homeView on correct input.", () => {
+    it("Correct login credentials should push you to a new route.", () => {
         cy.get('#username').type('admin');
         cy.get('#password').type('password');
         cy.get('#login').click()
