@@ -1,24 +1,26 @@
 <script setup lang="ts">
 
-import DropDown from "@/components/navigation/DropDown.vue";
+import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 import {ref} from "vue";
 
-
-
+/**
+ * Defines a list of links used to iterate over to show router links
+ */
 defineProps({
   links: {type: Object, required: true},
 })
 
-
 const showLeft = ref(false);
+const root = ref<HTMLElement |null>(null)
 
+/**
+ * Toggles the visibility of the left menu
+ */
 function toggleShowLeftMenu() {
   showLeft.value = !showLeft.value;
 }
 
-
-const root = ref<HTMLElement |null>(null)
 
 
 

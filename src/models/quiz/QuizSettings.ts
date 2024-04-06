@@ -4,5 +4,6 @@ export type QuizSettings = {
   title: string;
   description: string;
   open: boolean;
+  categoryDescription: string;
   tags: TagDTO[];
 }

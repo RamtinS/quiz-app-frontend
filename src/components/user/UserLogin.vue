@@ -80,7 +80,7 @@ function preventSpace(event: any) {
     <div class="grid">
       <!-- First item is the welcome container -->
       <div class="container-1">
-        <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
+        <img src="../../assets/logos/owl-no-background.png" alt="logo" class="img-center" >
         <h1>
           Welcome to Quiz App!
         </h1>
@@ -151,7 +151,6 @@ function preventSpace(event: any) {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
-  height: 70%;
 }
 
 .container-2 {

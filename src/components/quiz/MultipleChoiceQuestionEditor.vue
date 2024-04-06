@@ -28,7 +28,9 @@ watchEffect(() => {
   })
 })
 
-
+/**
+ * Exposes the submitQuestion function to the parent component.
+ */
 defineExpose({
   submitQuestion
 })
@@ -59,8 +61,6 @@ function submitQuestion() {
     emit('submit-changes', {question: questionDTO, errorMessage: null});
   }
 }
-
-
 
 
 /**
@@ -161,7 +161,7 @@ function removeAnswer() {
 
 button{
   aspect-ratio: 3/1;
-  width: 5%%;
+  width: 5%;
 }
 
 .answer {
@@ -194,7 +194,6 @@ button{
   resize: none;
   color: white;
   height: 80%;
-
 }
 
 .answer-text::placeholder {
@@ -206,7 +205,6 @@ button{
   height: 90%;
   aspect-ratio: 1/1;
   margin-right: 10px;
-
 }
 
 .correct-checkbox:checked {

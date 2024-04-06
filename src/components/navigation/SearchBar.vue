@@ -2,7 +2,7 @@
 import {ref} from "vue";
 import {UserService} from "@/services/UserService";
 import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
-import DropDown from "@/components/navigation/DropDown.vue";
+import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
 import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
 
 
@@ -12,6 +12,9 @@ const errorMessage = ref("")
 
 const previews = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
 
+/**
+ * Search for users based on the input in the search bar, the users are then displayed in a dropdown
+ */
 async function searchClicked() {
   removeError()
   try {
@@ -31,7 +34,6 @@ async function searchClicked() {
     }));
 
 
-
     if (result.length === 0) {
       triggerError("No results found")
     }
@@ -42,19 +44,26 @@ async function searchClicked() {
   }
 }
 
+/**
+ * Trigger an error message and shake the search bar
+ * @param message
+ */
 function triggerError(message: string) {
   errorMessage.value = message;
   searchShake.value = true
-  setTimeout(() => {
-    searchShake.value = false
-  }, 1000)
   return;
 }
 
+/**
+ * Remove the current error message
+ */
 function removeError() {
   errorMessage.value = ""
 }
 
+/**
+ * Clear the search bar
+ */
 function clearSearch() {
   search.value = ""
   previews.value = []
@@ -64,8 +73,7 @@ function clearSearch() {
 
 
 <template>
-
-  <div id="search-bar"
+  <div class="search-bar"
        :class="[
         (errorMessage) ? 'error' : 'noError',
          searchShake ? 'shake' : '']"
@@ -78,23 +86,37 @@ function clearSearch() {
            v-model="search"
 
     />
-    <DropDown v-if="previews && !errorMessage">
+    <DropDown v-if="previews.length && !errorMessage" :center="true">
       <RouterLinkBar :links="previews"></RouterLinkBar>
     </DropDown>
-    <DropDown v-else-if="errorMessage && (search.length !== 0)">
-      <div id="errorMessage">
-        {{ errorMessage }}
+    <DropDown v-else-if="errorMessage && (search.length !== 0)" :center="true">
+      <div class="error-dropdown">
+        <p class="error-message">
+          {{ errorMessage }}
+        </p>
       </div>
     </DropDown>
   </div>
-
-
 </template>
 
 <style scoped>
 
 h3 {
   text-align: center;
+}
+
+.error-dropdown {
+  color: red;
+  background: white;
+  text-align: center;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+
+.error-message{
+  margin: 0;
 }
 
 
@@ -107,7 +129,7 @@ h3 {
 }
 
 
-#search-bar {
+.search-bar {
   position: relative;
   display: flex;
   justify-content: center;
