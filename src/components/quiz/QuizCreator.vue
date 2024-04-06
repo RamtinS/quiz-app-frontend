@@ -17,31 +17,33 @@ import type {QuizSettings} from "@/models/quiz/QuizSettings";
 import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 
-
+/**
+ * Props for the QuizCreator component, including a pre-existing quiz.
+ * if the pre-existing quiz is present, the component will be in edit mode.
+ */
 const props = defineProps({
   preExistingQuiz: {type: Object as () => QuizDTO, required: false}
 })
 
 const quizHasBeenSubmitted = ref<boolean>(false)
-
-
 const questionIndex = ref<number>(0)
-
 const showQuestionTypeModal = ref<boolean>(false)
 const showQuizSettingsModal = ref<boolean>(false)
-
 const createdQuestions = ref<QuizQuestionDTO[]>([])
 const selectedTags = ref<TagDTO[]>([])
-
 const postQuizErrorMessage = ref<string>("")
 
 const quizSettings = ref<QuizSettings>({
   title: '',
   description: '',
   open: false,
-  tags: []
+  tags: [],
+  categoryDescription: ''
 })
 
+/**
+ * Checks if the pre-existing quiz prop is present. If it is, the quiz settings will be set to the pre-existing quiz.
+ */
 if (props.preExistingQuiz) {
   const quiz: QuizDTO = props.preExistingQuiz
   quizSettings.value.title = props.preExistingQuiz.name
@@ -108,11 +110,11 @@ async function postQuizToServer() {
   const quizCreationRequestDTO: QuizCreationRequestDTO =
       {
         title: quizSettings.value.title,
-        description: quizSettings.value.title,
-        categoryDescription: quizSettings.value.description,
+        description: quizSettings.value.description,
+        categoryDescription: quizSettings.value.categoryDescription,
         questions: createdQuestions.value,
-        tags: selectedTags.value,
-        open: quizSettings.value.open
+        open: quizSettings.value.open,
+        tags: selectedTags.value
       }
 
   for (let i = 0; i < createdQuestions.value.length; i++) {
@@ -155,19 +157,33 @@ async function postQuizToServer() {
   }
 }
 
+/**
+ * Removes the question type modal.
+ */
 function removeQuestionTypeModal() {
   showQuestionTypeModal.value = false;
 }
 
+/**
+ * Removes the quiz settings modal.
+ */
 function removeQuizSettingsModal() {
   showQuizSettingsModal.value = false;
 }
 
+/**
+ * Handles the choice of question type from the modal.
+ * @param choice The choice of question type.
+ */
 function handleQuestionTypeModalChoice(choice: QuestionType) {
   showQuestionTypeModal.value = false;
   addNewEmptyQuestion(choice);
 }
 
+/**
+ * Handles the submission of the quiz settings modal.
+ * @param submitData The data from the modal.
+ */
 function handleQuizSettingsModalSubmit(submitData: QuizSettings) {
   postQuizErrorMessage.value = "";
   quizSettings.value = submitData;
@@ -175,6 +191,10 @@ function handleQuizSettingsModalSubmit(submitData: QuizSettings) {
   selectedTags.value = submitData.tags;
 }
 
+/**
+ * Adds a new empty question to the list of questions.
+ * @param questionType The type of question to add.
+ */
 function addNewEmptyQuestion(questionType: QuestionType) {
   console.log("Adding new question of type: " + questionType)
 
@@ -225,6 +245,7 @@ function addNewEmptyQuestion(questionType: QuestionType) {
 </script>
 
 <template>
+  {{ quizSettings }}
   <div id="quiz-creator" v-if="!quizHasBeenSubmitted">
 
     <div id="quiz-info">
@@ -316,7 +337,7 @@ h1 {
   text-align: center;
 }
 
-.button-container button{
+.button-container button {
   aspect-ratio: 3/1;
 }
 
@@ -375,9 +396,6 @@ h1 {
   min-width: 200px;
   min-height: 200px;
 }
-
-
-
 
 
 #previews {
