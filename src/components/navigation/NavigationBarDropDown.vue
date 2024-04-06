@@ -1,6 +1,10 @@
 <script setup lang="ts">
 
-const props = defineProps(
+/**
+ * A dropdown that can be placed on the left, right or center of the screen
+ * The default position is right
+ */
+defineProps(
     {
       left: {
         type: Boolean,
@@ -17,33 +21,40 @@ const props = defineProps(
 </script>
 
 <template>
-
   <div
       class="dropdown"
       :class="center ? 'center' : (left ? 'left' : 'right')">    <slot>
     </slot>
   </div>
-
 </template>
 
 <style scoped>
 
 .dropdown {
-  position: absolute;
-  top: 100%;
-  height: auto;
+  position: fixed;
+  width: 50vw;
+  top: 60px;
+}
+
+@media (max-width: 800px) {
+  .dropdown {
+    width: 100%;
+    top: 50px;
+  }
 }
 
 .left {
-  left: 0;
+  left: 5px;
 }
 
 .right {
-  right: 0;
+  right: 5px;
 }
 
 .center{
   left: 50%;
+  top: 40px;
+  width: 25vw;
   transform: translateX(-50%);
 }
 
