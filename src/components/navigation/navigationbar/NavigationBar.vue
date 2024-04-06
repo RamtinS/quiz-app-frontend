@@ -40,7 +40,7 @@ const profileLinks = ref([
 
 
 #navigation-bar {
-
+  z-index: 10;
   display: flex;
   flex-direction: row;
   height: 50px;
@@ -68,6 +68,5 @@ const profileLinks = ref([
   padding-left: 10px;
   padding-right: 10px;
 }
-
 
 </style>

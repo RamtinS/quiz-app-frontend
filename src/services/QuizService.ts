@@ -8,8 +8,8 @@ export class QuizService {
 
   public static async getQuizPreviewsPublic(page: number, pageSize: number): Promise<QuizPreviewDTO[]> {
     try {
+      console.log("Browsing public quizzes.")
       const url = this.api_url + "/browser/previews" + `?pageSize=${pageSize}&page=${page}`;
-      console.log("url: " + url);
       const result: AxiosResponse<QuizPreviewDTO[]> = await axios.get(url);
       return result.data;
 
@@ -21,11 +21,10 @@ export class QuizService {
 
   public static async getQuizPreviewsSpecifiedUser(username: string, page: number, pageSize: number): Promise<QuizPreviewDTO[]> {
     try {
+      console.log("Browsing public quizzes with specified criteria.")
       const url = this.api_url + "/users/" + username + "/previews" + `?pageSize=${pageSize}&page=${page}`;
-      console.log("url: " + url);
       const result: AxiosResponse<QuizPreviewDTO[]> = await axios.get(url);
       return result.data;
-
     } catch (err) {
       console.log('error: ' + err);
       throw err;
