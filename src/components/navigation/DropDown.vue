@@ -7,6 +7,11 @@ const props = defineProps(
         required: false,
         default: false
       },
+      center: {
+        type: Boolean,
+        required: false,
+        default: false
+      }
     })
 
 </script>
@@ -15,8 +20,7 @@ const props = defineProps(
 
   <div
       class="dropdown"
-      :class="[left ? 'left' : 'right']">
-    <slot>
+      :class="center ? 'center' : (left ? 'left' : 'right')">    <slot>
     </slot>
   </div>
 
@@ -36,6 +40,11 @@ const props = defineProps(
 
 .right {
   right: 0;
+}
+
+.center{
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 </style>

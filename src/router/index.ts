@@ -35,6 +35,7 @@ const router = createRouter({
       path: '/logout',
       name: 'logout',
       component: UserLogout,
+      meta: {authRequired: false},
       beforeEnter: (_to, _from, next) => {
         logOut();
         next();
@@ -86,17 +87,19 @@ const router = createRouter({
       path: '/quiz-creator',
       name: 'quiz-creator',
       component: QuizCreator,
-      meta: {authRequired: false}
+      meta: {authRequired: true}
     },
     {
       path: '/quiz-editor/:quizId',
       name: 'quiz-editor',
       component: QuizEditWrapper,
+      meta: {authRequired: true}
     },
     {
       path: '/user/:username',
       name: 'profile-viewer',
       component: PublicProfile,
+      meta: {authRequired: true}
     },
     {
       path: '/:pathName(.*)',
