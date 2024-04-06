@@ -9,7 +9,7 @@ import {useUserStore} from "@/stores/UserStore";
 const userStore = useUserStore();
 
 onMounted(() => {
-  userStore.setAuthToken(userStore.getUserData("token"));
+  userStore.setAuthToken(userStore.token);
 });
 
 const hamburgerLinks = ref([
