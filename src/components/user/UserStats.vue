@@ -2,6 +2,7 @@
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 import { onMounted, ref } from "vue";
 import { UserService } from "@/services/UserService";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const xScale = 80;
 const yScale = 30;
@@ -36,8 +37,9 @@ onMounted(async () => {
     totalAttempts.value = UserStatsDTO.totalQuizAttempts;
     totalScore.value = UserStatsDTO.totalScore;
   } catch (err) {
+    await ErrorHandlingService.handleRequestError(err, "Error retrieving the statistics");
     errorMessage.value =
-      "An error occurred while retrieving the statistics. Please try again later.";
+        "An error occurred while retrieving the statistics. Please try again later.";
     console.error(err);
   }
 });
