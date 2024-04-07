@@ -1,19 +1,33 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/UserStore";
 import QuizView from "@/components/quiz/browser/QuizPreviewer.vue";
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 import { QuizService } from "@/services/QuizService";
 import type { QuizPreviewDTO } from "@/models/quiz/QuizPreviewDTO";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 const userStore = useUserStore();
 const username = userStore.username;
 let previews = ref<QuizPreviewDTO[]>();
 
+/**
+ * Fetches quizzes associated with the specified user.
+ * @param page Page number for pagination
+ * @returns Promise resolving to an array of quiz preview data
+ */
 async function getQuizForUsers(page: number) {
-  return await QuizService.getQuizPreviewsSpecifiedUser(username, page, 3);
+  try {
+    return await QuizService.getQuizPreviewsSpecifiedUser(username, page, 3);
+  } catch (err) {
+    await ErrorHandlingService.handleRequestError(err, "Failed to retrieve quizzes.")
+  }
 }
 
+/**
+ * Handles page change event by fetching new quizzes and updating previews.
+ * @param page - Page number for pagination
+ */
 function handlePageChange(page: number) {
   getQuizForUsers(page)
     .then((newPreviews) => {
@@ -24,7 +38,12 @@ function handlePageChange(page: number) {
     });
 }
 
-previews.value = await getQuizForUsers(0);
+/**
+ * Initializing previews with quizzes on component mount.
+ */
+onMounted(async () => {
+  previews.value = await getQuizForUsers(0);
+});
 </script>
 
 <template>
