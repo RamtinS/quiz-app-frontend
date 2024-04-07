@@ -52,8 +52,16 @@ if (props.preExistingQuiz) {
   quizSettings.value.open = quiz.open
   createdQuestions.value = quiz.questions
 
-} else {
-  //TODO delete test data
+}
+
+
+const currentQuestion = computed(() => createdQuestions.value[questionIndex.value])
+const createdFromTemplate = ref<boolean>(false)
+
+/**
+ * Adds template quizzes
+ */
+function addTemplateData(){
   const exampleMultipleChoice: MultipleChoiceQuestionDTO = {
     questionType: "MultipleChoiceQuestionDTO",
     questionText: 'What is the capital of France?',
@@ -73,11 +81,8 @@ if (props.preExistingQuiz) {
 
   createdQuestions.value.push(exampleMultipleChoice)
   createdQuestions.value.push(exampleTrueFalse)
+  createdFromTemplate.value = true
 }
-
-
-const currentQuestion = computed(() => createdQuestions.value[questionIndex.value])
-
 
 /**
  * Handles the event emitted by the QuestionEditor component.
@@ -265,7 +270,7 @@ async function deleteQuiz() {
 </script>
 
 <template>
-  <div id="quiz-creator" v-if="!quizHasBeenSubmitted">
+  <div id="quiz-creator" v-if="!quizHasBeenSubmitted" @click="quizErrorMessage = ''">
 
     <div id="quiz-info">
       <h1 v-if="quizSettings.title">
@@ -283,8 +288,11 @@ async function deleteQuiz() {
                 @click="deleteQuiz"
         >Delete quiz
         </button>
+        <button v-if="!createdFromTemplate" @click="addTemplateData">
+          Create from template?
+        </button>
         <button @click="showQuizSettingsModal=true">Edit quiz info</button>
-        <button v-if="!quizErrorMessage" @click="postQuizToServer">Submit quiz</button>
+        <button v-if="!quizErrorMessage" @click.stop="postQuizToServer">Submit quiz</button>
         <p
             v-if="quizErrorMessage"
             class="post-quiz-error-message"
@@ -432,6 +440,7 @@ h1 {
   background-color: lightblue;
   display: flex;
   flex-direction: column;
+  height: 250px;
 
 }
 
