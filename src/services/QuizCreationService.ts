@@ -13,6 +13,7 @@ export class QuizCreationService {
     /**
      * Get a quiz by its id
      * @param quiz id of the quiz
+     * @throws error if the quiz could not be retrieved
      */
     public static async postQuizForLoggedInnUser(quiz: QuizCreationRequestDTO): Promise<QuizCreationResponseDTO> {
         try {
@@ -29,6 +30,7 @@ export class QuizCreationService {
      * Update a quiz
      * @param quizCreationRequestDTO the quiz to be updated
      * @param quizId id of the quiz
+     * @throws error if the quiz could not be updated
      */
     public static async updateQuizForLoggedInUser(quizCreationRequestDTO: QuizCreationRequestDTO,
                                                   quizId: number): Promise<QuizCreationResponseDTO> {
@@ -37,6 +39,21 @@ export class QuizCreationService {
               "/editor/" + quizId,
               quizCreationRequestDTO);
             return result.data;
+        } catch (err) {
+            console.error('error in quiz service: ', err);
+            throw err;
+        }
+    }
+
+    /**
+     * Delete a quiz
+     * @param quizId id of the quiz
+     * @throws error if it the quiz could not be deleted
+     */
+    public static async deleteQuiz(quizId: number): Promise<void> {
+        try {
+            console.log('deleting quiz with id: ', quizId);
+            await axios.delete(this.api_url + "/editor/" + quizId);
         } catch (err) {
             console.error('error in quiz service: ', err);
             throw err;

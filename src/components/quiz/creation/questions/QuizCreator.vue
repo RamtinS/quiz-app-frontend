@@ -16,6 +16,7 @@ import QuestionSettingsModal from "@/components/quiz/creation/settings/QuizSetti
 import type {QuizSettings} from "@/models/quiz/QuizSettings";
 import {QuizValidationUtility} from "@/utility/QuizValidationUtility";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
+import {ErrorHandlingService} from "@/services/ErrorHandlingService";
 
 /**
  * Props for the QuizCreator component, including a pre-existing quiz.
@@ -31,7 +32,7 @@ const showQuestionTypeModal = ref<boolean>(false)
 const showQuizSettingsModal = ref<boolean>(false)
 const createdQuestions = ref<QuizQuestionDTO[]>([])
 const selectedTags = ref<TagDTO[]>([])
-const postQuizErrorMessage = ref<string>("")
+const quizErrorMessage = ref<string>("")
 
 const quizSettings = ref<QuizSettings>({
   title: '',
@@ -103,7 +104,7 @@ async function postQuizToServer() {
   console.log("trying to submit quiz")
 
   if (quizSettings.value.title === '') {
-    postQuizErrorMessage.value = "You need to have a title"
+    quizErrorMessage.value = "You need to have a title"
     return
   }
 
@@ -121,24 +122,24 @@ async function postQuizToServer() {
     const question: QuizQuestionDTO = createdQuestions.value[i];
 
     if (question.questionText === "") {
-      postQuizErrorMessage.value = "Question number " + (i + 1) + " has no text"
+      quizErrorMessage.value = "Question number " + (i + 1) + " has no text"
       return;
     }
 
     if (question.questionType === "MultipleChoiceQuestionDTO") {
       const message = QuizValidationUtility.multipleChoiceQuestionIsValid(question as MultipleChoiceQuestionDTO)
       if (message) {
-        postQuizErrorMessage.value = "Question " + (i + 1) + ": " + message
+        quizErrorMessage.value = "Question " + (i + 1) + ": " + message
         return;
       }
     } else if (question.questionType === "TrueOrFalseQuestionDTO") {
       const message = QuizValidationUtility.trueOrFalseQuestionIsValid(question as TrueOrFalseQuestionDTO)
       if (message) {
-        postQuizErrorMessage.value = "Question " + (i + 1) + ": " + message
+        quizErrorMessage.value = "Question " + (i + 1) + ": " + message
         return;
       }
     } else {
-      postQuizErrorMessage.value = "Question number " + (i + 1) + " has an unknown question type"
+      quizErrorMessage.value = "Question number " + (i + 1) + " has an unknown question type"
       return;
     }
   }
@@ -153,7 +154,7 @@ async function postQuizToServer() {
     }
     quizHasBeenSubmitted.value = true;
   } catch (err) {
-    postQuizErrorMessage.value = "There was an error handling your request: " + err
+    quizErrorMessage.value = "There was an error handling your request: " + err
   }
 }
 
@@ -185,7 +186,7 @@ function handleQuestionTypeModalChoice(choice: QuestionType) {
  * @param submitData The data from the modal.
  */
 function handleQuizSettingsModalSubmit(submitData: QuizSettings) {
-  postQuizErrorMessage.value = "";
+  quizErrorMessage.value = "";
   quizSettings.value = submitData;
   showQuizSettingsModal.value = false;
   selectedTags.value = submitData.tags;
@@ -242,6 +243,25 @@ function addNewEmptyQuestion(questionType: QuestionType) {
   }
 }
 
+/**
+ * Deletes the quiz from the server. If it is not possible, an error message will be displayed.
+ */
+async function deleteQuiz() {
+  if (props.preExistingQuiz) {
+    try {
+      if (confirm("Are you sure you want to delete this quiz?")) {
+        await QuizCreationService.deleteQuiz(props.preExistingQuiz.quizId)
+        quizHasBeenSubmitted.value = true;
+        return;
+      }
+    } catch (err) {
+      quizErrorMessage.value = await ErrorHandlingService.handleRequestError(err, "Deletion failed")
+    }
+  } else {
+    quizErrorMessage.value = "You cannot delete a quiz does not exist"
+  }
+}
+
 </script>
 
 <template>
@@ -258,13 +278,18 @@ function addNewEmptyQuestion(questionType: QuestionType) {
         Create a quiz
       </h1>
       <div class="button-container">
+        <button v-if="props.preExistingQuiz"
+                class="delete-button"
+                @click="deleteQuiz"
+        >Delete quiz
+        </button>
         <button @click="showQuizSettingsModal=true">Edit quiz info</button>
-        <button v-if="!postQuizErrorMessage" @click="postQuizToServer">Submit quiz</button>
+        <button v-if="!quizErrorMessage" @click="postQuizToServer">Submit quiz</button>
         <p
-            v-if="postQuizErrorMessage"
+            v-if="quizErrorMessage"
             class="post-quiz-error-message"
         >
-          {{ postQuizErrorMessage }}
+          {{ quizErrorMessage }}
         </p>
       </div>
 
@@ -437,6 +462,11 @@ h1 {
   p {
     font-size: 40px;
   }
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
 }
 
 </style>
