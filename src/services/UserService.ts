@@ -9,7 +9,7 @@ export class UserService {
   public static async searchUserByUsername(username: string, page: number,
                                            pageSize: number): Promise<PublicUserInformationDTO[]> {
 
-    const url = this.api_url + "?" + "search=" + username + "&page=" + page + "&size=" + pageSize;
+    const url = this.api_url + "/public?" + "search=" + username + "&page=" + page + "&size=" + pageSize;
     console.log("url: " + url);
     try {
       const response: AxiosResponse<PublicUserInformationDTO[]> = await axios.get(url);
@@ -31,7 +31,7 @@ export class UserService {
 
   public static async getPublicUserInformationFromUsername(username: string): Promise<PublicUserInformationDTO> {
     try {
-      const request = this.api_url + "/" + username + "/public-info";
+      const request = this.api_url + "/public/" + username;
       console.log("request: " + request);
       const response: AxiosResponse<PublicUserInformationDTO> = await axios.get(request);
       return response.data;
