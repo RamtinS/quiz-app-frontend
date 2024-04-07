@@ -125,8 +125,11 @@ button{
   display: block;
   margin: 20px auto 0;
   text-align: center;
-  width: 25%;
+  width: 50%;
   height: 50px;
+  border-radius: 5px;
+  font-size: 20px;
+  border: 3px solid black
 }
 
 .question-submit-container {

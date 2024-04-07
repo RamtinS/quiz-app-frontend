@@ -81,7 +81,8 @@ const selectedOption = ref('');
   margin-top: 10%;
   margin-left: 25%;
   width: 50%;
-  height: 50%;
+  height: 250px;
+  overflow-y: scroll;
   z-index: 2;
 }
 
