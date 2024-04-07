@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import UserProgress from "@/components/user/UsesStats.vue";
+import UserStats from "@/components/user/UserStats.vue";
 </script>
 
 <template>
   <div>
-    <UserProgress></UserProgress>
+    <UserStats></UserStats>
   </div>
 </template>
 
