@@ -1,37 +1,33 @@
 <script setup lang="ts">
 import type { TrueOrFalseQuestionDTO } from "@/models/quiz/TrueOrFalseQuestionDTO";
 import router from "@/router";
-import {ref} from "vue";
+import { ref } from "vue";
 
 const errorMessage = ref("");
-const emit = defineEmits(['answer-selected'])
-const props = defineProps(
-    {
-      question: { type: Object as () => TrueOrFalseQuestionDTO, required: true }
-    }
-);
+const emit = defineEmits(["answer-selected"]);
+const props = defineProps({
+  question: { type: Object as () => TrueOrFalseQuestionDTO, required: true },
+});
 
 let questions = props.question;
 
 try {
-   questions = props.question;
+  questions = props.question;
 } catch (err) {
   errorMessage.value = "An error happened" + err;
 }
 
-
 function verifyAnswer(value: boolean) {
-  let isAnswerCorrect = questions?.questionIsCorrect == value
-  console.log(isAnswerCorrect)
-  emit('answer-selected', isAnswerCorrect)
+  let isAnswerCorrect = questions?.questionIsCorrect == value;
+  console.log(isAnswerCorrect);
+  emit("answer-selected", isAnswerCorrect);
 }
-
 
 /**
  * Method to return back to the previous site.
  */
 function returnToPreviousRouterPage() {
-  router.go(-1)
+  router.go(-1);
 }
 </script>
 
@@ -46,15 +42,11 @@ function returnToPreviousRouterPage() {
       {{ errorMessage }}
     </h1>
 
-    <button @click="returnToPreviousRouterPage">
-      Exit Quiz
-    </button>
+    <button @click="returnToPreviousRouterPage">Exit Quiz</button>
   </div>
-
 </template>
 
 <style scoped>
-
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -88,5 +80,4 @@ button {
   padding: 30px;
   margin: 5px;
 }
-
 </style>

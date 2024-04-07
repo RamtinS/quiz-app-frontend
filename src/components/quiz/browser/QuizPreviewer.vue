@@ -1,40 +1,39 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import { ref, watch } from "vue";
 import QuizPost from "@/components/quiz/browser/QuizPost.vue";
+import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
 const page = ref(0);
-const emit = defineEmits(['page-change'])
+const emit = defineEmits(["page-change"]);
 const props = defineProps({
-      previews: {type: Array, required: false},
-      title: {type: String, required: false, default: "Browse quizzes:"},
-      userOwnsThem: {type: Boolean, required: false, default: false}
-    }
-)
+  previews: { type: Array as () => QuizPreviewDTO[], required: false },
+  title: { type: String, required: false, default: "Browse quizzes:" },
+  userOwnsThem: { type: Boolean, required: false, default: false },
+});
 
 watch(page, async () => {
-  emit('page-change', page.value)
-})
+  emit("page-change", page.value);
+});
 
 let previews = props.previews;
 let doesUserOwnThem = props.userOwnsThem;
 
 watch(props, async () => {
-  console.log("Lol")
-  previews = props.previews
-})
+  console.log("Lol");
+  previews = props.previews;
+});
 
 function increasePage() {
   if (page.value >= 0) {
-    page.value++
+    page.value++;
   }
 }
 
 function decreasePage() {
   if (page.value > 0) {
-    page.value--
+    page.value--;
   }
 }
-
 </script>
 <template>
   <div>
@@ -44,22 +43,20 @@ function decreasePage() {
       </div>
 
       <div id="quiz-grid">
-        <QuizPost v-for="(quiz, index) in previews"
-                  :key="index"
-                  :post="quiz"
-                  :is-owned-by-user="doesUserOwnThem"
-                  class="quiz-post">
+        <QuizPost
+          v-for="(quiz, index) in previews"
+          :key="index"
+          :post="quiz"
+          :is-owned-by-user="doesUserOwnThem"
+          class="quiz-post"
+        >
         </QuizPost>
       </div>
 
       <div class="browser-navigator">
-        <button @click="decreasePage">
-          Previous
-        </button>
+        <button @click="decreasePage">Previous</button>
         <p>Page: {{ page }}</p>
-        <button @click="increasePage">
-          Next
-        </button>
+        <button @click="increasePage">Next</button>
       </div>
     </div>
   </div>
@@ -70,8 +67,6 @@ h1 {
   color: black;
 }
 
-#quiz-browser {
-}
 
 .browser-navigator {
   display: flex;
@@ -105,5 +100,4 @@ input {
   margin: 30px;
   font-size: 20px;
 }
-
 </style>

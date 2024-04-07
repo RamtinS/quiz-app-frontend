@@ -1,5 +1,5 @@
 import router from "@/router";
-import {useUserStore} from "@/stores/UserStore";
+import { useUserStore } from "@/stores/UserStore";
 
 /**
  * Service for handling expired tokens.
@@ -12,9 +12,9 @@ export class ExpiredTokenService {
     const store = useUserStore();
     store.logout();
     await router.push({
-      name: 'login',
+      name: "login",
       params: { tokenStatus: "expired" },
-      query: { redirect: router.currentRoute.value.fullPath }
+      query: { redirect: router.currentRoute.value.fullPath },
     });
   }
 }

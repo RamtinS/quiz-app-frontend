@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import {useUserStore} from '@/stores/UserStore'
+import { useUserStore } from "@/stores/UserStore";
 
 defineProps({
-  links: {type: Object, required: true},
-
-})
+  links: { type: Object, required: true },
+});
 
 const userStore = useUserStore();
 
 function isAuthorized() {
   return userStore.isAuthenticated;
 }
-
-
 </script>
 
 <template>
   <div class="generic-dropdown">
-    <router-link class="router-link" v-for="(value, index) in links" :id="value.id" :key="index" :to="value.link">
-
+    <router-link
+      class="router-link"
+      v-for="(value, index) in links"
+      :id="value.id"
+      :key="index"
+      :to="value.link"
+    >
       <div class="bar-item" v-if="!value.authNeeded || isAuthorized()">
         <span class="material-icons">{{ value.icon }}</span>
         <p class="bar-item-text">
@@ -30,8 +32,6 @@ function isAuthorized() {
 </template>
 
 <style scoped>
-
-
 .generic-dropdown {
   top: 100%;
   background: inherit;
@@ -42,8 +42,6 @@ function isAuthorized() {
   border-radius: 10px;
   border: 1px solid black;
   background-color: var(--navigation-bar-background);
-
-
 }
 
 .bar-item {
@@ -86,8 +84,4 @@ function isAuthorized() {
     padding: 0;
   }
 }
-
-
-
-
 </style>

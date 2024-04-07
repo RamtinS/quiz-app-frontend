@@ -1,28 +1,25 @@
 <script setup lang="ts" generic="">
 import type { MultipleChoiceQuestionDTO } from "@/models/quiz/MultipleChoiceQuestionDTO";
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 import router from "@/router";
 
 const errorMessage = ref("");
-const emit = defineEmits(['answer-selected'])
-const props = defineProps(
-    {
-        question: { type: Object as () => MultipleChoiceQuestionDTO, required: true }
-    }
-);
+const emit = defineEmits(["answer-selected"]);
+const props = defineProps({
+  question: { type: Object as () => MultipleChoiceQuestionDTO, required: true },
+});
 
 /**
  * Method to return back to the previous site.
  */
 function returnToPreviousRouterPage() {
-  router.go(-1)
+  router.go(-1);
 }
-
 
 //Fisher-Yates-Shuffle-Algorithm
 const shuffledQuestions = computed(() => {
   try {
-    const answers = props.question?.answers.slice()
+    const answers = props.question?.answers.slice();
 
     for (let i = answers.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -32,31 +29,28 @@ const shuffledQuestions = computed(() => {
   } catch (err) {
     errorMessage.value = "An error happened" + err;
   }
-})
-
+});
 </script>
 
 <template>
-    <div v-if="!errorMessage" class="grid-container" >
-      <button
-          v-for="(answer, index) in shuffledQuestions" :key="index"
-          @click="emit('answer-selected', answer.correct)"
-          :class="['button-type', `button-type-${index}`]">
+  <div v-if="!errorMessage" class="grid-container">
+    <button
+      v-for="(answer, index) in shuffledQuestions"
+      :key="index"
+      @click="emit('answer-selected', answer.correct)"
+      :class="['button-type', `button-type-${index}`]"
+    >
+      {{ answer.answerText }}
 
-        {{ answer.answerText }}
+      <div class="error-container" v-if="errorMessage">
+        <h1>
+          {{ errorMessage }}
+        </h1>
 
-        <div class="error-container" v-if="errorMessage">
-          <h1>
-            {{ errorMessage }}
-          </h1>
-
-          <button @click="returnToPreviousRouterPage">
-            Exit Quiz
-          </button>
-        </div>
-
-      </button>
-    </div>
+        <button @click="returnToPreviousRouterPage">Exit Quiz</button>
+      </div>
+    </button>
+  </div>
 </template>
 
 <style scoped>
@@ -66,7 +60,6 @@ const shuffledQuestions = computed(() => {
   max-width: 800px;
   margin: auto;
 }
-
 
 button {
   border-radius: 10px;
@@ -109,5 +102,4 @@ button {
 button:hover {
   filter: brightness(80%);
 }
-
 </style>

@@ -1,23 +1,22 @@
 <script setup lang="ts">
-
 import QuizPost from "@/components/quiz/browser/QuizPost.vue";
-import {onMounted, ref, watch} from "vue";
-import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
-import {QuizService} from "@/services/QuizService";
-import {ErrorHandlingService} from "@/services/ErrorHandlingService";
+import { onMounted, ref, watch } from "vue";
+import type { QuizPreviewDTO } from "@/models/quiz/QuizPreviewDTO";
+import { QuizService } from "@/services/QuizService";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
-const previews = ref<QuizPreviewDTO[]>([])
+const previews = ref<QuizPreviewDTO[]>([]);
 let page = ref(0);
-const searchField = ref<string>('')
-let searchByCategory = false
-let searchByTags = false
-const errorMessage = ref<string>('');
+const searchField = ref<string>("");
+let searchByCategory = false;
+let searchByTags = false;
+const errorMessage = ref<string>("");
 
 /**
  * Calls on getSearchResult() on component mount.
  */
 onMounted(() => {
-  getSearchResult()
+  getSearchResult();
 });
 
 /**
@@ -26,9 +25,17 @@ onMounted(() => {
 async function getSearchResult() {
   try {
     previews.value = await QuizService.getQuizBySpecifiedCriteria(
-        6, page.value, searchField.value, searchByCategory, searchByTags);
+      6,
+      page.value,
+      searchField.value,
+      searchByCategory,
+      searchByTags,
+    );
   } catch (err) {
-    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Quizzes could not be loaded");
+    errorMessage.value = await ErrorHandlingService.handleRequestError(
+      err,
+      "Quizzes could not be loaded",
+    );
   }
 }
 
@@ -36,16 +43,15 @@ async function getSearchResult() {
  * Watch for changes in page number.
  */
 watch(page, async () => {
- await getSearchResult()
-})
-
+  await getSearchResult();
+});
 
 /**
  * Increases the current page number.
  */
 function increasePage() {
   if (page.value >= 0) {
-    page.value++
+    page.value++;
   }
 }
 
@@ -68,98 +74,100 @@ async function changeTags() {
  */
 function decreasePage() {
   if (page.value > 0) {
-    page.value--
+    page.value--;
   }
 }
 
-const props = defineProps(
-  {
-    title: {type: String, required: false, default: "Browse quizzes:"},
-    username: {type: String, required: false},
-    quizzesAreFromCurrentUser: {type: Boolean, required: false, default: false}
-  }
-)
-
+const props = defineProps({
+  title: { type: String, required: false, default: "Browse quizzes:" },
+  username: { type: String, required: false },
+  quizzesAreFromCurrentUser: { type: Boolean, required: false, default: false },
+});
 </script>
 
 <template>
   <div class="quiz-browser" data-cy="quiz-browser">
-
     <div class="options-container" data-cy="options-container">
-      <h1>{{props.title}}</h1>
+      <h1>{{ props.title }}</h1>
 
       <div class="search-container">
-        <input @keydown.enter="getSearchResult"
-               v-model="searchField"
-               type="search"
-               id="search"
-               placeholder="Enter"
-               data-cy="search-input">
+        <input
+          @keydown.enter="getSearchResult"
+          v-model="searchField"
+          type="search"
+          id="search"
+          placeholder="Enter"
+          data-cy="search-input"
+        />
 
         <button
-            id="search-button"
-            @click="getSearchResult"
-            data-cy="search-button">
+          id="search-button"
+          @click="getSearchResult"
+          data-cy="search-button"
+        >
           Search
         </button>
-
       </div>
 
       <div>
-
         <label for="tags">Search by tags</label>
         <input
-            name="tags"
-            type="checkbox"
-            id="tags"
-            @change="changeTags"
-            data-cy="search-by-tags">
+          name="tags"
+          type="checkbox"
+          id="tags"
+          @change="changeTags"
+          data-cy="search-by-tags"
+        />
 
         <label for="category">Search by category</label>
         <input
-            name="category"
-            id="category"
-            type="checkbox"
-            @change="changeCategory"
-            data-cy="search-by-category">
-
+          name="category"
+          id="category"
+          type="checkbox"
+          @change="changeCategory"
+          data-cy="search-by-category"
+        />
       </div>
-
     </div>
 
     <div class="quiz-grid" data-cy="quiz-grid">
-      <QuizPost v-for="(quiz, index) in previews"
-                :key="index"
-                :post="quiz"
-                :is-owned-by-user="quizzesAreFromCurrentUser"
-                class="quiz-post"
+      <QuizPost
+        v-for="(quiz, index) in previews"
+        :key="index"
+        :post="quiz"
+        :is-owned-by-user="quizzesAreFromCurrentUser"
+        class="quiz-post"
       >
       </QuizPost>
     </div>
 
     <div class="browser-navigator">
-      <button id="previous" @click="decreasePage"  data-cy="previous-button">
+      <button id="previous" @click="decreasePage" data-cy="previous-button">
         Previous
       </button>
-      <p data-cy="page-number">Page: {{page}}</p>
+      <p data-cy="page-number">Page: {{ page }}</p>
       <button id="next" @click="increasePage" data-cy="next-button">
         Next
       </button>
     </div>
   </div>
 
-  <div v-if="errorMessage" id="error" class="error-message" data-cy="error-message">
+  <div
+    v-if="errorMessage"
+    id="error"
+    class="error-message"
+    data-cy="error-message"
+  >
     {{ errorMessage }}
   </div>
-
 </template>
 
 <style scoped>
-h1{
+h1 {
   color: black;
 }
 
-.quiz-browser{
+.quiz-browser {
   min-width: 400px;
 }
 
@@ -197,11 +205,9 @@ button {
   justify-content: center;
 }
 
-
 .options-container h1 {
   text-align: center;
 }
-
 
 input {
   margin: 15px;
@@ -223,10 +229,9 @@ input {
   }
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   width: 15px;
   height: 15px;
   padding-bottom: 20px;
 }
-
 </style>

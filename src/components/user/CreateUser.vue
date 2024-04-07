@@ -1,35 +1,32 @@
 <script setup lang="ts">
-
-import {computed, ref, watch} from "vue";
-import {useUserStore} from '@/stores/UserStore';
-import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
-import {useRoute} from "vue-router";
+import { computed, ref, watch } from "vue";
+import { useUserStore } from "@/stores/UserStore";
+import type { CreateUserRequestDTO } from "@/models/user/CreateUserRequestDTO";
+import { useRoute } from "vue-router";
 import router from "@/router";
-import {ErrorHandlingService} from "@/services/ErrorHandlingService";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
-const username = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const email = ref('')
-const name = ref('')
-const surname = ref('')
+const username = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const email = ref("");
+const name = ref("");
+const surname = ref("");
 const store = useUserStore();
-const errorMessage = ref('');
+const errorMessage = ref("");
 const route = useRoute();
 
 /**
  * Watch for changes in username, password, confirmPassword, email, name and surname fields and clear error message.
  */
 watch([username, password, confirmPassword, email, name, surname], () => {
-  errorMessage.value = '';
+  errorMessage.value = "";
 });
-
 
 /**
  * Handles user registration
  */
 async function register() {
-
   if (password.value !== confirmPassword.value) {
     errorMessage.value = "Password conformation not correct.";
     return;
@@ -47,12 +44,15 @@ async function register() {
     await store.registerUser(user);
 
     if (route.query.redirect) {
-      await router.push(route.query.redirect as string)
+      await router.push(route.query.redirect as string);
     } else {
-      await router.push('/')
+      await router.push("/");
     }
   } catch (err) {
-    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Registration failed");
+    errorMessage.value = await ErrorHandlingService.handleRequestError(
+      err,
+      "Registration failed",
+    );
   }
 }
 
@@ -63,13 +63,19 @@ async function register() {
  * @returns True if the string is blank, false otherwise.
  */
 function isBlank(str: string) {
-  return (!str || /^\s*$/.test(str));
+  return !str || /^\s*$/.test(str);
 }
 
 // Computed property to determine if all required fields are filled.
 const fieldsFilled = computed(() => {
-  return !isBlank(username.value) && !isBlank(email.value) && !isBlank(name.value) && !isBlank(surname.value) && !isBlank(confirmPassword.value);
-})
+  return (
+    !isBlank(username.value) &&
+    !isBlank(email.value) &&
+    !isBlank(name.value) &&
+    !isBlank(surname.value) &&
+    !isBlank(confirmPassword.value)
+  );
+});
 
 /**
  * Prevent entering space in input fields.
@@ -77,77 +83,131 @@ const fieldsFilled = computed(() => {
  * @param event The keydown event object.
  */
 function preventSpace(event: any) {
-  if (event.key === ' ' || event.code === 'Space') {
+  if (event.key === " " || event.code === "Space") {
     event.preventDefault();
   }
 }
-
 </script>
 
 <template>
   <div class="flex">
     <div class="grid">
-          <form @submit.prevent="register">
-            <div class="item-1">
-              <h1>
-                Register!
-              </h1>
-            </div>
+      <form @submit.prevent="register">
+        <div class="item-1">
+          <h1>Register!</h1>
+        </div>
 
-            <div class="item-2">
-              <label for="fusername">Username:</label>
-              <input type="text" id="username" v-model="username" placeholder="Enter your username"
-                     required @keydown="preventSpace" data-cy="username"/>
-            </div>
+        <div class="item-2">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            placeholder="Enter your username"
+            required
+            @keydown="preventSpace"
+            data-cy="username"
+          />
+        </div>
 
-            <div class="item-2">
-              <label for="femail">Email:</label>
-              <input type="text" id="email" v-model="email" placeholder="Email"
-                     required @keydown="preventSpace" data-cy="email"/>
-            </div>
+        <div class="item-2">
+          <label for="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            v-model="email"
+            placeholder="Email"
+            required
+            @keydown="preventSpace"
+            data-cy="email"
+          />
+        </div>
 
-            <div class="item-3">
-              <label for="first-name">First name:</label>
-              <input type="text" id="first-name" v-model="name" placeholder="First name"
-                     required @keydown="preventSpace" data-cy="first-name"/>
-            </div>
+        <div class="item-3">
+          <label for="first-name">First name:</label>
+          <input
+            type="text"
+            id="first-name"
+            v-model="name"
+            placeholder="First name"
+            required
+            @keydown="preventSpace"
+            data-cy="first-name"
+          />
+        </div>
 
-            <div class="item-4">
-              <label for="surname">Sur name:</label>
-              <input type="text" id="surname" v-model="surname" placeholder="Surname"
-                     required @keydown="preventSpace" data-cy="surname"/>
-            </div>
+        <div class="item-4">
+          <label for="surname">Sur name:</label>
+          <input
+            type="text"
+            id="surname"
+            v-model="surname"
+            placeholder="Surname"
+            required
+            @keydown="preventSpace"
+            data-cy="surname"
+          />
+        </div>
 
-            <div class="item-3">
-              <label for="password">Password:</label>
-              <input class="input-field" type="password" id="password" v-model="password"
-                     placeholder="Enter your password" required @keydown="preventSpace" data-cy="password"/>
-            </div>
+        <div class="item-3">
+          <label for="password">Password:</label>
+          <input
+            class="input-field"
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Enter your password"
+            required
+            @keydown="preventSpace"
+            data-cy="password"
+          />
+        </div>
 
-            <div class="item-4">
-              <label for="confirm-password">Confirm Password:</label>
-              <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword"
-                      placeholder="Confirm password" required @keydown="preventSpace" data-cy="confirm-password"/>
-            </div>
+        <div class="item-4">
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            class="input-field"
+            type="password"
+            id="confirm-password"
+            v-model="confirmPassword"
+            placeholder="Confirm password"
+            required
+            @keydown="preventSpace"
+            data-cy="confirm-password"
+          />
+        </div>
 
-            <div class="item-2 button">
-              <input id="register-button" type="submit" value="Register"
-                     :disabled="!fieldsFilled" data-cy="register-button"/><br>
-            </div>
+        <div class="item-2 button">
+          <input
+            id="register-button"
+            type="submit"
+            value="Register"
+            :disabled="!fieldsFilled"
+            data-cy="register-button"
+          /><br />
+        </div>
 
-            <div v-if="errorMessage" id="error" class="error-message item-5" data-cy="error-message">{{ errorMessage }}</div>
+        <div
+          v-if="errorMessage"
+          id="error"
+          class="error-message item-5"
+          data-cy="error-message"
+        >
+          {{ errorMessage }}
+        </div>
 
-            <div class="item-5">
-              <div class="login-route-container">
-                <p>Already have an account?</p><router-link to="/login" data-cy="login-link">Login</router-link>
-              </div>
-            </div>
-          </form>
+        <div class="item-5">
+          <div class="login-route-container">
+            <p>Already have an account?</p>
+            <router-link to="/login" data-cy="login-link">Login</router-link>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
-<style scoped >
+<style scoped>
 .flex {
   display: flex;
   height: 100%;
@@ -166,14 +226,15 @@ function preventSpace(event: any) {
   padding: 2em;
 }
 
-input[type="text"], input[type="password"]{
+input[type="text"],
+input[type="password"] {
   border: 2px solid rgba(0, 0, 0, 0.17);
   font-weight: bold;
   padding: 10px 10px;
   border-radius: 15px;
 }
 
-input[type=submit] {
+input[type="submit"] {
   display: inline;
   font-weight: bold;
   width: 100%;
@@ -186,11 +247,11 @@ input[type=submit] {
   font-size: 16px;
 }
 
-input[type=submit]:hover {
+input[type="submit"]:hover {
   background-color: #0f0e33;
 }
 
-input[type=submit]:disabled {
+input[type="submit"]:disabled {
   background-color: #8b8a98;
 }
 
@@ -219,7 +280,8 @@ form {
   grid-column: 1/5;
 }
 
-.item-2, .item-5 {
+.item-2,
+.item-5 {
   display: inherit;
   grid-column: 2/4;
 }
@@ -275,5 +337,4 @@ form {
     align-self: center;
   }
 }
-
 </style>

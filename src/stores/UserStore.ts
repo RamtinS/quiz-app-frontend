@@ -1,29 +1,32 @@
-import axios from 'axios';
-import {defineStore} from 'pinia';
-import {LoginService} from "@/services/LoginService";
-import {CreateUserService} from "@/services/CreateUserService";
-import {UserDetailService} from "@/services/UserDetailService";
-import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
-import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
-import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
-import type {UserDetailsDTO} from "@/models/user/UserDetailsDTO";
-import type {ErrorResponseDTO} from "@/models/errors/ErrorResponseDTO";
+import axios from "axios";
+import { defineStore } from "pinia";
+import { LoginService } from "@/services/LoginService";
+import { CreateUserService } from "@/services/CreateUserService";
+import { UserDetailService } from "@/services/UserDetailService";
+import type { CreateUserRequestDTO } from "@/models/user/CreateUserRequestDTO";
+import type { CreateUserResponseDTO } from "@/models/user/CreateUserResponseDTO";
+import type { LoginResponseDTO } from "@/models/user/LoginResponseDTO";
+import type { UserDetailsDTO } from "@/models/user/UserDetailsDTO";
+import type { ErrorResponseDTO } from "@/models/errors/ErrorResponseDTO";
 
-export const useUserStore = defineStore('user', {
-
-  state: () :{ surname: string; name: string; isAuthenticated: boolean;
-    email: string; username: string; token: string } => ({
-
+export const useUserStore = defineStore("user", {
+  state: (): {
+    surname: string;
+    name: string;
+    isAuthenticated: boolean;
+    email: string;
+    username: string;
+    token: string;
+  } => ({
     username: sessionStorage.getItem("username") || "",
     email: sessionStorage.getItem("email") || "",
     name: sessionStorage.getItem("name") || "",
     surname: sessionStorage.getItem("surname") || "",
     token: sessionStorage.getItem("token") || "",
-    isAuthenticated: sessionStorage.getItem("isAuthenticated") === "true"
+    isAuthenticated: sessionStorage.getItem("isAuthenticated") === "true",
   }),
 
   actions: {
-
     /**
      * Logs in a user with the provided username and password.
      *
@@ -32,14 +35,14 @@ export const useUserStore = defineStore('user', {
      */
     async loginUser(username: string, password: string): Promise<void> {
       try {
-        const response: LoginResponseDTO | ErrorResponseDTO = await LoginService.login({username, password});
+        const response: LoginResponseDTO | ErrorResponseDTO =
+          await LoginService.login({ username, password });
 
         if ("errorMessage" in response) {
           throw new Error(response.errorMessage);
         } else {
           this.setAuthToken(response.token);
         }
-
       } catch (err) {
         throw err;
       }
@@ -54,22 +57,28 @@ export const useUserStore = defineStore('user', {
      *
      * @param createUserRequestDTO The details of the user to be created.
      */
-    async registerUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
+    async registerUser(
+      createUserRequestDTO: CreateUserRequestDTO,
+    ): Promise<void> {
       try {
-        const response: CreateUserResponseDTO | ErrorResponseDTO = await CreateUserService.createUser(createUserRequestDTO);
+        const response: CreateUserResponseDTO | ErrorResponseDTO =
+          await CreateUserService.createUser(createUserRequestDTO);
 
         if ("errorMessage" in response) {
           throw new Error(response.errorMessage);
         } else {
           this.setAuthToken(response.token);
         }
-
       } catch (err) {
         throw err;
       }
 
-      this.storeUsername(createUserRequestDTO.username)
-      this.storeUserData(createUserRequestDTO.email, createUserRequestDTO.name, createUserRequestDTO.surname);
+      this.storeUsername(createUserRequestDTO.username);
+      this.storeUserData(
+        createUserRequestDTO.email,
+        createUserRequestDTO.name,
+        createUserRequestDTO.surname,
+      );
       this.setAuthenticationState();
     },
 
@@ -86,8 +95,13 @@ export const useUserStore = defineStore('user', {
      */
     async fetchUserDetails(): Promise<void> {
       try {
-        const userDetails: UserDetailsDTO = await UserDetailService.retrieveUserDetails();
-        this.storeUserData(userDetails.email, userDetails.name, userDetails.surname);
+        const userDetails: UserDetailsDTO =
+          await UserDetailService.retrieveUserDetails();
+        this.storeUserData(
+          userDetails.email,
+          userDetails.name,
+          userDetails.surname,
+        );
       } catch (err) {
         console.error("Error retrieving user details:", err);
       }
@@ -100,7 +114,7 @@ export const useUserStore = defineStore('user', {
      */
     setAuthToken(token: string): void {
       sessionStorage.setItem("token", token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     },
 
     /**
@@ -133,7 +147,7 @@ export const useUserStore = defineStore('user', {
     /**
      * Sets the authentication state to true.
      */
-    setAuthenticationState() :void {
+    setAuthenticationState(): void {
       this.isAuthenticated = true;
       sessionStorage.setItem("isAuthenticated", "true");
     },
@@ -157,7 +171,7 @@ export const useUserStore = defineStore('user', {
     resetToken(): void {
       this.token = "";
       sessionStorage.removeItem("token");
-      axios.defaults.headers.common['Authorization'] = '';
+      axios.defaults.headers.common["Authorization"] = "";
     },
 
     /**

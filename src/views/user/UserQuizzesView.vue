@@ -8,6 +8,4 @@ import UserQuizzes from "@/components/user/UserQuizzes.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

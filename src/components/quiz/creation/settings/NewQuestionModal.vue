@@ -1,67 +1,55 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { QuestionType } from "@/models/quiz/QuestionType";
 
-import {ref} from "vue";
-import {QuestionType} from "@/models/quiz/QuestionType";
-
-
-const emits = defineEmits(['close-modal', 'confirm-choice'])
-const errorMessage = ref('')
+const emits = defineEmits(["close-modal", "confirm-choice"]);
+const errorMessage = ref("");
 
 function closeModal() {
-  emits('close-modal')
+  emits("close-modal");
 }
 
 function confirmChoice() {
-  if (selectedOption.value === '') {
-    errorMessage.value = 'Please select a question type'
-    return
+  if (selectedOption.value === "") {
+    errorMessage.value = "Please select a question type";
+    return;
   }
-  errorMessage.value = ''
-  emits('confirm-choice', selectedOption.value)
+  errorMessage.value = "";
+  emits("confirm-choice", selectedOption.value);
 }
-
 
 const questionTypes = ref<{ type: QuestionType; description: string }[]>([
   { type: QuestionType.MULTIPLE_CHOICE, description: "Multiple Choice" },
   { type: QuestionType.TRUE_OR_FALSE, description: "True or False" },
 ]);
 
-const selectedOption = ref('');
-
-
+const selectedOption = ref("");
 </script>
-
 
 <template>
   <div id="new-question-modal" class="modal" @click="closeModal">
-    <div id="modal-content"
-         class="modal-content"
-         @click.stop
-    >
-      <h1>
-        Select a question type
-      </h1>
-      <h4 v-if="errorMessage"
-          class="error-message"
-      >
+    <div id="modal-content" class="modal-content" @click.stop>
+      <h1>Select a question type</h1>
+      <h4 v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </h4>
-      <div id="question-types" >
-        <label v-for="questionType in questionTypes"
-               class="question-option">
+      <div id="question-types">
+        <label v-for="questionType in questionTypes" class="question-option">
           {{ questionType.description }}
-          <input type="radio" v-model="selectedOption" :value="questionType.type" name="questionType">
+          <input
+            type="radio"
+            v-model="selectedOption"
+            :value="questionType.type"
+            name="questionType"
+          />
         </label>
       </div>
-      <button @click="confirmChoice">
-        Confirm choice
-      </button>
+      <button @click="confirmChoice">Confirm choice</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .modal {
   text-align: center;
   position: fixed;
@@ -102,6 +90,4 @@ const selectedOption = ref('');
   gap: 10px;
   margin-bottom: 10px;
 }
-
 </style>
-

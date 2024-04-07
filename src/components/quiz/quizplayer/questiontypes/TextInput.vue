@@ -1,16 +1,14 @@
-<script setup lang="ts">
-
-</script>|
+<script setup lang="ts"></script>
+|
 
 <template>
   <div class="grid-container">
-    <input class="input-1" type="text">
+    <input class="input-1" type="text" />
     <button class="button-1">Submit</button>
   </div>
 </template>
 
 <style scoped>
-
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -38,6 +36,4 @@
 .button-1:hover {
   background-color: #0b1f01;
 }
-
-
 </style>

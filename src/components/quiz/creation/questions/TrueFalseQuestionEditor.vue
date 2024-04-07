@@ -1,85 +1,63 @@
 <script setup lang="ts">
-
-
-import type {TrueOrFalseQuestionDTO} from "@/models/quiz/TrueOrFalseQuestionDTO";
-import {ref, watchEffect} from "vue";
-
+import type { TrueOrFalseQuestionDTO } from "@/models/quiz/TrueOrFalseQuestionDTO";
+import { ref, watchEffect } from "vue";
 
 const props = defineProps({
-  preExistingQuestion: {type: Object as () => TrueOrFalseQuestionDTO, required: true},
-})
+  preExistingQuestion: {
+    type: Object as () => TrueOrFalseQuestionDTO,
+    required: true,
+  },
+});
 
-const question = ref<TrueOrFalseQuestionDTO>(props.preExistingQuestion)
-const questionIsCorrect = ref<boolean>(question.value.questionIsCorrect)
-
+const question = ref<TrueOrFalseQuestionDTO>(props.preExistingQuestion);
+const questionIsCorrect = ref<boolean>(question.value.questionIsCorrect);
 
 watchEffect(() => {
-  question.value = props.preExistingQuestion
-  questionIsCorrect.value = props.preExistingQuestion.questionIsCorrect
-})
+  question.value = props.preExistingQuestion;
+  questionIsCorrect.value = props.preExistingQuestion.questionIsCorrect;
+});
 
-
-const emit = defineEmits(['submit-changes']);
-
-
-
+const emit = defineEmits(["submit-changes"]);
 
 defineExpose({
-  submitQuestion
-})
+  submitQuestion,
+});
 
- //setInterval(() => { console.log(props.radioIndex) }, 1000);
-
+//setInterval(() => { console.log(props.radioIndex) }, 1000);
 
 function submitQuestion() {
-  console.log('submitting question in child')
+  console.log("submitting question in child");
 
   const questionDTO: TrueOrFalseQuestionDTO = {
     questionType: "TrueOrFalseQuestionDTO",
     questionText: "",
-    questionIsCorrect: questionIsCorrect.value
-  }
+    questionIsCorrect: questionIsCorrect.value,
+  };
 
-  emit('submit-changes', {question: questionDTO})
+  emit("submit-changes", { question: questionDTO });
 }
-
 </script>
 <template>
   <div class="radio-container">
-    <div class="true-container"
-         @click="questionIsCorrect=true"
-    >
+    <div class="true-container" @click="questionIsCorrect = true">
       <p>True</p>
-      <input type="radio"
-             :value="true"
-             v-model="questionIsCorrect"
-      >
+      <input type="radio" :value="true" v-model="questionIsCorrect" />
     </div>
-    <div class="false-container"
-         @click="questionIsCorrect=false"
-    >
-      <p>
-        False
-      </p>
-      <input type="radio"
-             :value="false"
-             v-model="questionIsCorrect"
-      >
+    <div class="false-container" @click="questionIsCorrect = false">
+      <p>False</p>
+      <input type="radio" :value="false" v-model="questionIsCorrect" />
     </div>
   </div>
 </template>
 
 <style scoped>
-
 @media (max-width: 1000px) {
-
   .radio-container {
     flex-direction: column;
   }
 }
 
 .radio-container {
-
   margin-top: 45px;
   display: flex;
   justify-content: center;
@@ -89,7 +67,8 @@ function submitQuestion() {
   padding: 20px;
 }
 
-.false-container, .true-container {
+.false-container,
+.true-container {
   display: flex;
   flex-direction: row;
   align-content: center;
@@ -109,7 +88,6 @@ function submitQuestion() {
   p {
     font-size: 5vmax;
   }
-
 }
 
 input[type="radio"] {
@@ -122,11 +100,9 @@ input[type="radio"] {
 
 .false-container {
   background-color: red;
-
 }
 
 .true-container {
   background-color: green;
 }
-
 </style>

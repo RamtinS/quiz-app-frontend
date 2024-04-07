@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { QuizDTO } from "@/models/quiz/QuizDTO";
-import {ref} from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
   score: Number,
@@ -8,17 +8,26 @@ const props = defineProps({
     type: Object as () => QuizDTO,
     required: true,
   },
-})
+});
 
-const emit = defineEmits(['save-selected', 'exit-selected', 'restart-selected'])
+const emit = defineEmits([
+  "save-selected",
+  "exit-selected",
+  "restart-selected",
+]);
 
-let quiz = ref(props.quiz as QuizDTO)
+let quiz = ref(props.quiz as QuizDTO);
 
 let score = props.score;
 
-let restartMessage = ref("Quiz finished, you got " + score + " correct answer" + (score === 1 ? "" : "s") +
-    " out of " + (quiz.value.questions.length | 0));
-
+let restartMessage = ref(
+  "Quiz finished, you got " +
+    score +
+    " correct answer" +
+    (score === 1 ? "" : "s") +
+    " out of " +
+    (quiz.value.questions.length | 0),
+);
 </script>
 
 <template>
@@ -26,12 +35,8 @@ let restartMessage = ref("Quiz finished, you got " + score + " correct answer" +
     <h1>
       {{ restartMessage }}
     </h1>
-    <button @click="emit('exit-selected')">
-      Finish
-    </button>
-    <button @click="emit('restart-selected')">
-      Restart
-    </button>
+    <button @click="emit('exit-selected')">Finish</button>
+    <button @click="emit('restart-selected')">Restart</button>
   </div>
 </template>
 

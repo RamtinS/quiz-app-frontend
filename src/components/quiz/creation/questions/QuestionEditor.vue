@@ -1,95 +1,107 @@
 <script setup lang="ts">
-import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
-import {QuestionTypeUtility} from "@/utility/QuestionTypeUtility";
+import type { QuizQuestionDTO } from "@/models/quiz/QuizQuestionDTO";
+import { QuestionTypeUtility } from "@/utility/QuestionTypeUtility";
 import MultipleChoiceQuestionEditor from "@/components/quiz/creation/questions/MultipleChoiceQuestionEditor.vue";
-import {ref, watch} from "vue";
+import { ref, watch } from "vue";
 import TrueFalseQuestionEditor from "@/components/quiz/creation/questions/TrueFalseQuestionEditor.vue";
+import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
+import type {TrueOrFalseQuestionDTO} from "@/models/quiz/TrueOrFalseQuestionDTO";
 
-const props = defineProps(
-    {
-      preExistingQuestion: {type: Object as () => QuizQuestionDTO, required: true},
-      questionIndex: {type: Number, required: true}
-    }
-)
+const props = defineProps({
+  preExistingQuestion: {
+    type: Object as () => QuizQuestionDTO,
+    required: true,
+  },
+  questionIndex: { type: Number, required: true },
+});
 
+const questionText = ref<String>(props.preExistingQuestion.questionText);
+const currentQuestion = ref(props.preExistingQuestion);
+const children = ref();
+const questionHasBeenSubmitted = ref<boolean>(false);
+const submissionErrorMessage = ref<String>("");
 
-const questionText = ref<String>(props.preExistingQuestion.questionText)
-const currentQuestion = ref(props.preExistingQuestion)
-const children = ref()
-const questionHasBeenSubmitted = ref<boolean>(false)
-const submissionErrorMessage = ref<String>("")
+const emit = defineEmits(["create-clicked"]);
 
-
-const emit = defineEmits(['create-clicked'])
-
-watch(() => props.preExistingQuestion, (newValue) => {
-  currentQuestion.value = newValue
-  questionText.value = newValue.questionText
-})
-
+watch(
+  () => props.preExistingQuestion,
+  (newValue) => {
+    currentQuestion.value = newValue;
+    questionText.value = newValue.questionText;
+  },
+);
 
 function handleCreateClickedQuestionEditorChild(receivedEmitData: any) {
   if (questionText.value === "") {
-    submissionErrorMessage.value = "Error: Question title cannot be empty"
-    return
+    submissionErrorMessage.value = "Error: Question title cannot be empty";
+    return;
   }
 
-
-  let errorMessage = receivedEmitData.errorMessage as string
+  let errorMessage = receivedEmitData.errorMessage as string;
   if (errorMessage) {
-    submissionErrorMessage.value = errorMessage
-    return
+    submissionErrorMessage.value = errorMessage;
+    return;
   } else {
-    submissionErrorMessage.value = ""
-    let newQuestion = receivedEmitData.question as QuizQuestionDTO
-    newQuestion.questionText = questionText.value as string
-    emit('create-clicked', {questionIndex: props.questionIndex, question: newQuestion})
+    submissionErrorMessage.value = "";
+    let newQuestion = receivedEmitData.question as QuizQuestionDTO;
+    newQuestion.questionText = questionText.value as string;
+    emit("create-clicked", {
+      questionIndex: props.questionIndex,
+      question: newQuestion,
+    });
   }
 }
 
 function submitChildQuestion() {
-  const errorMessage = children.value.submitQuestion()
-  questionHasBeenSubmitted.value = true
+  const errorMessage = children.value.submitQuestion();
+  questionHasBeenSubmitted.value = true;
   if (errorMessage) {
-    submissionErrorMessage.value = errorMessage
+    submissionErrorMessage.value = errorMessage;
   }
 }
-
 </script>
 
 <template>
-  <div v-if="currentQuestion"
-       id="question-editor"
-       @click="questionHasBeenSubmitted = false"
+  <div
+    v-if="currentQuestion"
+    id="question-editor"
+    @click="questionHasBeenSubmitted = false"
   >
     <div id="header">
-      <input id="question"
-             class="question-input"
-             type="text"
-             placeholder="Enter a question"
-             v-model="questionText">
+      <input
+        id="question"
+        class="question-input"
+        type="text"
+        placeholder="Enter a question"
+        v-model="questionText"
+      />
     </div>
-    <MultipleChoiceQuestionEditor ref="children"
-                                  v-if="QuestionTypeUtility.questionIsMultipleChoice(currentQuestion)"
-                                  :pre-existing-question="props.preExistingQuestion"
-                                  @submit-changes="handleCreateClickedQuestionEditorChild"
+    <MultipleChoiceQuestionEditor
+      ref="children"
+      v-if="QuestionTypeUtility.questionIsMultipleChoice(currentQuestion)"
+      :pre-existing-question="props.preExistingQuestion as MultipleChoiceQuestionDTO"
+      @submit-changes="handleCreateClickedQuestionEditorChild"
     >
     </MultipleChoiceQuestionEditor>
     <TrueFalseQuestionEditor
-        v-else-if="QuestionTypeUtility.questionIsTrueOrFalse(currentQuestion)"
-        ref="children"
-        :pre-existing-question="props.preExistingQuestion"
-        @submit-changes="handleCreateClickedQuestionEditorChild"
+      v-else-if="QuestionTypeUtility.questionIsTrueOrFalse(currentQuestion)"
+      ref="children"
+      :pre-existing-question="props.preExistingQuestion as TrueOrFalseQuestionDTO"
+      @submit-changes="handleCreateClickedQuestionEditorChild"
     >
-
     </TrueFalseQuestionEditor>
     <div v-else id="incorrect-type-message">
-      <p>Error: The question could not load properly as it seems to be of an invalid type</p>
+      <p>
+        Error: The question could not load properly as it seems to be of an
+        invalid type
+      </p>
     </div>
     <div class="question-submit-container">
-      <button class="question-submit-button"
-              @click.stop="submitChildQuestion"
-              v-if="!questionHasBeenSubmitted">
+      <button
+        class="question-submit-button"
+        @click.stop="submitChildQuestion"
+        v-if="!questionHasBeenSubmitted"
+      >
         Submit question changes
       </button>
       <div v-else class="shake">
@@ -101,18 +113,14 @@ function submitChildQuestion() {
         </p>
       </div>
     </div>
-
   </div>
   <div v-else>
     <p>Error: No question has been loaded</p>
   </div>
-
-
 </template>
 
 <style scoped>
-
-button{
+button {
   aspect-ratio: 3/1;
 }
 
@@ -129,7 +137,7 @@ button{
   height: 50px;
   border-radius: 5px;
   font-size: 20px;
-  border: 3px solid black
+  border: 3px solid black;
 }
 
 .question-submit-container {
@@ -144,6 +152,4 @@ button{
 .error-message {
   color: red;
 }
-
-
 </style>

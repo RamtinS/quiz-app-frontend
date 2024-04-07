@@ -1,20 +1,14 @@
-import {QuestionType} from '../models/quiz/QuestionType';
-
+/**
+ * Utility class to determine the type of question based on the properties of the object.
+ */
 export class QuestionTypeUtility {
 
-  static findQuestionType(object: any): QuestionType {
-    if (this.questionIsMultipleChoice(object)) {
-      return QuestionType.MULTIPLE_CHOICE;
-    } else if (this.questionIsTrueOrFalse(object)) {
-      return QuestionType.TRUE_OR_FALSE;
-    }
-    throw new Error('Invalid question type');
-  }
-
-
-
+  /**
+   * Checks if the object is a multiple choice question.
+   * @param object The object to check.
+   */
   static questionIsMultipleChoice(object: any) {
-    const dtoProperties: string[] = [ 'questionType', 'questionText', 'answers'];
+    const dtoProperties: string[] = ["questionType", "questionText", "answers"];
     for (const key in object) {
       if (!dtoProperties.includes(key)) {
         return false;
@@ -23,9 +17,16 @@ export class QuestionTypeUtility {
     return true;
   }
 
-
+  /**
+   * Checks if the object is a true or false question.
+   * @param object The object to check.
+   */
   static questionIsTrueOrFalse(object: any) {
-    const dtoProperties: string[] = ['questionType', 'questionText', 'questionIsCorrect'];
+    const dtoProperties: string[] = [
+      "questionType",
+      "questionText",
+      "questionIsCorrect",
+    ];
     for (const key in object) {
       if (!dtoProperties.includes(key)) {
         return false;

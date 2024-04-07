@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="user-logout">
@@ -10,7 +8,6 @@
 </template>
 
 <style scoped>
-
 .user-logout {
   display: flex;
   flex-direction: column;
@@ -19,5 +16,4 @@
   height: 100vh;
   font-size: 30px;
 }
-
 </style>
