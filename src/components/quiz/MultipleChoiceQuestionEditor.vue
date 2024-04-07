@@ -17,6 +17,7 @@ const minAnswers = 2
 
 const currentQuestion = ref(props.preExistingQuestion)
 const inputAnswers = ref<Array<{ inputText: string, answerIsCorrect: boolean }>>([])
+const errorMessage = ref('')
 
 /**
  * Checks if the pre-existing question prop has been updated. If it has, the question editor will update its fields.
@@ -40,7 +41,7 @@ defineExpose({
  * questions, the user will be notified.
  */
 function submitQuestion() {
-  console.log('submitting question in child')
+
 
   const questionDTO: MultipleChoiceQuestionDTO = {
     questionType: "MultipleChoiceQuestionDTO",
@@ -53,10 +54,10 @@ function submitQuestion() {
     })
   }
 
-  const errorMessage = QuizValidationUtility.multipleChoiceQuestionIsValid(questionDTO)
+  const error = QuizValidationUtility.multipleChoiceQuestionIsValid(questionDTO)
 
-  if (errorMessage){
-    emit('submit-changes', {question: null, errorMessage: errorMessage});
+  if (error){
+    emit('submit-changes', {question: null, errorMessage: error});
   } else {
     emit('submit-changes', {question: questionDTO, errorMessage: null});
   }
@@ -68,9 +69,10 @@ function submitQuestion() {
  */
 function addNewAnswer() {
   if (inputAnswers.value.length >= maxAnswers) {
-    alert("You can't have more than " + maxAnswers + " answers")
+    errorMessage.value = "You can only have a maximum of 6 answers"
     return
   }
+  errorMessage.value = ''
   inputAnswers.value.push({inputText: '', answerIsCorrect: false})
 }
 
@@ -80,9 +82,10 @@ function addNewAnswer() {
  */
 function removeAnswer() {
   if (inputAnswers.value.length === minAnswers) {
-    alert("You need to have at least 2 answers")
+    errorMessage.value = "You must have at least 2 answers"
     return
   }
+  errorMessage.value = ''
 
   for (let i = inputAnswers.value.length - 1; i >= 0; i--) {
     const question = inputAnswers.value[i];
@@ -114,6 +117,9 @@ function removeAnswer() {
                class="correct-checkbox">
       </div>
     </div>
+    <h4 class="error-message" v-if="errorMessage">
+      {{errorMessage}}
+    </h4>
     <div class="button-container">
       <button @click="addNewAnswer">
         Add new answer
@@ -157,11 +163,13 @@ function removeAnswer() {
   gap: 20px;
   width: 100%;
   justify-content: center;
+
 }
 
 button{
   aspect-ratio: 3/1;
-  width: 5%;
+
+
 }
 
 .answer {
@@ -220,6 +228,10 @@ button{
   padding-left: 10px;
   width: 100%;
   height: 100%;
+}
+
+.error-message {
+  color: red;
 }
 
 
