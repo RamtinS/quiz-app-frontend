@@ -94,9 +94,9 @@ function preventSpace(event: any) {
 </script>
 
 <template>
-  <div class="user-profile" data-cy="user-profile-header">
+  <div class="user-profile">
 
-    <UserProfileHeader data-cy="user-profile-header"></UserProfileHeader>
+    <UserProfileHeader></UserProfileHeader>
 
     <div class="profile-info" v-if="!errorMessageRetrieval" data-cy="profile-info">
 
