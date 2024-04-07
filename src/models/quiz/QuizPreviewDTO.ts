@@ -3,4 +3,5 @@ export type QuizPreviewDTO = {
     title: string;
     description: string;
     open: boolean;
+    category: string;
 }
