@@ -167,6 +167,10 @@ async function postQuizToServer() {
     quizHasBeenSubmitted.value = true;
   } catch (err) {
     quizErrorMessage.value = "There was an error handling your request: " + err;
+    await ErrorHandlingService.handleRequestError(
+        err,
+        "Failed to handle quiz request."
+    );
   }
 }
 
@@ -225,15 +229,6 @@ function addNewEmptyQuestion(questionType: QuestionType) {
     console.log("adding question: " + JSON.stringify(question));
     createdQuestions.value.push(question);
 
-    //TODO remove this
-    if (
-      QuestionTypeUtility.questionIsMultipleChoice(question) &&
-      !QuestionTypeUtility.questionIsTrueOrFalse(question)
-    ) {
-      console.log("question is multiple choice");
-    } else {
-      console.log("error: question is NOT multiple choice");
-    }
   } else if (questionType === QuestionType.TRUE_OR_FALSE) {
     const question: TrueOrFalseQuestionDTO = {
       questionType: "TrueOrFalseQuestionDTO",
