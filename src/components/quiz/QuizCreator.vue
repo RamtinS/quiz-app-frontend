@@ -245,7 +245,6 @@ function addNewEmptyQuestion(questionType: QuestionType) {
 </script>
 
 <template>
-  {{ quizSettings }}
   <div id="quiz-creator" v-if="!quizHasBeenSubmitted">
 
     <div id="quiz-info">

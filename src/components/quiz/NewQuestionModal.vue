@@ -5,6 +5,7 @@ import {QuestionType} from "@/models/quiz/QuestionType";
 
 
 const emits = defineEmits(['close-modal', 'confirm-choice'])
+const errorMessage = ref('')
 
 function closeModal() {
   emits('close-modal')
@@ -12,9 +13,10 @@ function closeModal() {
 
 function confirmChoice() {
   if (selectedOption.value === '') {
-    alert('You need to select a question type')
+    errorMessage.value = 'Please select a question type'
     return
   }
+  errorMessage.value = ''
   emits('confirm-choice', selectedOption.value)
 }
 
@@ -39,6 +41,11 @@ const selectedOption = ref('');
       <h1>
         Select a question type
       </h1>
+      <h4 v-if="errorMessage"
+          class="error-message"
+      >
+        {{ errorMessage }}
+      </h4>
       <div id="question-types" >
         <label v-for="questionType in questionTypes"
                class="question-option">
@@ -82,6 +89,10 @@ const selectedOption = ref('');
   input[type="radio"] {
     scale: 2;
   }
+}
+
+.error-message {
+  color: red;
 }
 
 #question-types {

@@ -10,6 +10,9 @@ const email = ref<string>('');
 const submitted = ref<boolean>(false);
 const conformationMessage = ref<string>('');
 
+/**
+ * Checks if the email is valid.
+ */
 const mailValid = computed(() => {
   const stringValue = String(email.value)
   if (!stringValue.includes('@')) {
@@ -18,20 +21,35 @@ const mailValid = computed(() => {
   return email.value !== ''
 })
 
+/**
+ * Checks if the first name is valid.
+ */
 const firstNameValid = computed(() => {
   return firstName.value !== ''
 })
 
+/**
+ * Checks if the last name is valid.
+ */
 const lastNameValid = computed(() => {
   return surname.value !== ''
 })
 
+/**
+ * Checks if the message is valid.
+ */
 const textValid = computed(() => {
   return message.value !== ''
 })
 
+/**
+ * Checks if all fields are valid.
+ */
 const allValid = computed(() => mailValid.value && firstNameValid.value && lastNameValid.value && textValid.value)
 
+/**
+ * Submits the form to the server.
+ */
 async function handleSubmit() {
   const contactRequest: ContactRequestDTO = {
     email: email.value,
@@ -48,19 +66,28 @@ async function handleSubmit() {
   }
 }
 
+/**
+ * Handles a successful form submission.
+ */
 function handleSubmissionSuccess() {
   submitted.value = true;
   conformationMessage.value = "Form successfully submitted!";
   resetForm();
 }
 
+/**
+ * Handles an error during form submission.
+ * @param error The error that occurred.
+ */
 function handleSubmissionError(error: any) {
   submitted.value = true;
-  conformationMessage.value = "An error occurred during form submission.";
-  console.log(conformationMessage.value, error);
+  conformationMessage.value = "An error occurred during form submission: " + error.message;
   resetForm();
 }
 
+/**
+ * Resets the form to empty values
+ */
 function resetForm() {
   email.value = "";
   firstName.value = "";
@@ -78,7 +105,7 @@ function resetForm() {
 <template>
 
   <div id="form-container">
-    <h1 id="headline"> Contact us </h1>
+    <h1 class="headline"> Contact us </h1>
     <form @submit.prevent="handleSubmit" v-show="!submitted"
           :class="{ 'entered': firstName != null}"
     >
@@ -150,7 +177,7 @@ function resetForm() {
 
     </form>
 
-    <div v-show="submitted" id="confirmation-message"> {{conformationMessage}} </div>
+    <div v-show="submitted" class="confirmation-message"> {{conformationMessage}} </div>
 
   </div>
 
@@ -232,26 +259,25 @@ h1 {
 }
 
 button {
-  width: 70%;
+  width: 40%;
   margin-left: auto;
   margin-right: auto;
-  aspect-ratio: 4/1;
+  aspect-ratio: 3/1;
 }
 
 button[disabled] {
   cursor: not-allowed;
 }
 
-#headline {
+.headline {
   padding: 10px;
   margin: 0;
 }
 
-#after-submission h2, #after-submission h4 {
+.after-submission h2, .after-submission h4 {
   text-align: center;
 }
-
-#confirmation-message {
+.confirmation-message {
   margin-top: 10%;
   font-size: 30px;
 }
