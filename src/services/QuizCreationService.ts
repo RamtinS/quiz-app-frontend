@@ -34,7 +34,7 @@ export class QuizCreationService {
                                                   quizId: number): Promise<QuizCreationResponseDTO> {
         try {
             const result: AxiosResponse<QuizCreationResponseDTO> = await axios.put(this.api_url +
-              "/quizzes/" + quizId,
+              "/editor/" + quizId,
               quizCreationRequestDTO);
             return result.data;
         } catch (err) {
