@@ -4,7 +4,7 @@ import {UserService} from "@/services/UserService";
 import {ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import {QuizService} from "@/services/QuizService";
-import QuizView from "@/components/quiz/QuizView.vue";
+import QuizView from "@/components/quiz/browser/QuizPreviewer.vue";
 import {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 
 const route = useRoute();

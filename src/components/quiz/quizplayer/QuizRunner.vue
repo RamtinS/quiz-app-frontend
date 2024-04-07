@@ -3,19 +3,19 @@ import {computed, ref, watch} from "vue";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import router from "@/router";
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
-import MultipleChoiceView from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
+import MultipleChoiceView from "@/components/quiz/quizplayer/questiontypes/MultipleChoice.vue";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
-import TrueFalsePicker from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
-import InputFieldAnswer from "@/components/quiz/QuizHandler/QuestionTypes/TextInput.vue";
-import {QuestionTypeUtility} from "@/models/quiz/QuestionTypeUtility"
-import MultipleChoice from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
-import Boolean from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
+import TrueFalsePicker from "@/components/quiz/quizplayer/questiontypes/BooleanChoice.vue";
+import InputFieldAnswer from "@/components/quiz/quizplayer/questiontypes/TextInput.vue";
+import {QuestionTypeUtility} from "@/utility/QuestionTypeUtility"
+import MultipleChoice from "@/components/quiz/quizplayer/questiontypes/MultipleChoice.vue";
+import Boolean from "@/components/quiz/quizplayer/questiontypes/BooleanChoice.vue";
 import {QuizAttemptService} from "@/services/QuizAttemptService";
 import {FeedbackService} from "@/services/FeedbackService";
 import type {QuizAttemptDTO} from "@/models/quiz/QuizAttemptDTO";
-import QuizExit from "@/components/quiz/QuizHandler/QuestionTypes/QuizExit.vue";
-import BooleanChoice from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
+import QuizExit from "@/components/quiz/quizplayer/questiontypes/QuizExit.vue";
+import BooleanChoice from "@/components/quiz/quizplayer/questiontypes/BooleanChoice.vue";
 
 const props = defineProps(
     {

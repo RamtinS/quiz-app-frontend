@@ -1,14 +1,15 @@
 <script setup lang="ts">
-
+import {useRoute} from "vue-router";
+import QuizRunner from "@/components/quiz/quizplayer/QuizRunner.vue";
 import {QuizService} from "@/services/QuizService";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
-import {useRoute} from "vue-router";
-import QuizCreator from "@/components/quiz/QuizCreator.vue";
 import {ref} from "vue";
 
 const route = useRoute();
 
-const quiz = ref<QuizDTO | null>(await loadQuizFromServer());
+
+const quiz = ref<QuizDTO | null>(await loadQuizFromServer())
+
 
 async function loadQuizFromServer() {
   try {
@@ -18,6 +19,8 @@ async function loadQuizFromServer() {
     } else if (Array.isArray(route.params.quizId)) {
       id = parseInt(route.params.quizId[0]);
     }
+
+    console.log("id: " + id)
     return await QuizService.getQuizById(id) as QuizDTO;
 
   } catch (err) {
@@ -25,29 +28,17 @@ async function loadQuizFromServer() {
   }
 }
 
+
+
 </script>
 
 <template>
-
-  <div id="wrapper" v-if="quiz">
-    <QuizCreator
-        :pre-existing-quiz="quiz"
-    >
-    </QuizCreator>
-
+  <div v-if="quiz">
+    <quiz-runner :quiz="quiz">
+    </quiz-runner>
   </div>
-  <div class="error-message" v-else>
-    <p>Failed to load quiz, you may not have access to edit this</p>
-  </div>
-
-
 </template>
 
 <style scoped>
-.error-message {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 </style>

@@ -2,8 +2,8 @@
 import {ref} from "vue";
 import {UserService} from "@/services/UserService";
 import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
-import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
-import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
+import DropDown from "@/components/navigation/navigationbar/NavigationBarDropDown.vue";
+import RouterLinkBar from "@/components/navigation/navigationbar/RouterLinkBar.vue";
 
 
 const search = ref<string>('')

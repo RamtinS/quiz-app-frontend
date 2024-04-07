@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {onMounted, ref, watch} from "vue";
-import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
-import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
+import DropDown from "@/components/navigation/navigationbar/NavigationBarDropDown.vue";
+import RouterLinkBar from "@/components/navigation/navigationbar/RouterLinkBar.vue";
 import {useUserStore} from "@/stores/UserStore";
 
 const userStore = useUserStore();

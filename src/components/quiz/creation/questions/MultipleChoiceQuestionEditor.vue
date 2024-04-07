@@ -3,7 +3,7 @@
 import {ref, watchEffect} from "vue";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
 import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
-import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
+import {QuizValidationUtility} from "@/utility/QuizValidationUtility";
 
 const props = defineProps({
   preExistingQuestion: {type: Object as () => MultipleChoiceQuestionDTO, required: true},
