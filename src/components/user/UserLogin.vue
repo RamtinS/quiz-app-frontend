@@ -12,11 +12,10 @@ const store = useUserStore();
 const route = useRoute();
 
 /**
- * If the login has been routed because of an expired token, show an alert and set the error message.
+ * If the login has been routed because of an expired token, show an error message.
  */
 watchEffect(() => {
   if (route.params.tokenStatus === 'expired') {
-    alert("expired")
     errorMessage.value = "Your session has expired. Please log in again.";
   }
 });
