@@ -22,6 +22,7 @@ export class ErrorHandlingService {
       if (error.response.status === 403) {
         errorMessage = "You are not authorized to perform this action.";
         await ExpiredTokenService.refreshAccessToken();
+        console.error("Session expired.")
       } else {
         errorMessage = error.response.data.errorMessage;
         console.error(
@@ -30,10 +31,10 @@ export class ErrorHandlingService {
         );
       }
     } else {
-      errorMessage = "Error. Please try again later.";
+      errorMessage = "Cannot connect to server. Please try again later.";
       console.error(
-        description + ": " + error.response.data.errorMessage,
-        error,
+        "Cannot connect to server.",
+        error
       );
     }
 
