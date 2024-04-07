@@ -182,8 +182,10 @@ h1 {
 }
 
 .tag-container {
+  border: 1px solid black;
   display: flex;
   flex-direction: row-reverse;
+  width: 100%;
   gap: 10px;
   flex-wrap: wrap;
   overflow-y: scroll;
