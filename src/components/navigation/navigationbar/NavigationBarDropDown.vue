@@ -32,7 +32,6 @@ defineProps(
 
 .dropdown {
   position: fixed;
-  width: 50vw;
   top: 60px;
 }
 

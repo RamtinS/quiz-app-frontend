@@ -55,8 +55,8 @@ function toggleCompressed() {
     <div class="my-account-preview" @click="toggleCompressed">
 
       <p> {{ username }} </p>
-
-      <img src="https://via.placeholder.com/40x40" alt="profile picture" class="profile-picture"/>
+      <span class="material-icons">person
+        </span>
 
       <DropDown v-if="!compressed" >
         <RouterLinkBar :links="links"></RouterLinkBar>
@@ -78,16 +78,6 @@ function toggleCompressed() {
   cursor: pointer;
 }
 
-.profile-picture {
-  margin-top: 5px;
-  margin-bottom: 2px;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-}
-
-.profile-picture:hover {
-  cursor: pointer;
-}
 
 @media (max-width: 500px) {
   .my-account-preview p {
