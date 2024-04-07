@@ -120,7 +120,8 @@ function resetForm() {
                v-model="email"
                type="email"
                placeholder="E-mail"
-               class="entered">
+               class="entered"
+               data-cy="email">
       </div>
 
       <div>
@@ -135,7 +136,8 @@ function resetForm() {
                required type="text"
                placeholder="First name"
                pattern=".{2,}"
-               title="Name must be at least 2 characters long">
+               title="Name must be at least 2 characters long"
+               data-cy="first-name">
       </div>
 
       <div>
@@ -148,7 +150,8 @@ function resetForm() {
                required type="text"
                placeholder="Last name"
                pattern="^\b[a-zA-Z0-9_]+\b$"
-               title="Please only enter 1 name/word">
+               title="Please only enter 1 name/word"
+               data-cy="last-name">
       </div>
 
       <div>
@@ -162,7 +165,8 @@ function resetForm() {
                   id="message"
                   v-model="message"
                   required placeholder="Enter message here"
-                  title="Message cannot be empty">
+                  title="Message cannot be empty"
+                  data-cy="message">
         </textarea>
       </div>
 
@@ -170,7 +174,9 @@ function resetForm() {
         <button type="submit"
                 id="submit-button"
                 title="submit by pressing her"
-                :class="allValid ? 'valid-input' : 'invalid-input'" :disabled="!allValid">
+                :class="allValid ? 'valid-input' : 'invalid-input'"
+                :disabled="!allValid"
+                data-cy="submit-button">
           Submit
         </button>
       </div>

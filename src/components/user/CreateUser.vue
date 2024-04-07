@@ -17,6 +17,17 @@ const store = useUserStore();
 const errorMessage = ref('');
 const route = useRoute();
 
+/**
+ * Watch for changes in username, password, confirmPassword, email, name and surname fields and clear error message.
+ */
+watch([username, password, confirmPassword, email, name, surname], () => {
+  errorMessage.value = '';
+});
+
+
+/**
+ * Handles user registration
+ */
 async function register() {
 
   if (password.value !== confirmPassword.value) {
@@ -45,20 +56,26 @@ async function register() {
   }
 }
 
+/**
+ * Check if a string is blank.
+ *
+ * @param str The string to check.
+ * @returns True if the string is blank, false otherwise.
+ */
 function isBlank(str: string) {
   return (!str || /^\s*$/.test(str));
 }
 
+// Computed property to determine if all required fields are filled.
 const fieldsFilled = computed(() => {
   return !isBlank(username.value) && !isBlank(email.value) && !isBlank(name.value) && !isBlank(surname.value) && !isBlank(confirmPassword.value);
 })
 
-
-
-watch([username, password, confirmPassword, email, name, surname], () => {
-  errorMessage.value = '';
-});
-
+/**
+ * Prevent entering space in input fields.
+ *
+ * @param event The keydown event object.
+ */
 function preventSpace(event: any) {
   if (event.key === ' ' || event.code === 'Space') {
     event.preventDefault();
@@ -79,51 +96,50 @@ function preventSpace(event: any) {
 
             <div class="item-2">
               <label for="fusername">Username:</label>
-              <input type="text" id="username" v-model="username"
-                     placeholder="Enter your username" required @keydown="preventSpace"/>
+              <input type="text" id="username" v-model="username" placeholder="Enter your username"
+                     required @keydown="preventSpace" data-cy="username"/>
             </div>
 
             <div class="item-2">
               <label for="femail">Email:</label>
-              <input type="text" id="email" v-model="email"
-                     placeholder="Email" required @keydown="preventSpace"/>
+              <input type="text" id="email" v-model="email" placeholder="Email"
+                     required @keydown="preventSpace" data-cy="email"/>
             </div>
 
             <div class="item-3">
               <label for="first-name">First name:</label>
-              <input type="text" id="first-name" v-model="name"
-                     placeholder="First name" required @keydown="preventSpace"/>
+              <input type="text" id="first-name" v-model="name" placeholder="First name"
+                     required @keydown="preventSpace" data-cy="first-name"/>
             </div>
 
-
-              <div class="item-4">
-                <label for="sur-name">Sur name:</label>
-                <input type="text" id="sur-name" v-model="surname"
-                       placeholder="Surname" required @keydown="preventSpace"/>
-              </div>
-
+            <div class="item-4">
+              <label for="surname">Sur name:</label>
+              <input type="text" id="surname" v-model="surname" placeholder="Surname"
+                     required @keydown="preventSpace" data-cy="surname"/>
+            </div>
 
             <div class="item-3">
               <label for="password">Password:</label>
               <input class="input-field" type="password" id="password" v-model="password"
-                     placeholder="Enter your password" required @keydown="preventSpace"/>
+                     placeholder="Enter your password" required @keydown="preventSpace" data-cy="password"/>
             </div>
 
             <div class="item-4">
               <label for="confirm-password">Confirm Password:</label>
               <input  class="input-field" type="password" id="confirm-password" v-model="confirmPassword"
-                      placeholder="Confirm password" required @keydown="preventSpace"/>
+                      placeholder="Confirm password" required @keydown="preventSpace" data-cy="confirm-password"/>
             </div>
 
             <div class="item-2 button">
-              <input id="register-button" type="submit" value="Register" :disabled="!fieldsFilled"/><br>
+              <input id="register-button" type="submit" value="Register"
+                     :disabled="!fieldsFilled" data-cy="register-button"/><br>
             </div>
 
-            <div v-if="errorMessage" id="error" class="error-message item-5">{{ errorMessage }}</div>
+            <div v-if="errorMessage" id="error" class="error-message item-5" data-cy="error-message">{{ errorMessage }}</div>
 
             <div class="item-5">
               <div class="login-route-container">
-                <p>Already have an account?</p><router-link to="/login">Login</router-link>
+                <p>Already have an account?</p><router-link to="/login" data-cy="login-link">Login</router-link>
               </div>
             </div>
           </form>

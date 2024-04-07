@@ -8,10 +8,16 @@ import {useUserStore} from "@/stores/UserStore";
 
 const userStore = useUserStore();
 
+/**
+ * Setting auth token on component mount.
+ */
 onMounted(() => {
   userStore.setAuthToken(userStore.token);
 });
 
+/**
+ * Array of links for hamburger menu.
+ */
 const hamburgerLinks = ref([
   {link: '/', label: 'Home', authNeeded: false, icon: 'home', id: 'home-link'},
   {link: '/login', label: 'Login', authNeeded: false, icon: 'login', id: 'login-link'},
@@ -21,6 +27,9 @@ const hamburgerLinks = ref([
   {link: '/quiz-creator', label: 'Quiz Creator', authNeeded: false, icon: 'edit_square', id: 'creator-link'},
 ]);
 
+/**
+ * Array of links for user profile menu.
+ */
 const profileLinks = ref([
   {link: '/user-profile', label: "Profile", authNeeded: false, icon: 'person', id: 'user-profile'},
   {link: '/logout', label: "Logout", authNeeded: false, icon: 'logout', id: 'log-out'},
@@ -32,19 +41,23 @@ const profileLinks = ref([
   <div id="navigation-bar">
 
     <HamburgerSidebar :links="hamburgerLinks"
-                      class="end-item"></HamburgerSidebar>
-    <SearchBar>
-    </SearchBar>
+                      class="end-item"
+                      data-cy="hamburger-sidebar">
+
+    </HamburgerSidebar>
+
+    <SearchBar data-cy="search-bar"></SearchBar>
+
     <MyAccountPreview id="right-preview"
                       class="end-item"
-                      :links="profileLinks">
+                      :links="profileLinks"
+                      data-cy="my-account-preview">
     </MyAccountPreview>
 
   </div>
 </template>
 
 <style scoped>
-
 
 #navigation-bar {
   z-index: 10;

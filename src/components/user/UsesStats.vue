@@ -43,7 +43,7 @@ onMounted(async () => {
 
     <UserProfileHeader></UserProfileHeader>
 
-    <div v-if="errorMessage" class="error-message"> {{ errorMessage }} </div>
+    <div v-if="errorMessage" class="error-message" data-cy="error-message"> {{ errorMessage }} </div>
 
     <div v-else class="grid-container">
 
@@ -51,51 +51,53 @@ onMounted(async () => {
 
         <p class="graph-title">The amount of quizzes completed the last 7 days</p>
 
-        <svg width="700" height="450">
+        <svg width="700" height="450" data-cy="graph">
 
-          <g id="y-axis" class="axis" >
+          <g id="y-axis" class="axis" data-cy="y-axis">
             <line x1="120" y1="0" x2="120" y2="400"></line>
           </g>
 
-          <g id="x-axis" class="axis">
+          <g id="x-axis" class="axis" data-cy="x-axis">
             <line x1="120" y1="400" x2="650" y2="400"></line>
           </g>
 
-          <g class="y-labels">
+          <g class="y-labels" data-cy="y-labels">
             <text v-for="(label, index) in yAxisLabels" :key="index" x="80" :y="405 - index * 30"> {{label}} </text>
             <text x="0" y="200" class="label-title">Quizzes</text>
           </g>
 
-          <g class="x-labels">
+          <g class="x-labels" data-cy="x-labels">
             <text v-for="(label, index) in xAxisLabels" :key="index" :x="100 + index * 82" y="430">{{ label }}</text>
           </g>
 
           <template v-for="(quiz, index) in quizData" :key="index">
 
-            <circle class="point" :cx="(index * xScale) + 120" :cy="400 - quiz * yScale" r="5"/>
+            <circle class="point" :cx="(index * xScale) + 120" :cy="400 - quiz * yScale" r="5" data-cy="quiz-point"/>
 
             <line class="graph-line"
                   v-if="index > 0"
                   :x1="((index - 1) * xScale) + 120"
                   :y1="400 - quizData[index - 1] * yScale"
                   :x2="index * xScale + 120"
-                  :y2="400 - (quiz * yScale)"/>
+                  :y2="400 - (quiz * yScale)"
+                  data-cy="graph-line"
+            />
 
           </template>
 
         </svg>
       </div>
 
-      <div class="stats-container">
+      <div class="stats-container" data-cy="stats-container">
 
         <div class="stats-item">
           <div class="stats-label">All-time completed quizzes:</div>
-          <div class="stats-value">{{ totalAttempts }}</div>
+          <div class="stats-value" data-cy="total-attempts">{{ totalAttempts }}</div>
         </div>
 
         <div class="stats-item">
           <div class="stats-label">All-time score:</div>
-          <div class="stats-value">{{ totalScore }}</div>
+          <div class="stats-value" data-cy="total-score">{{ totalScore }}</div>
         </div>
 
       </div>
