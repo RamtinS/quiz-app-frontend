@@ -1,5 +1,5 @@
 /**
- * Cypress tests for testing components in frontend.
+ * Cypress test for testing UserLogin component.
  */
 describe('Login page test', () => {
     beforeEach(() => {
