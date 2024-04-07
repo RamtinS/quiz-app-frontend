@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {useUserStore} from "@/stores/UserStore";
-import HomeView from "@/components/home/HomeView.vue";
 import QuizBrowser from "@/components/quiz/browser/QuizBrowser.vue";
 import NotFound from "@/components/navigation/redirects/NotFound.vue";
 import FeedbackPage from "@/components/feedback/FeedbackPage.vue";
@@ -22,7 +21,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: QuizBrowser,
       meta: {authRequired: false}
     },
     {
@@ -64,12 +63,6 @@ const router = createRouter({
       name: 'user-quizzes',
       component: UserQuizzesView,
       meta: {authRequired: true}
-    },
-    {
-      path: '/quiz-browser',
-      name: 'quiz-browser',
-      component: QuizBrowser,
-      meta: {authRequired: false}
     },
     {
       path: '/quiz-runner/:quizId',

@@ -21,7 +21,6 @@ onMounted(() => {
 const hamburgerLinks = ref([
   {link: '/', label: 'Home', authNeeded: false, icon: 'home', id: 'home-link'},
   {link: '/login', label: 'Login', authNeeded: false, icon: 'login', id: 'login-link'},
-  {link: '/quiz-browser', label: 'Quiz Browser', authNeeded: false, icon: 'travel_explore', id: 'browser-link'},
   {link: '/register-user', label: "Register", authNeeded: false, icon: 'app_registration', id: 'register-link'},
   {link: '/contact', label: 'Contact us', authNeeded: false, icon: 'contact_support', id: 'contact-link'},
   {link: '/quiz-creator', label: 'Quiz Creator', authNeeded: false, icon: 'edit_square', id: 'creator-link'},
