@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { QuizDTO } from "@/models/quiz/QuizDTO";
-import {ref, watch} from "vue";
+import {ref} from "vue";
 
 const props = defineProps({
   score: Number,
@@ -23,23 +23,15 @@ let restartMessage = ref("Quiz finished, you got " + score + " correct answer" +
 
 <template>
   <div class="end-container">
-
     <h1>
       {{ restartMessage }}
     </h1>
-
     <button @click="emit('exit-selected')">
       Finish
     </button>
-
     <button @click="emit('restart-selected')">
       Restart
     </button>
-
-    <button @click="emit('save-selected')">
-      Save
-    </button>
-
   </div>
 </template>
 
