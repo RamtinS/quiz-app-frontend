@@ -1,21 +1,15 @@
 <script async setup lang="ts">
-import {computed, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 import router from "@/router";
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
-import MultipleChoiceView from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
+import MultipleChoiceView from "@/components/quiz/quizplayer/questiontypes/MultipleChoice.vue";
 import type {AnswerDTO} from "@/models/quiz/AnswerDTO";
-import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
-import TrueFalsePicker from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
-import InputFieldAnswer from "@/components/quiz/QuizHandler/QuestionTypes/TextInput.vue";
-import {QuestionTypeUtility} from "@/models/quiz/QuestionTypeUtility"
-import MultipleChoice from "@/components/quiz/QuizHandler/QuestionTypes/MultipleChoice.vue";
-import Boolean from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
+import {QuestionTypeUtility} from "@/utility/QuestionTypeUtility"
 import {QuizAttemptService} from "@/services/QuizAttemptService";
-import {FeedbackService} from "@/services/FeedbackService";
 import type {QuizAttemptDTO} from "@/models/quiz/QuizAttemptDTO";
-import QuizExit from "@/components/quiz/QuizHandler/QuestionTypes/QuizExit.vue";
-import BooleanChoice from "@/components/quiz/QuizHandler/QuestionTypes/BooleanChoice.vue";
+import QuizExit from "@/components/quiz/quizplayer/questiontypes/QuizExit.vue";
+import BooleanChoice from "@/components/quiz/quizplayer/questiontypes/BooleanChoice.vue";
 
 const props = defineProps(
     {
@@ -27,25 +21,25 @@ const props = defineProps(
 );
 
 let quiz = ref(props.quiz as QuizDTO)
-
-const shuffledQuestions = computed(() => {
-  const questions = props.quiz?.questions.slice()
-
-  //Fisher-Yates-Shuffle-Algorithm
-  for (let i = questions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [questions[i], questions[j]] = [questions[j], questions[i]];
-  }
-
-  return questions;
-})
-
-let questions = shuffledQuestions;
+let questions = ref(shuffleArray(quiz.value.questions));
 let questionIndex = ref(0);
 let currentQuestion = ref<QuizQuestionDTO>(questions.value[questionIndex.value])
 let score = 0;
 let quizCompleted = false;
 let restartMessage = ref("");
+
+/**
+ * Shuffles the array of questions.
+ *
+ * @param array the array of questions to be shuffled.
+ */
+function shuffleArray(array: QuizQuestionDTO[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 /**
  * Watcher which checks if the questionIndex gets updates.
@@ -74,6 +68,7 @@ function handleAnswer(answer: AnswerDTO | any) {
  */
 function resetQuiz() {
   questionIndex.value = 0;
+  quiz.value.questions = shuffleArray(quiz.value.questions);
   currentQuestion.value = quiz.value.questions[questionIndex.value]
   score = 0
   quizCompleted = false;
@@ -103,6 +98,7 @@ function isQuizComplete() {
         score + " correct answer" +
         (score === 1 ? "" : "s") +
         " out of " + (quiz.value.questions.length | 0);
+    handleSubmit()
   }
 }
 
@@ -140,7 +136,7 @@ function isQuestionMultipleQuestion() {
 async function handleSubmit() {
   const quizAttempt: QuizAttemptDTO = {
     score: score,
-    quizId: quiz.quizId
+    quizId: quiz.value.quizId
   }
   try {
     await QuizAttemptService.sendQuizAttempt(quizAttempt);
@@ -148,8 +144,8 @@ async function handleSubmit() {
   } catch (error) {
     handleSubmissionError(error);
   } finally {
-    resetQuiz();
-    returnToPreviousRouterPage();
+    //resetQuiz();
+    //returnToPreviousRouterPage();
   }
 }
 
@@ -202,8 +198,7 @@ function handleSubmissionError(error: any) {
           :score="score"
           :quiz="quiz"
           @exit-selected="returnToPreviousRouterPage"
-          @restart-selected="resetQuiz"
-          @save-selected="handleSubmit">
+          @restart-selected="resetQuiz">
       </QuizExit>
     </div>
   </div>

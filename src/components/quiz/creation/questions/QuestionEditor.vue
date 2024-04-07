@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
-import {QuestionTypeUtility} from "@/models/quiz/QuestionTypeUtility";
-import MultipleChoiceQuestionEditor from "@/components/quiz/MultipleChoiceQuestionEditor.vue";
+import {QuestionTypeUtility} from "@/utility/QuestionTypeUtility";
+import MultipleChoiceQuestionEditor from "@/components/quiz/creation/questions/MultipleChoiceQuestionEditor.vue";
 import {ref, watch} from "vue";
-import TrueFalseQuestionEditor from "@/components/quiz/TrueFalseQuestionEditor.vue";
+import TrueFalseQuestionEditor from "@/components/quiz/creation/questions/TrueFalseQuestionEditor.vue";
 
 const props = defineProps(
     {

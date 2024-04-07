@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
-import QuizPost from "@/components/quiz/QuizPost.vue";
+import QuizPost from "@/components/quiz/browser/QuizPost.vue";
 
 const page = ref(0);
 const emit = defineEmits(['page-change'])
@@ -10,12 +10,12 @@ const props = defineProps({
       userOwnsThem: {type: Boolean, required: false, default: false}
     }
 )
+
 watch(page, async () => {
   emit('page-change', page.value)
 })
 
 let previews = props.previews;
-const username = props.username;
 let doesUserOwnThem = props.userOwnsThem;
 
 watch(props, async () => {
@@ -37,7 +37,7 @@ function decreasePage() {
 
 </script>
 <template>
-  <div class="">
+  <div>
     <div id="quiz-browser">
       <div class="options-container">
         <h1>{{ props.title }}</h1>

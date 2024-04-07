@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/UserStore";
-import QuizView from "@/components/quiz/QuizView.vue";
+import QuizView from "@/components/quiz/browser/QuizPreviewer.vue";
 import {ref, watch} from "vue";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
 import {QuizService} from "@/services/QuizService";

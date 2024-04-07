@@ -3,7 +3,7 @@
 import {ref} from "vue";
 import type {QuizSettings} from "@/models/quiz/QuizSettings";
 import type {TagDTO} from "@/models/quiz/TagDTO";
-import CategoryPicker from "@/components/quiz/CategoryPicker.vue";
+import CategoryPicker from "@/components/quiz/creation/settings/CategoryPicker.vue";
 
 
 const emits = defineEmits(['close-modal', 'submit-settings-from-modal'])

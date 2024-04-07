@@ -1,4 +1,4 @@
-import {QuestionType} from './QuestionType';
+import {QuestionType} from '../models/quiz/QuestionType';
 
 export class QuestionTypeUtility {
 

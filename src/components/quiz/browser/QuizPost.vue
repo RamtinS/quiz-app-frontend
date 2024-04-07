@@ -55,10 +55,10 @@ p{
   max-width: 300px;
   aspect-ratio: 1.61/1;
   border: 1px solid black;
-  background: url("src/assets/images/test-images/football_example.jpeg");
   display: flex;
   flex-direction: column;
   color: white;
+  background-color: white;
   position: relative;
 
 }

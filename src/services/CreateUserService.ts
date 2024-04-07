@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
-import type {ErrorResponseDTO} from "@/models/ErrorResponseDTO";
+import type {ErrorResponseDTO} from "@/models/errors/ErrorResponseDTO";
 
 export class CreateUserService {
   private static readonly api_url = "http://localhost:8080/api/v1/auth"

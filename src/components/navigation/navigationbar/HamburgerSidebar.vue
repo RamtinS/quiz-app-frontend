@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import DropDown from "@/components/navigation/NavigationBarDropDown.vue";
-import RouterLinkBar from "@/components/navigation/RouterLinkBar.vue";
+import DropDown from "@/components/navigation/navigationbar/NavigationBarDropDown.vue";
+import RouterLinkBar from "@/components/navigation/navigationbar/RouterLinkBar.vue";
 import {ref} from "vue";
 
 /**

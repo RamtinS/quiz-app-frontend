@@ -4,17 +4,17 @@ import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
 import type {QuizCreationRequestDTO} from "@/models/quiz/QuizCreationRequestDTO";
 import type {MultipleChoiceQuestionDTO} from "@/models/quiz/MultipleChoiceQuestionDTO";
 import type {TrueOrFalseQuestionDTO} from "@/models/quiz/TrueOrFalseQuestionDTO";
-import {QuestionTypeUtility} from "@/models/quiz/QuestionTypeUtility";
+import {QuestionTypeUtility} from "@/utility/QuestionTypeUtility";
 import {QuestionType} from "@/models/quiz/QuestionType";
 import {QuizCreationService} from "@/services/QuizCreationService";
 import {computed, ref} from "vue";
-import QuestionPreview from "@/components/quiz/QuestionPreview.vue";
-import QuestionEditor from "@/components/quiz/QuestionEditor.vue";
-import NewQuestionModal from "@/components/quiz/NewQuestionModal.vue";
+import QuestionPreview from "@/components/quiz/creation/questions/QuestionPreview.vue";
+import QuestionEditor from "@/components/quiz/creation/questions/QuestionEditor.vue";
+import NewQuestionModal from "@/components/quiz/creation/settings/NewQuestionModal.vue";
 import type {TagDTO} from "@/models/quiz/TagDTO";
-import QuestionSettingsModal from "@/components/quiz/QuizSettingsModal.vue";
+import QuestionSettingsModal from "@/components/quiz/creation/settings/QuizSettingsModal.vue";
 import type {QuizSettings} from "@/models/quiz/QuizSettings";
-import {QuizValidationUtility} from "@/models/quiz/QuizValidationUtility";
+import {QuizValidationUtility} from "@/utility/QuizValidationUtility";
 import type {QuizDTO} from "@/models/quiz/QuizDTO";
 
 /**

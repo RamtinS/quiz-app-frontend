@@ -11,7 +11,7 @@
       <p id="error-info">
         We cannot find the page. Are you sure the URL is correct?
       </p>
-      <img id="detective" src="@/assets/images/detective.png" alt="detective looking for your page">
+      <img id="detective" src="../../../assets/images/detective.png" alt="detective looking for your page">
       <p id="running-url">
         Your URL
       </p>

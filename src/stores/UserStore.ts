@@ -7,7 +7,7 @@ import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
 import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
 import type {LoginResponseDTO} from "@/models/user/LoginResponseDTO";
 import type {UserDetailsDTO} from "@/models/user/UserDetailsDTO";
-import type {ErrorResponseDTO} from "@/models/ErrorResponseDTO";
+import type {ErrorResponseDTO} from "@/models/errors/ErrorResponseDTO";
 
 export const useUserStore = defineStore('user', {
 

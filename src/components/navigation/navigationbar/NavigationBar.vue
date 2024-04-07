@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import SearchBar from "@/components/navigation/SearchBar.vue";
+import SearchBar from "@/components/navigation/navigationbar/SearchBar.vue";
 import MyAccountPreview from "@/components/navigation/navigationbar/UserProfileIcon.vue";
 import HamburgerSidebar from "@/components/navigation/navigationbar/HamburgerSidebar.vue";
 import {useUserStore} from "@/stores/UserStore";

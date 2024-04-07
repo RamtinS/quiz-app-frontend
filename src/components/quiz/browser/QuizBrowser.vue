@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import QuizPost from "@/components/quiz/QuizPost.vue";
+import QuizPost from "@/components/quiz/browser/QuizPost.vue";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
 import {QuizService} from "@/services/QuizService";
 
