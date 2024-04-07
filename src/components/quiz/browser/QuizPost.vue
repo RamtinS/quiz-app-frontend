@@ -2,7 +2,7 @@
 
 import router from "@/router";
 import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
-
+const availableImages = ["Sports", "Chemistry", "Gaming", "Math", "Physics", "Food"]
 const props = defineProps({
   post: {type: Object as () => QuizPreviewDTO, required: true},
   isOwnedByUser: {type: Boolean, required: false, default: false}
@@ -13,8 +13,16 @@ function startQuiz() {
   router.push({name: "quiz-runner", params: {quizId: props.post.id}})
 }
 
-function editQuiz(){
+function editQuiz() {
   router.push({name: "quiz-editor", params: {quizId: props.post.id}});
+}
+
+function getImageUrl(category: string) {
+  if (availableImages.includes(category)){
+    return "src/assets/images/categories/" + category + ".png";
+  } else {
+    return "src/assets/images/categories/Default.png";
+  }
 }
 
 </script>
@@ -22,12 +30,14 @@ function editQuiz(){
 <template>
 
   <div id="quiz-post" @click="startQuiz">
-    <div id="quiz-image"></div>
+
+    <img :src="getImageUrl(post.category)" alt="Category image" class="quiz-image">
+
     <div id="quiz-info">
       <p>{{ post.title }}</p>
     </div>
     <div v-if="props.isOwnedByUser"
-        class="edit-container"
+         class="edit-container"
          @click.stop="editQuiz"
     >
       <p class="edit-message">
@@ -42,12 +52,17 @@ function editQuiz(){
 
 <style scoped>
 
-h2{
+h2 {
   margin: 0;
 }
 
-p{
+p {
   margin: 0;
+}
+
+.quiz-image {
+  width: 100%;
+  object-fit: fill;
 }
 
 #quiz-post {
@@ -66,14 +81,14 @@ p{
 #quiz-post:hover {
   cursor: pointer;
 
-  &:hover{
-    #quiz-info{
+  &:hover {
+    #quiz-info {
       text-decoration: underline;
     }
   }
 }
 
-#quiz-info{
+#quiz-info {
   background-color: rgb(205, 103, 106);
   margin-top: auto;
   height: 30%;
@@ -82,20 +97,20 @@ p{
 
 }
 
-.edit-container{
+.edit-container {
   position: absolute;
   bottom: 5px;
   right: 5px;
   display: flex;
 }
 
-.edit-container:hover{
-  .edit-message{
+.edit-container:hover {
+  .edit-message {
     visibility: visible;
   }
 }
 
-.edit-message{
+.edit-message {
   padding-top: 5px;
   visibility: hidden;
 }
