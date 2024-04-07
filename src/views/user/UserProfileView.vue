@@ -8,6 +8,4 @@ import UserProfile from "@/components/user/UserProfile.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

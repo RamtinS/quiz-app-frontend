@@ -1,35 +1,30 @@
 <script setup lang="ts">
-
-import {ref} from "vue";
-import type {QuizSettings} from "@/models/quiz/QuizSettings";
-import type {TagDTO} from "@/models/quiz/TagDTO";
+import { ref } from "vue";
+import type { QuizSettings } from "@/models/quiz/QuizSettings";
+import type { TagDTO } from "@/models/quiz/TagDTO";
 import CategoryPicker from "@/components/quiz/creation/settings/CategoryPicker.vue";
 
-
-const emits = defineEmits(['close-modal', 'submit-settings-from-modal'])
+const emits = defineEmits(["close-modal", "submit-settings-from-modal"]);
 
 /**
  * The preExistingSettings prop is used to prepopulate the settings modal with the current settings
  */
-const props = defineProps(
-    {
-      preExistingSettings: {type: Object as () => QuizSettings, required: true},
-    }
-)
+const props = defineProps({
+  preExistingSettings: { type: Object as () => QuizSettings, required: true },
+});
 
-
-const title = ref(props.preExistingSettings.title)
-const description = ref(props.preExistingSettings.description)
-const open = ref(props.preExistingSettings.open)
-const selectedTags = ref<TagDTO[]>(props.preExistingSettings?.tags ?? [])
-const selectedCategory = ref(props.preExistingSettings.categoryDescription)
-const currentTag = ref('')
+const title = ref(props.preExistingSettings.title);
+const description = ref(props.preExistingSettings.description);
+const open = ref(props.preExistingSettings.open);
+const selectedTags = ref<TagDTO[]>(props.preExistingSettings?.tags ?? []);
+const selectedCategory = ref(props.preExistingSettings.categoryDescription);
+const currentTag = ref("");
 
 /**
  * Close the modal
  */
 function closeModal() {
-  emits('close-modal')
+  emits("close-modal");
 }
 
 /**
@@ -41,9 +36,9 @@ function submitSettings() {
     description: description.value,
     open: open.value,
     tags: selectedTags.value,
-    categoryDescription: selectedCategory.value
-  }
-  emits('submit-settings-from-modal', settings)
+    categoryDescription: selectedCategory.value,
+  };
+  emits("submit-settings-from-modal", settings);
 }
 
 /**
@@ -51,7 +46,7 @@ function submitSettings() {
  * @param category
  */
 function handleCategoryFromCategoryPicker(category: string) {
-  selectedCategory.value = category
+  selectedCategory.value = category;
 }
 
 /**
@@ -59,92 +54,59 @@ function handleCategoryFromCategoryPicker(category: string) {
  * @param tagValue
  */
 function addTag(tagValue: string) {
-  if (tagValue === '') return
+  if (tagValue === "") return;
   const tag: TagDTO = {
-    description: tagValue
-  }
-  selectedTags.value.push(tag)
-
+    description: tagValue,
+  };
+  selectedTags.value.push(tag);
 }
-
-
 </script>
 
 <template>
   <div id="new-question-modal" class="modal" @click="closeModal">
-    <div id="modal-content"
-         class="modal-content"
-         @click.stop
-    >
-      <h1>
-        Quiz settings
-      </h1>
+    <div id="modal-content" class="modal-content" @click.stop>
+      <h1>Quiz settings</h1>
       <div class="modal-item">
-        <label>
-          Title
-        </label>
-        <input type="text"
-               v-model="title"
-               placeholder="Enter a title for the quiz (required)"
-        >
+        <label> Title </label>
+        <input
+          type="text"
+          v-model="title"
+          placeholder="Enter a title for the quiz (required)"
+        />
       </div>
       <div class="modal-item">
-        <label>
-          Description
-        </label>
+        <label> Description </label>
         <textarea
-            v-model="description"
-            placeholder="Enter a description of the quiz (optional)"
+          v-model="description"
+          placeholder="Enter a description of the quiz (optional)"
         >
         </textarea>
       </div>
       <div class="modal-item">
-        <label>
-          Make quiz public?
-        </label>
+        <label> Make quiz public? </label>
         <div class="public-chooser">
-          <input type="radio"
-                 id="public-yes"
-                 :value="true"
-                 v-model="open"
-          >
-          <label for="public-yes">
-            Yes
-          </label>
-          <input type="radio"
-                 id="public-no"
-                 :value="false"
-                 v-model="open"
-          >
-          <label for="public-no">
-            No
-          </label>
+          <input type="radio" id="public-yes" :value="true" v-model="open" />
+          <label for="public-yes"> Yes </label>
+          <input type="radio" id="public-no" :value="false" v-model="open" />
+          <label for="public-no"> No </label>
         </div>
       </div>
-      <div class="modal-item tag-picker"
-      >
+      <div class="modal-item tag-picker">
         <p>Tags:</p>
-        <div class="tag-container"
-        >
-          <div v-for="tag in selectedTags"
-               class="tag"
-          >
+        <div class="tag-container">
+          <div v-for="tag in selectedTags" class="tag">
             {{ tag.description }}
           </div>
         </div>
-        <input
-            type="text"
-            placeholder="Enter a tag"
-            v-model="currentTag"
-        >
-        <button @click="addTag(currentTag)">
-          Add tag
-        </button>
+        <input type="text" placeholder="Enter a tag" v-model="currentTag" />
+        <button @click="addTag(currentTag)">Add tag</button>
       </div>
       <div class="modal-item">
         <CategoryPicker
-            @submit-category="handleCategoryFromCategoryPicker"
-            :pre-selected-category="props.preExistingSettings?.categoryDescription"
+          @submit-category="handleCategoryFromCategoryPicker"
+          :pre-selected-category="
+            props.preExistingSettings?.categoryDescription
+          "
         >
         </CategoryPicker>
       </div>
@@ -156,7 +118,6 @@ function addTag(tagValue: string) {
 </template>
 
 <style scoped>
-
 .modal {
   position: fixed;
   z-index: 1;
@@ -168,7 +129,6 @@ function addTag(tagValue: string) {
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.4);
 }
-
 
 .modal-content {
   display: flex;
@@ -193,7 +153,6 @@ function addTag(tagValue: string) {
     margin-left: 0;
     margin-right: 0;
     min-width: 300px;
-
   }
 }
 
@@ -231,10 +190,9 @@ h1 {
   overflow-x: hidden;
   max-height: 100px;
   min-height: 100px;
-
 }
 
-.tag{
+.tag {
   background-color: lightgrey;
   padding: 5px;
   border-radius: 5px;
@@ -250,8 +208,5 @@ h1 {
 .submit-button {
   display: block;
   margin-bottom: 20px;
-
 }
-
 </style>
-

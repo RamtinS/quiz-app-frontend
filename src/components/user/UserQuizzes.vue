@@ -1,39 +1,42 @@
 <script setup lang="ts">
-import {useUserStore} from "@/stores/UserStore";
+import { useUserStore } from "@/stores/UserStore";
 import QuizView from "@/components/quiz/browser/QuizPreviewer.vue";
-import {ref, watch} from "vue";
+import { ref } from "vue";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
-import {QuizService} from "@/services/QuizService";
-import type {QuizPreviewDTO} from "@/models/quiz/QuizPreviewDTO";
+import { QuizService } from "@/services/QuizService";
+import type { QuizPreviewDTO } from "@/models/quiz/QuizPreviewDTO";
 
 const userStore = useUserStore();
 const username = userStore.username;
-let previews = ref<QuizPreviewDTO[]>()
+let previews = ref<QuizPreviewDTO[]>();
 
-async function getQuizForUsers(page: Number) {
-  return await QuizService.getQuizPreviewsSpecifiedUser(username, page, 3)
+async function getQuizForUsers(page: number) {
+  return await QuizService.getQuizPreviewsSpecifiedUser(username, page, 3);
 }
 
 function handlePageChange(page: number) {
-  getQuizForUsers(page).then(newPreviews => {
-    previews.value = newPreviews
-  }).catch(error => {
-    console.error('Error loading quiz previews:', error);
-  });
+  getQuizForUsers(page)
+    .then((newPreviews) => {
+      previews.value = newPreviews;
+    })
+    .catch((error) => {
+      console.error("Error loading quiz previews:", error);
+    });
 }
 
 previews.value = await getQuizForUsers(0);
-
 </script>
 
 <template>
   <div class="user-quizzes">
     <UserProfileHeader></UserProfileHeader>
 
-    <QuizView :previews="previews"
-              :title="username"
-              :user-owns-them="true"
-              @page-change="handlePageChange">
+    <QuizView
+      :previews="previews"
+      :title="username"
+      :user-owns-them="true"
+      @page-change="handlePageChange"
+    >
     </QuizView>
   </div>
 </template>

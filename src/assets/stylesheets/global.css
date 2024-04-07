@@ -1,52 +1,52 @@
 :root {
-    --primary: #084887ff;
-    --primary-light: #A3ADCC;
-    --secondary: #f58a07ff;
-    --secondary-light: #f9ab55ff;
-    --neutral: #ffffff;
-    --default-font: 'Candal', sans-serif;
-    --question-color: #a8d0fd;
-    --navigation-bar-background: white;
-    --default-background-color: #eae9e9
+  --primary: #084887ff;
+  --primary-light: #a3adcc;
+  --secondary: #f58a07ff;
+  --secondary-light: #f9ab55ff;
+  --neutral: #ffffff;
+  --default-font: "Candal", sans-serif;
+  --question-color: #a8d0fd;
+  --navigation-bar-background: white;
+  --default-background-color: #eae9e9;
 }
 
 body {
-    background-color: var(--default-background-color);
-    margin: 0;
-    padding: 0;
+  background-color: var(--default-background-color);
+  margin: 0;
+  padding: 0;
 }
 
 * {
-    font-family: "Inter", monospace;
-    font-optical-sizing: auto;
-    font-style: normal;
+  font-family: "Inter", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
-button{
-    border-radius: 10px;
-    border: 1px solid black;
-
+button {
+  border-radius: 10px;
+  border: 1px solid black;
 }
 
 button:hover {
-    cursor: pointer;
-    filter: brightness(0.9);
+  cursor: pointer;
+  filter: brightness(0.9);
 }
 
 input[type="checkbox"] {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .shake {
-    animation: shake 0.5s both normal;
+  animation: shake 0.5s both normal;
 }
 
 @keyframes shake {
-    20%, 50% {
-        transform: translateX(-2px);
-    }
-    25%, 75% {
-        transform: translateX(2px);
-    }
+  20%,
+  50% {
+    transform: translateX(-2px);
+  }
+  25%,
+  75% {
+    transform: translateX(2px);
+  }
 }
-

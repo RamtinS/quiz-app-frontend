@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {computed, ref, watch, watchEffect} from 'vue'
-import {useUserStore} from '@/stores/UserStore';
+import { computed, ref, watch, watchEffect } from "vue";
+import { useUserStore } from "@/stores/UserStore";
 import router from "@/router";
-import {useRoute} from "vue-router";
-import {ErrorHandlingService} from "@/services/ErrorHandlingService";
+import { useRoute } from "vue-router";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
-const username = ref<string>('');
-const password = ref<string>('');
-const errorMessage = ref<string>('');
+const username = ref<string>("");
+const password = ref<string>("");
+const errorMessage = ref<string>("");
 const store = useUserStore();
 const route = useRoute();
 
@@ -15,7 +15,7 @@ const route = useRoute();
  * If the login has been routed because of an expired token, show an error message.
  */
 watchEffect(() => {
-  if (route.params.tokenStatus === 'expired') {
+  if (route.params.tokenStatus === "expired") {
     errorMessage.value = "Your session has expired. Please log in again.";
   }
 });
@@ -24,7 +24,7 @@ watchEffect(() => {
  * Watch for changes in username and password fields and clear error message.
  */
 watch([username, password], () => {
-  errorMessage.value = '';
+  errorMessage.value = "";
 });
 
 /**
@@ -34,12 +34,15 @@ async function login() {
   try {
     await store.loginUser(username.value.trim(), password.value.trim());
     if (route.query.redirect) {
-      await router.push(route.query.redirect as string)
+      await router.push(route.query.redirect as string);
     } else {
-      await router.push('/')
+      await router.push("/");
     }
   } catch (err) {
-    errorMessage.value = await ErrorHandlingService.handleRequestError(err, "Login failed")
+    errorMessage.value = await ErrorHandlingService.handleRequestError(
+      err,
+      "Login failed",
+    );
   }
 }
 
@@ -50,16 +53,16 @@ async function login() {
  * @returns True if the string is blank, false otherwise.
  */
 function isBlank(str: string) {
-  return (!str || /^\s*$/.test(str));
+  return !str || /^\s*$/.test(str);
 }
 
 // Computed property to check if both username and password fields are filled.
 const fieldsFilled = computed(() => {
   return !isBlank(password.value) && !isBlank(username.value);
-})
+});
 
 // Computed property to check if any input is invalid.
-const allValid = computed(() => !fieldsFilled.value)
+const allValid = computed(() => !fieldsFilled.value);
 
 /**
  * Prevent entering space in input fields.
@@ -67,67 +70,93 @@ const allValid = computed(() => !fieldsFilled.value)
  * @param event The keydown event object.
  */
 function preventSpace(event: any) {
-  if (event.key === ' ' || event.code === 'Space') {
+  if (event.key === " " || event.code === "Space") {
     event.preventDefault();
   }
 }
-
 </script>
 
 <template>
   <div class="flex">
     <div class="grid">
-
       <div class="welcome-container">
-        <img src="../../assets/logos/owl-no-background.png" alt="logo" class="img-center" >
-        <h1>
-          Welcome to Hubro!
-        </h1>
-        <p>
-          The world of knowledge and fun, where learning meets excitement!
-        </p>
+        <img
+          src="../../assets/logos/owl-no-background.png"
+          alt="logo"
+          class="img-center"
+        />
+        <h1>Welcome to Hubro!</h1>
+        <p>The world of knowledge and fun, where learning meets excitement!</p>
       </div>
 
       <div class="login-container">
         <div class="form-container">
-
           <h1>Log in!</h1>
 
-            <form @submit.prevent="login">
+          <form @submit.prevent="login">
+            <label for="fusername">Username:</label><br />
 
-              <label for="fusername">Username:</label><br>
+            <input
+              class="input"
+              type="text"
+              id="username"
+              v-model="username"
+              required
+              @keydown="preventSpace"
+              data-cy="username-input"
+            />
 
-              <input class="input" type="text" id="username" v-model="username"
-                     required @keydown="preventSpace" data-cy="username-input"/>
+            <i class="fa fa-user icon"></i><br />
 
-              <i class="fa fa-user icon"></i><br>
+            <label for="fpassword">Password:</label><br />
 
-              <label for="fpassword">Password:</label><br>
+            <input
+              class="input"
+              type="password"
+              id="password"
+              v-model="password"
+              name="fpassword"
+              required
+              @keydown="preventSpace"
+              data-cy="password-input"
+            />
 
-              <input class="input" type="password" id="password" v-model="password" name="fpassword"
-                     required @keydown="preventSpace" data-cy="password-input"/>
+            <i class="fa fa-lock icon"></i><br />
 
-              <i class="fa fa-lock icon"></i><br>
-
-              <input type="submit" value="Login" id="login" :disabled="allValid" data-cy="login-button"/>
-
-            </form>
-
+            <input
+              type="submit"
+              value="Login"
+              id="login"
+              :disabled="allValid"
+              data-cy="login-button"
+            />
+          </form>
         </div>
 
-        <div v-if="errorMessage" id="error" class="error-message" data-cy="error-message">{{ errorMessage }}</div>
+        <div
+          v-if="errorMessage"
+          id="error"
+          class="error-message"
+          data-cy="error-message"
+        >
+          {{ errorMessage }}
+        </div>
 
         <p>
-          <router-link id="register-link" to="/register-user" data-cy="register-link">Create your account --></router-link>
+          <router-link
+            id="register-link"
+            to="/register-user"
+            data-cy="register-link"
+            >Create your account --></router-link
+          >
         </p>
-
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 .flex {
   display: flex;
   height: 100%;
@@ -137,14 +166,14 @@ function preventSpace(event: any) {
 }
 
 .grid {
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   border-radius: 35px;
-   max-width: 800px;
-   height: 600px;
-   background: rgba(255, 255, 255, 0.93);
-   box-shadow: 0 4px 4px -2px #000000;
- }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 35px;
+  max-width: 800px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
+}
 
 .welcome-container {
   display: flex;
@@ -170,7 +199,7 @@ function preventSpace(event: any) {
   padding: 2em;
 }
 
-input[type=submit] {
+input[type="submit"] {
   display: inline;
   font-weight: bold;
   width: 100%;
@@ -183,15 +212,16 @@ input[type=submit] {
   font-size: 16px;
 }
 
-input[type=submit]:hover {
+input[type="submit"]:hover {
   background-color: #0f0e33;
 }
 
-input[type=submit]:disabled {
+input[type="submit"]:disabled {
   background-color: #8b8a98;
 }
 
-input[type="text"], input[type="password"]{
+input[type="text"],
+input[type="password"] {
   border: 2px solid rgba(0, 0, 0, 0.17);
   font-weight: bold;
   padding: 14px 20px;

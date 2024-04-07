@@ -1,46 +1,45 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {UserService} from "@/services/UserService";
-import type {PublicUserInformationDTO} from "@/models/user/PublicUserInformationDTO";
+import { ref } from "vue";
+import { UserService } from "@/services/UserService";
+import type { PublicUserInformationDTO } from "@/models/user/PublicUserInformationDTO";
 import DropDown from "@/components/navigation/navigationbar/NavigationBarDropDown.vue";
 import RouterLinkBar from "@/components/navigation/navigationbar/RouterLinkBar.vue";
 
-
-const search = ref<string>('')
+const search = ref<string>("");
 const searchShake = ref(false);
-const errorMessage = ref("")
+const errorMessage = ref("");
 
-const previews = ref<{ link: string; label: string; authNeeded: boolean; icon: string; }[]>([]);
+const previews = ref<
+  { link: string; label: string; authNeeded: boolean; icon: string }[]
+>([]);
 
 /**
  * Search for users based on the input in the search bar, the users are then displayed in a dropdown
  */
 async function searchClicked() {
-  removeError()
+  removeError();
   try {
     if (search.value === "") {
-      triggerError("Please enter something")
-      return
+      triggerError("Please enter something");
+      return;
     }
 
-    const result: PublicUserInformationDTO[] = await UserService.searchUserByUsername(search.value, 0, 10)
+    const result: PublicUserInformationDTO[] =
+      await UserService.searchUserByUsername(search.value, 0, 10);
 
-
-    previews.value = result.map(user => ({
+    previews.value = result.map((user) => ({
       link: `/user/${user.username}`,
       label: user.username,
       authNeeded: false,
-      icon: "person"
+      icon: "person",
     }));
 
-
     if (result.length === 0) {
-      triggerError("No results found")
+      triggerError("No results found");
     }
-
   } catch (err) {
-    triggerError("Could not connect to server")
-    console.error("error while searching: " + err)
+    triggerError("Could not connect to server");
+    console.error("error while searching: " + err);
   }
 }
 
@@ -50,7 +49,7 @@ async function searchClicked() {
  */
 function triggerError(message: string) {
   errorMessage.value = message;
-  searchShake.value = true
+  searchShake.value = true;
   return;
 }
 
@@ -58,38 +57,34 @@ function triggerError(message: string) {
  * Remove the current error message
  */
 function removeError() {
-  errorMessage.value = ""
+  errorMessage.value = "";
 }
 
 /**
  * Clear the search bar
  */
 function clearSearch() {
-  search.value = ""
-  previews.value = []
+  search.value = "";
+  previews.value = [];
 }
-
 </script>
 
-
 <template>
-  <div class="search-bar"
-       :class="[
-        (errorMessage) ? 'error' : 'noError',
-         searchShake ? 'shake' : '']"
+  <div
+    class="search-bar"
+    :class="[errorMessage ? 'error' : 'noError', searchShake ? 'shake' : '']"
   >
-    <span class="material-icons"
-          title="search">search</span>
-    <input type="text"
-           :placeholder="errorMessage ? errorMessage : 'Search'"
-           @keydown.enter="searchClicked"
-           v-model="search"
-
+    <span class="material-icons" title="search">search</span>
+    <input
+      type="text"
+      :placeholder="errorMessage ? errorMessage : 'Search'"
+      @keydown.enter="searchClicked"
+      v-model="search"
     />
     <DropDown v-if="previews.length && !errorMessage" :center="true">
       <RouterLinkBar :links="previews"></RouterLinkBar>
     </DropDown>
-    <DropDown v-else-if="errorMessage && (search.length !== 0)" :center="true">
+    <DropDown v-else-if="errorMessage && search.length !== 0" :center="true">
       <div class="error-dropdown">
         <p class="error-message">
           {{ errorMessage }}
@@ -100,7 +95,6 @@ function clearSearch() {
 </template>
 
 <style scoped>
-
 h3 {
   text-align: center;
 }
@@ -115,10 +109,9 @@ h3 {
   border: 1px solid black;
 }
 
-.error-message{
+.error-message {
   margin: 0;
 }
-
 
 .error {
   border: 1px solid red !important;
@@ -127,7 +120,6 @@ h3 {
     color: red;
   }
 }
-
 
 .search-bar {
   position: relative;
@@ -140,8 +132,8 @@ h3 {
   background: white;
   border: 1px solid black;
 
-
-  span, input {
+  span,
+  input {
     background: inherit;
     outline: none;
     height: auto;
@@ -154,7 +146,6 @@ h3 {
     border-top-right-radius: inherit;
     border-bottom-right-radius: inherit;
     border: none;
-
   }
 
   span {
@@ -163,6 +154,4 @@ h3 {
     border-bottom-left-radius: inherit;
   }
 }
-
-
 </style>

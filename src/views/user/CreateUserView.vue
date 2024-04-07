@@ -8,6 +8,4 @@ import CreateUser from "@/components/user/CreateUser.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

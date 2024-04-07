@@ -8,6 +8,4 @@ import UserLogin from "@/components/user/UserLogin.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

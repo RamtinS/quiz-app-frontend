@@ -1,20 +1,19 @@
 <script setup lang="ts">
-
-import {onMounted, ref} from "vue";
-import {useUserStore} from "@/stores/UserStore";
-import {UserDetailService} from "@/services/UserDetailService";
-import type {EditUserDTO} from "@/models/user/EditUserDTO";
+import { onMounted, ref } from "vue";
+import { useUserStore } from "@/stores/UserStore";
+import { UserDetailService } from "@/services/UserDetailService";
+import type { EditUserDTO } from "@/models/user/EditUserDTO";
 import UserProfileHeader from "@/components/user/UserProfileHeader.vue";
-import {ErrorHandlingService} from "@/services/ErrorHandlingService";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
 const userStore = useUserStore();
 const email = ref(userStore.email);
 const firstName = ref(userStore.name);
 const surname = ref(userStore.surname);
-const password = ref('');
+const password = ref("");
 const editMode = ref(false);
-const errorMessageEdit = ref('');
-const errorMessageRetrieval = ref('');
+const errorMessageEdit = ref("");
+const errorMessageRetrieval = ref("");
 
 onMounted(retrieveUserDetailsIfNeeded);
 
@@ -31,13 +30,13 @@ async function retrieveUserDetails() {
     firstName.value = userDetailsDTO.name;
     surname.value = userDetailsDTO.surname;
   } catch (error) {
-    errorMessageRetrieval.value = "Failed to retrieve user details. Please try again later.";
+    errorMessageRetrieval.value =
+      "Failed to retrieve user details. Please try again later.";
     console.error("Failed to retrieve user details.", error);
   }
 }
 
 async function toggleEdit() {
-
   if (editMode.value && userDetailsChanged()) {
     const newUserDetails: EditUserDTO = {
       newPassword: password.value,
@@ -50,32 +49,41 @@ async function toggleEdit() {
 
     try {
       await UserDetailService.editUserDetails(newUserDetails);
-      if (email.value !== "" && firstName.value !== "" && surname.value !== "") {
-        userStore.updateUserDetails(email.value, firstName.value, surname.value);
+      if (
+        email.value !== "" &&
+        firstName.value !== "" &&
+        surname.value !== ""
+      ) {
+        userStore.updateUserDetails(
+          email.value,
+          firstName.value,
+          surname.value,
+        );
       } else {
         restoreUserDetails();
       }
     } catch (err) {
-
-      errorMessageEdit.value = await ErrorHandlingService
-          .handleRequestError(err, "Failed to update user details");
+      errorMessageEdit.value = await ErrorHandlingService.handleRequestError(
+        err,
+        "Failed to update user details",
+      );
 
       restoreUserDetails();
 
       setTimeout(() => {
-        errorMessageEdit.value = '';
+        errorMessageEdit.value = "";
       }, 5000);
     }
   }
-  editMode.value = !editMode.value
+  editMode.value = !editMode.value;
 }
 
 function userDetailsChanged(): boolean {
   return (
-      email.value !== userStore.email ||
-      firstName.value !== userStore.name ||
-      surname.value !== userStore.surname ||
-      password.value !== ""
+    email.value !== userStore.email ||
+    firstName.value !== userStore.name ||
+    surname.value !== userStore.surname ||
+    password.value !== ""
   );
 }
 
@@ -86,79 +94,106 @@ function restoreUserDetails() {
 }
 
 function preventSpace(event: any) {
-  if (event.key === ' ' || event.code === 'Space') {
+  if (event.key === " " || event.code === "Space") {
     event.preventDefault();
   }
 }
-
 </script>
 
 <template>
   <div class="user-profile">
-
     <UserProfileHeader></UserProfileHeader>
 
-    <div class="profile-info" v-if="!errorMessageRetrieval" data-cy="profile-info">
-
+    <div
+      class="profile-info"
+      v-if="!errorMessageRetrieval"
+      data-cy="profile-info"
+    >
       <div class="info-item">
-        <p class="info-label"> First name: </p>
+        <p class="info-label">First name:</p>
         <div class="info-value">
           <p v-if="!editMode" data-cy="first-name">{{ firstName }}</p>
-          <input v-else v-model.trim="firstName" type="text" placeholder="Enter new first name"
-                 @keydown="preventSpace" data-cy="edit-first-name"/>
+          <input
+            v-else
+            v-model.trim="firstName"
+            type="text"
+            placeholder="Enter new first name"
+            @keydown="preventSpace"
+            data-cy="edit-first-name"
+          />
         </div>
       </div>
 
       <div class="info-item">
-        <p class="info-label"> Surname: </p>
+        <p class="info-label">Surname:</p>
         <div class="info-value">
-          <p v-if="!editMode" data-cy="surname"> {{ surname }} </p>
-          <input v-else v-model="surname" type="text" placeholder="Enter new surname"
-                 @keydown="preventSpace" data-cy="edit-surname"/>
+          <p v-if="!editMode" data-cy="surname">{{ surname }}</p>
+          <input
+            v-else
+            v-model="surname"
+            type="text"
+            placeholder="Enter new surname"
+            @keydown="preventSpace"
+            data-cy="edit-surname"
+          />
         </div>
       </div>
 
       <div class="info-item">
-        <p class="info-label"> Email: </p>
+        <p class="info-label">Email:</p>
         <div class="info-value">
-          <p v-if="!editMode" data-cy="email"> {{ email }} </p>
-          <input v-else v-model="email" type="text" placeholder="Enter new email"
-                 @keydown="preventSpace" data-cy="edit-email"/>
+          <p v-if="!editMode" data-cy="email">{{ email }}</p>
+          <input
+            v-else
+            v-model="email"
+            type="text"
+            placeholder="Enter new email"
+            @keydown="preventSpace"
+            data-cy="edit-email"
+          />
         </div>
       </div>
 
       <div class="info-item">
-        <p class="info-label"> Password: </p>
+        <p class="info-label">Password:</p>
         <div class="info-value">
-          <p v-if="!editMode" data-cy="password"> ********* </p>
-          <input v-else v-model="password" type="password" placeholder="Enter new password" @keydown="preventSpace"/>
+          <p v-if="!editMode" data-cy="password">*********</p>
+          <input
+            v-else
+            v-model="password"
+            type="password"
+            placeholder="Enter new password"
+            @keydown="preventSpace"
+          />
         </div>
       </div>
 
       <div class="button-container">
-        <button @click="toggleEdit" data-cy="edit-button"> {{ editMode ? 'Save' : 'Edit' }} </button>
+        <button @click="toggleEdit" data-cy="edit-button">
+          {{ editMode ? "Save" : "Edit" }}
+        </button>
       </div>
 
-      <div v-if="errorMessageEdit"
-           class="error-message-edit"
-           data-cy="edit-error-message">
+      <div
+        v-if="errorMessageEdit"
+        class="error-message-edit"
+        data-cy="edit-error-message"
+      >
         {{ errorMessageEdit }}
       </div>
-
     </div>
 
-    <div v-if="errorMessageRetrieval"
-         class="error-message-retrieval"
-         data-cy="retrieval-error-message">
+    <div
+      v-if="errorMessageRetrieval"
+      class="error-message-retrieval"
+      data-cy="retrieval-error-message"
+    >
       {{ errorMessageRetrieval }}
     </div>
-
   </div>
-
 </template>
 
 <style scoped>
-
 .user-profile {
   padding: 2%;
 }
@@ -193,7 +228,7 @@ button {
   padding: 0.5% 2%;
   border-radius: 20px;
   font-size: 90%;
-  transition: opacity  0.15s;
+  transition: opacity 0.15s;
 }
 
 button:hover {
@@ -213,5 +248,4 @@ button:hover {
   font-weight: bold;
   font-size: 1.5em;
 }
-
 </style>

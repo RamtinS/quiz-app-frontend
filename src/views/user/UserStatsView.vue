@@ -8,6 +8,4 @@ import UserProgress from "@/components/user/UsesStats.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
