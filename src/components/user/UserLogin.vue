@@ -78,41 +78,50 @@ function preventSpace(event: any) {
 <template>
   <div class="flex">
     <div class="grid">
-      <!-- First item is the welcome container -->
-      <div class="container-1">
+
+      <div class="welcome-container">
         <img src="../../assets/logos/logo.svg" alt="logo" class="img-center" >
         <h1>
-          Welcome to Quiz App!
+          Welcome to Hubro!
         </h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum nihil placeat possimus quasi quisquam tempora
-          veniam.
+          The world of knowledge and fun, where learning meets excitement!
         </p>
       </div>
 
-      <!-- Second Item is the login container -->
-      <div class="container-2">
-        <div class="form-container-1">
+      <div class="login-container">
+        <div class="form-container">
+
           <h1>Log in!</h1>
+
             <form @submit.prevent="login">
 
-
               <label for="fusername">Username:</label><br>
-              <input class="input" type="text" id="username" v-model="username" required @keydown="preventSpace"/>
+
+              <input class="input" type="text" id="username" v-model="username"
+                     required @keydown="preventSpace" data-cy="username-input"/>
+
               <i class="fa fa-user icon"></i><br>
 
-
               <label for="fpassword">Password:</label><br>
-              <input class="input" type="password" id="password" v-model="password" name="fpassword" required @keydown="preventSpace"/>
+
+              <input class="input" type="password" id="password" v-model="password" name="fpassword"
+                     required @keydown="preventSpace" data-cy="password-input"/>
+
               <i class="fa fa-lock icon"></i><br>
 
-              <input type="submit" value="Login" id="login" :disabled="allValid"/>
+              <input type="submit" value="Login" id="login" :disabled="allValid" data-cy="login-button"/>
+
             </form>
+
         </div>
-        <div v-if="errorMessage" id="error" class="error-message">{{ errorMessage }}</div>
+
+        <div v-if="errorMessage" id="error" class="error-message" data-cy="error-message">{{ errorMessage }}</div>
+
         <p>
-          <router-link id="register-link" to="/register-user">Create your account --></router-link>
+          <router-link id="register-link" to="/register-user" data-cy="register-link">Create your account --></router-link>
         </p>
+
       </div>
     </div>
   </div>
@@ -138,7 +147,7 @@ function preventSpace(event: any) {
    box-shadow: 0 4px 4px -2px #000000;
  }
 
-.container-1 {
+.welcome-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -154,7 +163,7 @@ function preventSpace(event: any) {
   height: 70%;
 }
 
-.container-2 {
+.login-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -198,7 +207,6 @@ label {
   margin-top: 10px;
 }
 
-
 .error-message {
   color: red;
 }
@@ -211,10 +219,10 @@ label {
  Query for mobile screens.
 */
 @media (max-width: 700px) {
-  .container-1 {
+  .welcome-container {
     display: none;
   }
-  .container-2 {
+  .login-container {
     grid-column: 1/3;
     min-width: 250px;
   }
