@@ -47,12 +47,17 @@ To run the program, these programs needs to on you device.
    ```sh
    git clone git@github.com:Skippyoftedal/quiz-app-frontend.git
    ```
+
+2. Navigate to the project structure
+   ```sh
+   cd quiz-app-frontend
+   ```
    
-2. Install all dependencies
+3. Install all dependencies
    ```sh
    npm install
    ```
-3. Compile 
+4. Compile 
    1. Hot-Reload for Development: 
       ```sh 
       npm run dev
