@@ -40,6 +40,7 @@ These are system documents which describes the various aspects of a software sys
 
 ### Prerequisites
 To run the program, these programs needs to on you device.
+* NodeJS
 
 ## Setup and Run
 
