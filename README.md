@@ -1,42 +1,42 @@
-# Quiz-app-Frontend: Hubro
-This project serves as the backend for a full-stack application. This is a part of a project of IDATT2105 Full-stack application development at NTNU.
+# Quiz-app-Backend: Hubro
+
+Hubro is a full-stack application developed with Spring Boot and Vue.js.
+The application is developed as part of an assessment in the subject
+IDATT2105 Full-stack application development at NTNU.
 
 ## Team
 - Ramtin Forouzandehjoo Samavat
 - Tobias Skipevåg Oftedal
 - Jeffrey Yaw Annor Tabiri
 
-##Table of Contents
+## Table of Contents
 - [Overview](#overview)
 - [Wiki](#wiki)
 - [Features](#features)
 - [Setup and Run](#setup-and-run)
-- [License](#license)
 - [Acknowledgements](#acknowledgements)
 
 ## Overview
-The Semester Project is a full-stack web application aiming to provide a comprehensive and user-friendly platform for creating, managing, and taking quizzes for educational, training, or entertainment purposes. The project utilizes the following technologies:
+The semester project is a full-stack web application aiming to provide a comprehensive and user-friendly platform for creating, managing, and taking quizzes for educational, training, or entertainment purposes.
 
-Frontend: Vue.js
-Backend: Java 21 with Spring Boot V3
-Database: MySQL for runtime and H2 for tests
+The project utilizes the following technologies:
+- Frontend: Vue.js with Node.js.
+- Backend: Spring Boot V3 with Java 21 and Maven.
+- Database: MySQL V8 for runtime and H2 for tests.
 
 ## Wiki
 These are system documents which describes the various aspects of a software system. These documents capture the details of the system's design, implementation, operation and maintenance, serving as a reference for developers.
-- [System Architecture Program](#overview)
-- [Class Diagram](#wiki)
-- [Flowchart](#flowchar)
-- [Sequence Diagram](#credits)
-- [Wireframes](#frames)
+- [System Architecture Program](https://github.com/Skippyoftedal/quiz-app-frontend/wiki/System-Architecture-Program)
+- [Wireframes](https://github.com/Skippyoftedal/quiz-app-frontend/wiki/Wireframes)
 
 ## Features
-* Users of the program can log in securely, register themselves and manage their accounts.
-* Authenticated users can create quizzes by adding questions and specifying categories.
-* Users can tag questions with keywords and categorize them into topics or subjects.
-* Users can search for quizzes and filter them based on their fields.
-* Allows users to add, edit, delete, organize, and manage their quiz.
-* Allows users to gain score on every quiz and track their progress
-* Allows users to contact us if there were to be any problems by writing in our feedback channel.
+- **Secure Authentication**: Users can securely log in, register, and manage their accounts.
+- **Quiz Creation**: Authenticated users can create quizzes by adding questions and specifying categories.
+- **Question Tagging**: Users can tag questions with keywords and categorize them into topics or subjects.
+- **Advanced Search**: Users can search for quizzes and filter them based on various criteria.
+- **Quiz Management**: Users have full control over their quizzes, including adding, editing, deleting, and organizing them.
+- **Progress Tracking**: Users can track their progress and scores for each quiz they take.
+- **Feedback Channel**: Users can easily reach out to us with any issues or feedback through our feedback channel.
 
 ## Setup and Run
 
@@ -68,7 +68,7 @@ npm run test:e2e:dev
 ```
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the Apache-2.0 license.
 
 ## Acknowledgements
 Special thanks to the subject teachers for creating this assignment and providing us with the opportunity to develop this project.
