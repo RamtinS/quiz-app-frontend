@@ -38,6 +38,9 @@ These are system documents which describes the various aspects of a software sys
 - **Progress Tracking**: Users can track their progress and scores for each quiz they take.
 - **Feedback Channel**: Users can easily reach out to us with any issues or feedback through our feedback channel.
 
+### Prerequisites
+To run the program, these programs needs to on you device.
+
 ## Setup and Run
 
 1. Clone the repository
