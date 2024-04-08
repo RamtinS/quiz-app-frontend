@@ -46,7 +46,7 @@ To run the program, these programs needs to on you device.
 
 1. Clone the repository
    ```sh
-   git clone git@github.com:Skippyoftedal/quiz-app-frontend.git
+   git clone https://github.com/Skippyoftedal/quiz-app-frontend.git
    ```
 
 2. Navigate to the project structure
