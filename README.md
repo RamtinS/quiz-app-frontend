@@ -39,7 +39,7 @@ These are system documents which describes the various aspects of a software sys
 - **Feedback Channel**: Users can easily reach out to us with any issues or feedback through our feedback channel.
 
 ### Prerequisites
-To run the program, these programs needs to on you device.
+The application needs these programs to run:
 * NodeJS
 
 ## Setup and Run
