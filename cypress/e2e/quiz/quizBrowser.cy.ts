@@ -1,6 +1,6 @@
 describe("Navigate website page test", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/quiz-browser");
+    cy.visit("http://localhost:3000/");
   });
 
   it("Displays quiz browser with search options and navigation", () => {
