@@ -1,12 +1,14 @@
-import type {QuizQuestionDTO} from "@/models/quiz/QuizQuestionDTO";
+import type { QuizQuestionDTO } from "@/models/quiz/QuizQuestionDTO";
 
+/**
+ * DTO for a quiz
+ */
 export type QuizDTO = {
-    quizId: number;
-    title: string;
-    date: Date;
-    creator: string;
-    description: string;
-    questions: QuizQuestionDTO[];
-}
-
-//TODO add image
+  quizId: number;
+  name: string;
+  date: Date;
+  creator: string;
+  description: string;
+  questions: QuizQuestionDTO[];
+  open: boolean;
+};

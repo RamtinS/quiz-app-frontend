@@ -1,214 +1,340 @@
 <script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useUserStore } from "@/stores/UserStore";
+import type { CreateUserRequestDTO } from "@/models/user/CreateUserRequestDTO";
+import { useRoute } from "vue-router";
+import router from "@/router";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
-import {ref} from "vue";
-import {CreateUserService} from "@/services/CreateUserService";
-import type {CreateUserRequestDTO} from "@/models/user/CreateUserRequestDTO";
-import type {CreateUserResponseDTO} from "@/models/user/CreateUserResponseDTO";
+const username = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const email = ref("");
+const name = ref("");
+const surname = ref("");
+const store = useUserStore();
+const errorMessage = ref("");
+const route = useRoute();
 
-const username = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const email = ref('')
-const name = ref('')
-const surname = ref('')
+/**
+ * Watch for changes in username, password, confirmPassword, email, name and surname fields and clear error message.
+ */
+watch([username, password, confirmPassword, email, name, surname], () => {
+  errorMessage.value = "";
+});
 
-const service = new CreateUserService();
+/**
+ * Handles user registration
+ */
 async function register() {
-  let user: CreateUserRequestDTO = {
-    username: username.value,
-    password: password.value,
-    email: password.value,
-    name: name.value,
-    surname: surname.value,
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = "Password conformation not correct.";
+    return;
+  }
+
+  const user: CreateUserRequestDTO = {
+    username: username.value.trim(),
+    password: password.value.trim(),
+    email: email.value.trim(),
+    name: name.value.trim(),
+    surname: surname.value.trim(),
   };
+
   try {
-    const response: CreateUserResponseDTO = await service.createUser(user)
-    console.log("response: " + response)
+    await store.registerUser(user);
+
+    if (route.query.redirect) {
+      await router.push(route.query.redirect as string);
+    } else {
+      await router.push("/");
+    }
   } catch (err) {
-    console.log("Error while creating user:" + err)
+    errorMessage.value = await ErrorHandlingService.handleRequestError(
+      err,
+      "Registration failed",
+    );
   }
 }
 
+/**
+ * Check if a string is blank.
+ *
+ * @param str The string to check.
+ * @returns True if the string is blank, false otherwise.
+ */
+function isBlank(str: string) {
+  return !str || /^\s*$/.test(str);
+}
+
+// Computed property to determine if all required fields are filled.
+const fieldsFilled = computed(() => {
+  return (
+    !isBlank(username.value) &&
+    !isBlank(email.value) &&
+    !isBlank(name.value) &&
+    !isBlank(surname.value) &&
+    !isBlank(confirmPassword.value)
+  );
+});
+
+/**
+ * Prevent entering space in input fields.
+ *
+ * @param event The keydown event object.
+ */
+function preventSpace(event: any) {
+  if (event.key === " " || event.code === "Space") {
+    event.preventDefault();
+  }
+}
 </script>
 
 <template>
-  <div id="rectangle-container">
-    <div id="welcome-message">
-      <h1>
-        Please tell us about yourself
-      </h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab amet blanditiis deserunt dolores eos esse et
-        incidunt ipsa labore nisi odit optio porro quae quaerat, quam quibusdam repellendus sint ut?
-      </p>
-
-    </div>
-    <div id="create-form">
-
-      <h2>Create account</h2>
+  <div class="flex">
+    <div class="grid">
       <form @submit.prevent="register">
-        <div>
-          <span class="material-icons" title="Username">person</span>
-          <input type="text" v-model="username" placeholder="Enter your username" required/>
+        <div class="item-1">
+          <h1>Register!</h1>
         </div>
 
-        <div>
-          <span class="material-icons" title="Email address">email</span>
-          <input type="text" v-model="email" placeholder="Email" required/>
+        <div class="item-2">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            placeholder="Enter your username"
+            required
+            @keydown="preventSpace"
+            data-cy="username"
+          />
         </div>
-        <div>
-          <span class="material-icons" title="First name">badge</span>
-          <input type="text" v-model="name" placeholder="First name" required/>
+
+        <div class="item-2">
+          <label for="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            v-model="email"
+            placeholder="Email"
+            required
+            @keydown="preventSpace"
+            data-cy="email"
+          />
         </div>
-        <div>
-          <span class="material-icons" title="Surname">badge</span>
-          <input type="text" v-model="surname" placeholder="Surname" required/>
+
+        <div class="item-3">
+          <label for="first-name">First name:</label>
+          <input
+            type="text"
+            id="first-name"
+            v-model="name"
+            placeholder="First name"
+            required
+            @keydown="preventSpace"
+            data-cy="first-name"
+          />
         </div>
-        <div>
-          <span class="material-icons" title="Password">lock</span>
-          <input type="password" v-model="password" placeholder="Enter your password" required/>
+
+        <div class="item-4">
+          <label for="surname">Sur name:</label>
+          <input
+            type="text"
+            id="surname"
+            v-model="surname"
+            placeholder="Surname"
+            required
+            @keydown="preventSpace"
+            data-cy="surname"
+          />
         </div>
-        <div>
-          <span class="material-icons" title="Password confirmation">lock</span>
-          <input type="password" v-model="confirmPassword" placeholder="Confirm password" required/>
+
+        <div class="item-3">
+          <label for="password">Password:</label>
+          <input
+            class="input-field"
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Enter your password"
+            required
+            @keydown="preventSpace"
+            data-cy="password"
+          />
         </div>
-        <button type="submit">Register</button>
-        <p>
-          Already have an account?
-          <router-link to="/login">Login</router-link>
-        </p>
+
+        <div class="item-4">
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            class="input-field"
+            type="password"
+            id="confirm-password"
+            v-model="confirmPassword"
+            placeholder="Confirm password"
+            required
+            @keydown="preventSpace"
+            data-cy="confirm-password"
+          />
+        </div>
+
+        <div class="item-2 button">
+          <input
+            id="register-button"
+            type="submit"
+            value="Register"
+            :disabled="!fieldsFilled"
+            data-cy="register-button"
+          /><br />
+        </div>
+
+        <div
+          v-if="errorMessage"
+          id="error"
+          class="error-message item-5"
+          data-cy="error-message"
+        >
+          {{ errorMessage }}
+        </div>
+
+        <div class="item-5">
+          <div class="login-route-container">
+            <p>Already have an account?</p>
+            <router-link to="/login" data-cy="login-link">Login</router-link>
+          </div>
+        </div>
       </form>
     </div>
   </div>
 </template>
 
-
-<style scoped >
-#rectangle-container {
+<style scoped>
+.flex {
   display: flex;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 5%;
-  height: 700px;
-  border-radius: 20px;
-  box-shadow: grey 0 0 20px 10px;
-
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
 }
 
-@media (max-width: 600px) {
-  #rectangle-container {
-    flex-direction: column;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-  }
-
-  #welcome-message, #create-form {
-    width: 100%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
+.grid {
+  display: flex;
+  border-radius: 35px;
+  max-width: 800px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
+  padding: 2em;
 }
 
-@media (min-width: 600px) {
-  #welcome-message, #create-form {
-    width: 50%;
-  }
-
-  #welcome-message {
-    background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
+input[type="text"],
+input[type="password"] {
+  border: 2px solid rgba(0, 0, 0, 0.17);
+  font-weight: bold;
+  padding: 10px 10px;
+  border-radius: 15px;
 }
 
-p, h1, h2 {
+input[type="submit"] {
+  display: inline;
+  font-weight: bold;
+  width: 100%;
+  background-color: #242062;
   color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+input[type="submit"]:hover {
+  background-color: #0f0e33;
+}
+
+input[type="submit"]:disabled {
+  background-color: #8b8a98;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
   text-align: center;
-  text-shadow: black 0 0 15px;
-
+  font-size: 90%;
 }
 
-h1 {
-  font-size: 3em;
+.login-route-container p {
+  margin-top: 0;
 }
 
-p {
-  padding: 0 10%;
+form {
+  display: grid;
+  gap: 20px;
 }
 
-
-#welcome-message {
-  padding-top: 50px;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-
-
-}
-
-
-#create-form {
-  padding-top: 50px;
-  border-top-right-radius: inherit;
-  border-bottom-right-radius: inherit;
-  display: flex;
-  flex-direction: column;
+.item-1 {
   text-align: center;
-  background-color: var(--secondary-light);
+  grid-column: 1/5;
+}
 
-  h2 {
-    color: white;
-    font-size: 2em;
+.item-2,
+.item-5 {
+  display: inherit;
+  grid-column: 2/4;
+}
+
+.item-3 {
+  display: inherit;
+  grid-column: 2/3;
+}
+
+.item-4 {
+  display: inherit;
+
+  grid-column: 3/4;
+}
+
+.item-5 {
+  text-align: center;
+}
+
+/*
+ Query for mobile screens.
+*/
+@media (max-width: 700px) {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   form {
-    padding-top: 50px;
-
-    border-radius: inherit;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    div, button {
-      width: 50%;
-      max-width: 300px;
-      text-align: center;
-      margin: auto auto 20px;
-      border-radius: 10px;
-      height: 40px;
-      box-shadow: grey 5px 5px 5px;
-    }
-
-    div {
-      display: flex;
-      background-color: white;
-      align-items: center;
-
-      :hover {
-        cursor: pointer;
-      }
-
-      input {
-        outline: none;
-        border-radius: inherit;
-
-        width: 100%;
-        box-sizing: border-box;
-        border: none;
-        height: 90%;
-      }
-
-      span {
-        display: flex;
-      }
-    }
-
-    button:hover {
-      cursor: pointer;
-      scale: 1.05;
-    }
+    align-items: flex-end;
   }
 
+  .item-1 {
+    align-self: center;
+  }
+
+  .item-2.button {
+    align-self: center;
+    width: 100%;
+  }
+
+  .item-5 {
+    align-self: center;
+  }
+
+  label {
+    padding-right: 15px;
+    align-self: center;
+  }
+
+  .error-message {
+    align-self: center;
+  }
 }
 </style>

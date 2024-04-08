@@ -1,183 +1,258 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import {useUserStore} from '@/stores/UserStore';
+import { computed, ref, watch, watchEffect } from "vue";
+import { useUserStore } from "@/stores/UserStore";
+import router from "@/router";
+import { useRoute } from "vue-router";
+import { ErrorHandlingService } from "@/services/ErrorHandlingService";
 
-const username = ref('')
-const password = ref('')
+const username = ref<string>("");
+const password = ref<string>("");
+const errorMessage = ref<string>("");
 const store = useUserStore();
+const route = useRoute();
 
+/**
+ * If the login has been routed because of an expired token, show an error message.
+ */
+watchEffect(() => {
+  if (route.params.tokenStatus === "expired") {
+    errorMessage.value = "Your session has expired. Please log in again.";
+  }
+});
+
+/**
+ * Watch for changes in username and password fields and clear error message.
+ */
+watch([username, password], () => {
+  errorMessage.value = "";
+});
+
+/**
+ * Attempts to log in the user.
+ */
 async function login() {
   try {
-    await store.login(username.value, password.value);
-  } catch (error) {
-    console.error('Axios error:', error)
+    await store.loginUser(username.value.trim(), password.value.trim());
+    if (route.query.redirect) {
+      await router.push(route.query.redirect as string);
+    } else {
+      await router.push("/");
+    }
+  } catch (err) {
+    errorMessage.value = await ErrorHandlingService.handleRequestError(
+      err,
+      "Login failed",
+    );
+  }
+}
+
+/**
+ * Check if a string is blank.
+ *
+ * @param str The string to check.
+ * @returns True if the string is blank, false otherwise.
+ */
+function isBlank(str: string) {
+  return !str || /^\s*$/.test(str);
+}
+
+// Computed property to check if both username and password fields are filled.
+const fieldsFilled = computed(() => {
+  return !isBlank(password.value) && !isBlank(username.value);
+});
+
+// Computed property to check if any input is invalid.
+const allValid = computed(() => !fieldsFilled.value);
+
+/**
+ * Prevent entering space in input fields.
+ *
+ * @param event The keydown event object.
+ */
+function preventSpace(event: any) {
+  if (event.key === " " || event.code === "Space") {
+    event.preventDefault();
   }
 }
 </script>
 
-
 <template>
+  <div class="flex">
+    <div class="grid">
+      <div class="welcome-container">
+        <img
+          src="../../assets/logos/owl-no-background.png"
+          alt="logo"
+          class="img-center"
+        />
+        <h1>Welcome to Hubro!</h1>
+        <p>The world of knowledge and fun, where learning meets excitement!</p>
+      </div>
 
-  <div id="rectangle-container">
-    <div id="welcome-message">
-      <h1>
-        Welcome to Quiz App
-      </h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab amet blanditiis deserunt dolores eos esse et
-        incidunt ipsa labore nisi odit optio porro quae quaerat, quam quibusdam repellendus sint ut?
-      </p>
+      <div class="login-container">
+        <div class="form-container">
+          <h1>Log in!</h1>
 
-    </div>
-    <div id="login-form">
+          <form @submit.prevent="login">
+            <label for="fusername">Username:</label><br />
 
-      <h2>User Login</h2>
-      <form @submit.prevent="login">
-        <div>
-          <span class="material-icons" title="Enter a valid username">person</span>
-          <input type="text" v-model="username" placeholder="Enter your username" required/>
+            <input
+              class="input"
+              type="text"
+              id="username"
+              v-model="username"
+              required
+              @keydown="preventSpace"
+              data-cy="username-input"
+            />
+
+            <i class="fa fa-user icon"></i><br />
+
+            <label for="fpassword">Password:</label><br />
+
+            <input
+              class="input"
+              type="password"
+              id="password"
+              v-model="password"
+              name="fpassword"
+              required
+              @keydown="preventSpace"
+              data-cy="password-input"
+            />
+
+            <i class="fa fa-lock icon"></i><br />
+
+            <input
+              type="submit"
+              value="Login"
+              id="login"
+              :disabled="allValid"
+              data-cy="login-button"
+            />
+          </form>
         </div>
 
-        <div>
-          <span class="material-icons" title="Enter a valid username">lock</span>
-
-          <input type="password" v-model="password" placeholder="Enter your password" required/>
-
+        <div
+          v-if="errorMessage"
+          id="error"
+          class="error-message"
+          data-cy="error-message"
+        >
+          {{ errorMessage }}
         </div>
-        <button type="submit">Log in</button>
+
         <p>
-          Don't have an account? <router-link to="/register-user">Register</router-link>
+          <router-link
+            id="register-link"
+            to="/register-user"
+            data-cy="register-link"
+            >Create your account --></router-link
+          >
         </p>
-      </form>
+      </div>
     </div>
   </div>
-
-
 </template>
 
 <style scoped>
-
-#rectangle-container {
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+.flex {
   display: flex;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 5%;
-  height: 700px;
-  border-radius: 20px;
-  box-shadow: grey 0 0 20px 10px;
-
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
 }
 
-@media (max-width: 600px){
-  #rectangle-container {
-    flex-direction: column;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-  }
-  #welcome-message, #login-form{
-    width: 100%;
-  }
-  #welcome-message{
-    background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 35px;
+  max-width: 800px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 4px 4px -2px #000000;
 }
 
-@media (min-width: 600px){
-  #welcome-message, #login-form{
-    width: 50%;
-  }
-  #welcome-message{
-    background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary) 50%, var(--secondary-light) 100%);
-  }
-}
-
-p, h1, h2{
-  color: white;
-  text-align: center;
-  text-shadow: black 0 0 15px;
-
-}
-
-h1 {
-  font-size: 3em;
-}
-
-p {
-  padding: 0 10%;
-}
-
-
-#welcome-message {
-  padding-top: 50px;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-
-
-
-
-}
-
-
-#login-form {
-  padding-top: 50px;
-  border-top-right-radius: inherit;
-  border-bottom-right-radius: inherit;
+.welcome-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   text-align: center;
-  background-color: var(--secondary-light);
-  h2{
-    color: white;
-    font-size: 2em;
-  }
-
-  form {
-    padding-top: 50px;
-
-    border-radius: inherit;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    div, button {
-      width: 50%;
-      max-width: 300px;
-      text-align: center;
-      margin: auto auto 20px;
-      border-radius: 10px;
-      height: 40px;
-      box-shadow: grey 5px 5px 5px;
-    }
-
-    div {
-      display: flex;
-      background-color: white;
-      align-items: center;
-      :hover {
-        cursor: pointer;
-      }
-
-      input {
-        outline: none;
-        border-radius: inherit;
-
-        width: 100%;
-        box-sizing: border-box;
-        border: none;
-        height: 90%;
-      }
-      span{
-        display: flex;
-      }
-    }
-    button:hover {
-      cursor: pointer;
-      scale: 1.05;
-    }
-  }
-
+  padding: 2em;
 }
 
+.img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+  padding: 2em;
+}
+
+input[type="submit"] {
+  display: inline;
+  font-weight: bold;
+  width: 100%;
+  background-color: #242062;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+input[type="submit"]:hover {
+  background-color: #0f0e33;
+}
+
+input[type="submit"]:disabled {
+  background-color: #8b8a98;
+}
+
+input[type="text"],
+input[type="password"] {
+  border: 2px solid rgba(0, 0, 0, 0.17);
+  font-weight: bold;
+  padding: 14px 20px;
+  border-radius: 15px;
+  margin: 10px 0 35px 0;
+}
+
+label {
+  float: left;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+}
+
+.icon {
+  padding-left: 5px;
+}
+
+/*
+ Query for mobile screens.
+*/
+@media (max-width: 700px) {
+  .welcome-container {
+    display: none;
+  }
+  .login-container {
+    grid-column: 1/3;
+    min-width: 250px;
+  }
+}
 </style>

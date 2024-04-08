@@ -1,6 +1,7 @@
+/**
+ * Defines a data transfer object for a quiz question.
+ */
 export type QuizQuestionDTO = {
-    question: string;
-    answers: string[];
-    correctAnswers: boolean[];
-    explanation: string | null;
-}
+  questionType: string;
+  questionText: string;
+};

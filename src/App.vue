@@ -1,43 +1,29 @@
 <script setup lang="ts">
-import NavigationBar from "@/components/navigation/NavigationBar.vue";
-import {reactive, ref} from "vue";
-import QuizRunner from "@/components/quiz/QuizRunner.vue";
-import type { QuizQuestionDTO } from '@/models/quiz/QuizQuestionDTO'
-import {storeToRefs} from "pinia";
-import {useUserStore} from "@/stores/UserStore";
-
-const userStore = useUserStore();
-const user = userStore.user;
-
-const links = ref({
-  '/': { label: 'Home', authNeeded: false },
-  '/login': { label: 'Login', authNeeded: false },
-  '/quiz-browser' : {label: 'Quiz Browser', authNeeded: false},
-  '/user-profile' : {label: "Profile", authNeeded: false},
-  '/register-user' : {label: "Register", authNeeded: false},
-  '/quiz-creator' : {label: "Create quiz", authNeeded: false},
-});
-
-
+import NavigationBar from "@/components/navigation/navigationbar/NavigationBar.vue";
 </script>
 
 <template>
-  <NavigationBar :links="links"/>
+  <div id="app-container">
+    <NavigationBar> </NavigationBar>
+    <div id="content">
+      <Suspense>
+        <template #default>
+          <RouterView></RouterView>
+        </template>
 
-<!--  <QuizRunner :questions="questions"></QuizRunner>-->
-<Suspense>
-  <template #default>
-    <RouterView>
-
-    </RouterView>
-  </template>
-  <template #fallback>
-    <div>Loading...</div>
-  </template>
-</Suspense>
-
+        <template #fallback>
+          <div>Loading...</div>
+        </template>
+      </Suspense>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-
+#content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 70px;
+}
 </style>
