@@ -16,6 +16,7 @@ IDATT2105 Full-stack application development at NTNU.
 - [Setup and Run](#setup-and-run)
 - [Acknowledgements](#acknowledgements)
 
+
 ## Overview
 The semester project is a full-stack web application aiming to provide a comprehensive and user-friendly platform for creating, managing, and taking quizzes for educational, training, or entertainment purposes.
 
@@ -28,7 +29,8 @@ The project utilizes the following technologies:
 These are system documents which describes the various aspects of a software system. These documents capture the details of the system's design, implementation, operation and maintenance, serving as a reference for developers.
 - [System Architecture Program](https://github.com/Skippyoftedal/quiz-app-frontend/wiki/System-Architecture-Program)
 - [Wireframes](https://github.com/Skippyoftedal/quiz-app-frontend/wiki/Wireframes)
-
+- [Sources](https://github.com/Skippyoftedal/quiz-app-frontend/wiki/Sources)
+  
 ## Features
 - **Secure Authentication**: Users can securely log in, register, and manage their accounts.
 - **Quiz Creation**: Authenticated users can create quizzes by adding questions and specifying categories.
