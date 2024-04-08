@@ -69,7 +69,12 @@ The application needs these programs to run:
       ```sh 
       npm run build
       ```
-
+      
+### Test users
+Admin user:
+ - Username: Admin
+ - Password: Password
+   
 ## Test
 
 ### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
