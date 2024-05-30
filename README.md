@@ -1,4 +1,4 @@
-# Quiz-app-Backend: Hubro
+# Quiz-app-Frontend: Hubro
 
 Hubro is a full-stack application developed with Spring Boot and Vue.js.
 The application is developed as part of an assessment in the subject
