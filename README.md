@@ -48,7 +48,7 @@ The application needs these programs to run:
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/Skippyoftedal/quiz-app-frontend.git
+   git clone https://github.com/RamtinS/quiz-app-frontend.git
    ```
 
 2. Navigate to the project structure
